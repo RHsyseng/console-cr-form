@@ -1,0 +1,55 @@
+{
+  "name": "operator-gui",
+  "version": "0.1.0",
+  "description": "Operator GUI project",
+  "main": "src/index.js",
+  "scripts": {
+    "compile": "webpack",
+    "build": "webpack -p",
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "react",
+    "webpack",
+    "babel",
+    "minimal",
+    "starter"
+  ],
+  "author": "Calvin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:calvinzhuca/operator-gui.git"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "@patternfly/react-core": "^2.3.6",
+    "axios": "^0.18.0",
+    "babel-loader": "^8.0.5",
+    "bootstrap": "^4.3.1",
+    "bootstrap-sass": "^3.4.1",
+    "express": "^4.16.4",
+    "js-yaml": "^3.12.2",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8",
+    "react-dom": "^16.8.4",
+    "styled-components": "^3.4.10",
+    "webpack": "^4.29.6",
+    "webpack-dev-middleware": "^3.6.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "babel-jest": "^24.3.0",
+    "css-loader": "^1.0.1",
+    "jest": "^24.3.0",
+    "raw-loader": "^0.5.1",
+    "react-test-renderer": "^16.8.4",
+    "style-loader": "^0.23.1",
+    "webpack-cli": "^3.2.3"
+  }
+}
