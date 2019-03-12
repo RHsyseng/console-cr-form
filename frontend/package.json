@@ -33,6 +33,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-sass": "^3.4.1",
     "express": "^4.16.4",
+    "file-loader": "^3.0.1",
     "js-yaml": "^3.12.2",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
