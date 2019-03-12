@@ -3,6 +3,13 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import YAML from 'js-yaml';
 
+
+import {
+  Button,
+  ActionGroup,
+  Checkbox
+} from '@patternfly/react-core';
+
 import {BACKEND_URL, USE_MOCK_DATA} from './common/GuiConstants';
 import Page1 from './page1/Page1'
 import Page2 from './page2/Page2'
@@ -57,6 +64,9 @@ export default class MainPage extends Component {
       return YAML.safeDump(formData);
     }
 
+    cancel = () =>{
+        console.log('cancle button is clicked, do nothing for now');
+    }
 
     submit = () =>{
         var resultYaml = this.convertStatesToYaml();
@@ -111,7 +121,16 @@ export default class MainPage extends Component {
       </tr>
       <tr>
         <td>
-          <button onClick={this.submit}>Submit</button>
+          <ActionGroup>
+            <Button variant="primary" onClick={this.submit} >Submit form</Button>
+            <Button variant="secondary" onClick={this.cancel}>Cancel</Button>
+            <Checkbox
+              label="Remember this setting"
+              aria-label="Remember this setting"
+              id="alt-form-checkbox-1"
+              name="alt-form-checkbox-1"
+            />
+          </ActionGroup>
         </td>
       </tr>
     </tbody>
