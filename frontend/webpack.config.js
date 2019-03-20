@@ -16,21 +16,24 @@ module.exports = {
         use: ["babel-loader"]
       },
       {
-        test:/\.css$/,
-        use:['style-loader','css-loader']
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
         use: {
-          loader: 'file-loader',
+          loader: "file-loader",
           options: {
             // Limit at 50k. larger files emited into separate files
             limit: 5000,
-            outputPath: 'fonts',
-            name: '[name].[ext]',
+            outputPath: "fonts",
+            name: "[name].[ext]"
           }
         }
       }
     ]
+  },
+  node: {
+    fs: "empty"
   }
 };
