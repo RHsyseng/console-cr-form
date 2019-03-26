@@ -39,7 +39,8 @@ export default class MainPage extends Component {
       value1: "",
       value2: "",
       value3: "",
-      value4: "please choose"
+      value4: "please choose",
+      name: ""
     };
   }
 
@@ -67,12 +68,20 @@ export default class MainPage extends Component {
     });
   };
 
+  setName = (name) =>{
+      console.log("set state Name " + name);
+      this.setState({
+        name
+      });
+  }
+
   convertStatesToYaml = () => {
     const spec = {};
     spec.environment = this.state.value3;
     spec.applicationName = this.state.value4;
 
     const formData = {
+      name: this.state.name,
       apiVersion: this.state.value1,
       kind: this.state.value2,
       spec: spec
@@ -140,6 +149,7 @@ export default class MainPage extends Component {
                 <Page2
                   jsonForm={this.state.jsonForm}
                   jsonSchema={this.state.jsonSchema}
+                  setName={this.setName}
                 />
               </td>
             </tr>

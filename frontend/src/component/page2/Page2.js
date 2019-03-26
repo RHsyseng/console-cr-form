@@ -24,6 +24,13 @@ export default class Page2 extends PageBase {
     this.renderComponents(this.state.pageDef);
   }
 
+
+  onChange = (value) => {
+    console.log("onChange in page2, value : " + value);
+    this.props.setName(value);
+  };
+
+
   render() {
     return <Form isHorizontal>{this.state.children}</Form>;
   }
