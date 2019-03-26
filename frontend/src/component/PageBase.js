@@ -38,8 +38,8 @@ export default class PageBase extends Component {
     alert("onClose is clicked");
   };
 
-  onChange = () => {
-    console.log("onChange with value: ");
+  onChange = (value) => {
+    console.log("onChange with value: " + value);
   };
 
   renderComponents = pageDef => {
@@ -172,7 +172,7 @@ helperText={helpText}
             id="horizontal-form-name"
             aria-describedby="horizontal-form-name-helper"
             name="horizontal-form-name"
-            value={field.default}
+            onChange={this.onChange}
           />
         </FormGroup>
       );
