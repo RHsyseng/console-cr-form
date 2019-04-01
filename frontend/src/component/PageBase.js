@@ -38,7 +38,7 @@ export default class PageBase extends Component {
     alert("onClose is clicked");
   };
 
-  onChange = (value) => {
+  onChange = value => {
     console.log("onChange with value: " + value);
   };
 
@@ -81,7 +81,7 @@ export default class PageBase extends Component {
     //passed in: $.spec.environment
     //jsonPath = "$..spec.properties.environment.enum";
 
-    var queryResults = JSONPATH.query(schema,jsonPath);
+    var queryResults = JSONPATH.query(schema, jsonPath);
     console.log("queryResults " + JSON.stringify(queryResults[0]));
 
     return queryResults[0];
@@ -104,15 +104,11 @@ export default class PageBase extends Component {
         options.push(oneOption);
       });
 
-
       const tmpJsonPath = "$..spec.properties.environment.description";
       const helpText = this.findValueFromSchema(tmpJsonPath);
 
       fieldJsx = (
-        <FormGroup label={field.label} fieldId={fieldId}
-helperText={helpText}
-
-        >
+        <FormGroup label={field.label} fieldId={fieldId} helperText={helpText}>
           <FormSelect id="horzontal-form-title" name="horizontal-form-title">
             {options.map((option, index) => (
               <FormSelectOption
@@ -127,12 +123,7 @@ helperText={helpText}
       );
     } else if (field.type == "textArea") {
       fieldJsx = (
-        <FormGroup
-          label={field.label}
-          isRequired
-          fieldId={fieldId}
-          key={key}
-        >
+        <FormGroup label={field.label} isRequired fieldId={fieldId} key={key}>
           <TextArea
             value={field.default}
             name="horizontal-form-exp"
@@ -158,14 +149,21 @@ helperText={helpText}
           />
         </FormGroup>
       );
+    } else if (field.type == "object") {
+      fieldJsx = (
+        <ActionGroup fieldid={fieldId}>
+          <Button variant="primary" onClick={this.onAddObject}>
+            Add {field.label}
+          </Button>
+
+          <Button variant="secondary" onClick={this.onDeleteObject}>
+            Delete {field.label}
+          </Button>
+        </ActionGroup>
+      );
     } else {
       fieldJsx = (
-        <FormGroup
-          label={field.label}
-          isRequired
-          fieldId={fieldId}
-          key={key}
-        >
+        <FormGroup label={field.label} isRequired fieldId={fieldId} key={key}>
           <TextInput
             isRequired
             type="text"
