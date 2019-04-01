@@ -167,7 +167,7 @@ export default class Page3 extends PageBase {
 
   onChange = (_, event) => {
     console.log("onChange", event.target.name, event.target.value);
-    // this.setState({ [event.target.name]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   };
   render() {
     return (

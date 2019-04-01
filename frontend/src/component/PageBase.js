@@ -91,6 +91,7 @@ export default class PageBase extends Component {
     //console.log("!!!!!!!!!! buildOneField i: " + i);
     const fieldId = "horizontal-form-" + field.label + i;
     const key = "key-" + field.label + i;
+    const textName = "input" + i;
 
     var fieldJsx = "";
     if (field.type == "dropDown") {
@@ -169,7 +170,7 @@ export default class PageBase extends Component {
             type="text"
             id="horizontal-form-name"
             aria-describedby="horizontal-form-name-helper"
-            name="horizontal-form-name"
+            name={textName}
             onChange={this.onChange}
           />
         </FormGroup>
