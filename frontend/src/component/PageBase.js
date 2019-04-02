@@ -12,12 +12,11 @@ import {
   ActionGroup,
   Checkbox
 } from "@patternfly/react-core";
-
+import validator from "validator";
 import JSONPATH from "jsonpath";
 
-//import { MockupData_JSON_SCHEMA } from "./common/MockupData";
-
 export default class PageBase extends Component {
+
   onSubmit = () => {
     console.log("onSubmit is clicked");
     alert("onSubmit is clicked");
@@ -40,6 +39,36 @@ export default class PageBase extends Component {
 
   onChange = value => {
     console.log("onChange with value: " + value);
+  };
+
+  onChangeEmail = (value, event) => {
+    //console.log("onChangeEmail: " + value);
+    //console.log("handleEmailchange, event.target.name: " + event.target.name);
+    //console.log("handleEmailchange, event.target.value: " +  event.target.value);
+
+    if (value != null && value != "" && !validator.isEmail(value)) {
+      console.log("not valid email address: " + value);
+      this.setState({
+        validationMessageEmail: "not valid email address"
+      });
+    } else {
+      this.setState({
+        validationMessageEmail: ""
+      });
+    }
+  };
+
+  onChangeUrl = (value, event) => {
+    if (value != null && value != "" && !validator.isURL(value)) {
+      console.log("not valid URL " + value);
+      this.setState({
+        validationMessageUrl: "not valid URL"
+      });
+    } else {
+      this.setState({
+        validationMessageUrl: ""
+      });
+    }
   };
 
   renderComponents = pageDef => {
@@ -162,9 +191,34 @@ export default class PageBase extends Component {
           </Button>
         </ActionGroup>
       );
-    } else {
+  } else if (field.type == "email"){
       fieldJsx = (
-        <FormGroup label={field.label} isRequired fieldId={fieldId} key={key}>
+        <FormGroup label={field.label} fieldId={fieldId} key={key}>
+          <TextInput
+            type="text"
+            id="horizontal-form-email"
+            name={textName}
+            onChange={this.onChangeEmail}
+          />
+        </FormGroup>
+      );
+  }else if (field.type == "url"){
+        fieldJsx = (
+          <FormGroup label={field.label} fieldId={fieldId} key={key}>
+            <TextInput
+              type="text"
+              id="horizontal-form-url"
+              name={textName}
+              onChange={this.onChangeUrl}
+            />
+          </FormGroup>
+        );
+      }
+
+
+    else {
+      fieldJsx = (
+        <FormGroup label={field.label} fieldId={fieldId} key={key}>
           <TextInput
             isRequired
             type="text"
