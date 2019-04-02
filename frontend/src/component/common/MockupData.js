@@ -4,6 +4,18 @@ export const MockupData_JSON = {
     {
       fields: [
         {
+          label: "Email",
+          default: "who@where.com",
+          required: true,
+          type: "email"
+        },
+        {
+          label: "URL",
+          default: "test123.com",
+          required: true,
+          type: "url"
+        },
+        {
           label: "Name",
           default: "rhpam-trial",
           required: true,
