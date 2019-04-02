@@ -11,14 +11,16 @@ import {
   ActionGroup,
   Checkbox
 } from "@patternfly/react-core";
-
+import validator from "validator";
 import PageBase from "../PageBase";
 
 export default class Page1 extends PageBase {
   state = {
     value: "please choose",
     pageDef: this.props.jsonForm.pages[0],
-    children: []
+    children: [],
+    validationMessageEmail: "",
+    validationMessageUrl: ""
   };
 
   componentDidMount() {
@@ -30,13 +32,34 @@ export default class Page1 extends PageBase {
     this.props.setValue4(value);
   };
 
-  handleTextInputChange1 = value1 => {
-    console.log("handleTextInputChange1" + value1);
-    this.props.setValue1(value1);
+  handleEmailchange = value1 => {
+    console.log("handleEmailchange: " + value1);
+    if (value1 != null && value1 != "" && !validator.isEmail(value1)) {
+      console.log("not valid email address: " + value1);
+      this.setState({
+        validationMessageEmail: "not valid email address: "
+      });
+    } else {
+      //        this.props.setValue1(value1);
+      this.setState({
+        validationMessageEmail: ""
+      });
+    }
   };
 
-  handleTextInputChange2 = value2 => {
-    this.props.setValue2(value2);
+  handleUrlChange = value2 => {
+    console.log("handleUrlChange: " + value2);
+    if (value2 != null && value2 != "" && !validator.isURL(value2)) {
+      console.log("not valid URL: " + value2);
+      this.setState({
+        validationMessageUrl: "not valid URL: "
+      });
+    } else {
+      //this.props.setValue2(value2);
+      this.setState({
+        validationMessageUrl: ""
+      });
+    }
   };
 
   handleTextInputChange3 = value3 => {
@@ -80,30 +103,29 @@ export default class Page1 extends PageBase {
         </FormGroup>
 
         <FormGroup
-          label="API Version"
+          label="Email"
           isRequired
-          fieldId="horizontal-form-name"
-          helperText="Please provide correct version"
+          fieldId="horizontal-form-label1"
+          helperText="Please provide correct email address"
         >
           <TextInput
             isRequired
             type="text"
-            id="horizontal-form-name"
-            aria-describedby="horizontal-form-name-helper"
-            name="horizontal-form-name"
-            value={this.props.value1}
-            onChange={this.handleTextInputChange1}
+            onChange={this.handleEmailchange}
+            id="horizontal-form-field1"
+            name="horizontal-form-field1"
           />
+          <b>{this.state.validationMessageEmail}</b>
         </FormGroup>
-        <FormGroup label="Kind" isRequired fieldId="horizontal-form-email">
+        <FormGroup label="URL" isRequired fieldId="horizontal-form-label2">
           <TextInput
-            value={this.props.value2}
-            onChange={this.handleTextInputChange2}
             isRequired
-            type="email"
-            id="horizontal-form-email"
-            name="horizontal-form-email"
+            type="text"
+            onChange={this.handleUrlChange}
+            id="horizontal-form-field2"
+            name="horizontal-form-field2"
           />
+          <b>{this.state.validationMessageUrl}</b>
         </FormGroup>
         <FormGroup label="Application Name" fieldId="horizontal-form-title">
           <FormSelect
