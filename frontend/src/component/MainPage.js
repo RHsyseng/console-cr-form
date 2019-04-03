@@ -68,12 +68,12 @@ export default class MainPage extends Component {
     });
   };
 
-  setName = (name) =>{
-      console.log("set state Name " + name);
-      this.setState({
-        name
-      });
-  }
+  setName = name => {
+    console.log("set state Name " + name);
+    this.setState({
+      name
+    });
+  };
 
   convertStatesToYaml = () => {
     const spec = {};
@@ -123,7 +123,7 @@ export default class MainPage extends Component {
       .innerHTML;
     return (
       <div>
-        <font size="6" >{this.state.useMockdataWarning}</font>
+        <font size="6">{this.state.useMockdataWarning}</font>
         <table border="1" align="center">
           <tbody>
             <tr>

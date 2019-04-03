@@ -14,9 +14,10 @@ import {
 } from "@patternfly/react-core";
 import validator from "validator";
 import JSONPATH from "jsonpath";
+import * as objJson from "./common/MultipleObjData";
+import { OPERATOR_NAME } from "./common/GuiConstants";
 
 export default class PageBase extends Component {
-
   onSubmit = () => {
     console.log("onSubmit is clicked");
     alert("onSubmit is clicked");
@@ -116,6 +117,91 @@ export default class PageBase extends Component {
     return queryResults[0];
   }
 
+  renderMultipleComponents = (label, operator, tempRenderJson) => {
+    const objDef = objJson[operator + "_" + label];
+    console.log(
+      "!!!!!!!!!! renderComponents tempRenderJson objDefobjDef***: " +
+        JSON.stringify(objDef)
+    );
+    //
+    // var obj = JSON.parse(jsonStr);
+    var x;
+    let obj = objDef.fields;
+
+    for (x in obj) {
+      tempRenderJson.push(obj[x]);
+      // jsonStr = JSON.stringify(obj);
+    }
+    this.state.children = [];
+    //this.renderComponents(pageDef);
+    return tempRenderJson;
+  };
+
+  onAddObject = () => {
+    var x, currentFields, fields;
+    currentFields = this.state.renderJson.fields;
+    //  console.log("onAddObject is clicked****", currentFields);
+    var tempRenderJson = [];
+
+    for (x in currentFields) {
+      fields = currentFields[x];
+      tempRenderJson.push(fields);
+
+      // if (fields.label === "Env") {
+      if (fields.type == "object") {
+        //   console.log("onAddObject is clicked****", fields.type);
+        this.renderMultipleComponents(
+          fields.label,
+          OPERATOR_NAME,
+          tempRenderJson
+        );
+      }
+      // console.log(
+      //   "!!!!!!!!!! renderComponents tempRenderJson:::: " +
+      //     JSON.stringify(tempRenderJson)
+      // );
+      let newRenderJson = {
+        fields: [{}],
+        buttons: [{}]
+      };
+      // console.log(
+      //   "!!!!!!!!!! renderComponents newRenderJs+===== " +
+      //     JSON.stringify(newRenderJson.fields)
+      // );
+      newRenderJson = { ...newRenderJson, fields: tempRenderJson };
+      newRenderJson = {
+        ...newRenderJson,
+        buttons: this.state.pageDef.buttons
+      };
+
+      // console.log(
+      //   "!!!!!!!!!! renderComponents newRenderJson:::: " +
+      //     JSON.stringify(newRenderJson)
+      // );
+
+      this.setState({ renderJson: newRenderJson });
+      this.state.children = [];
+      this.renderComponents(newRenderJson);
+    }
+  };
+
+  onDeleteObject = () => {
+    console.log(
+      "!!!!!!!!!! renderComponents newRenderJson:::: " +
+        JSON.stringify(this.state.renderJson)
+    );
+
+    var tempRenderJson = this.state.renderJson;
+
+    var deletedItem = tempRenderJson.fields.splice(
+      tempRenderJson.fields.length - 2,
+      2
+    );
+    this.setState({ renderJson: tempRenderJson });
+    this.state.children = [];
+    this.renderComponents(tempRenderJson);
+  };
+
   buildOneField(field, i) {
     //console.log("!!!!!!!!!! buildOneField i: " + i);
     const fieldId = "horizontal-form-" + field.label + i;
@@ -191,7 +277,7 @@ export default class PageBase extends Component {
           </Button>
         </ActionGroup>
       );
-  } else if (field.type == "email"){
+    } else if (field.type == "email") {
       fieldJsx = (
         <FormGroup label={field.label} fieldId={fieldId} key={key}>
           <TextInput
@@ -202,21 +288,18 @@ export default class PageBase extends Component {
           />
         </FormGroup>
       );
-  }else if (field.type == "url"){
-        fieldJsx = (
-          <FormGroup label={field.label} fieldId={fieldId} key={key}>
-            <TextInput
-              type="text"
-              id="horizontal-form-url"
-              name={textName}
-              onChange={this.onChangeUrl}
-            />
-          </FormGroup>
-        );
-      }
-
-
-    else {
+    } else if (field.type == "url") {
+      fieldJsx = (
+        <FormGroup label={field.label} fieldId={fieldId} key={key}>
+          <TextInput
+            type="text"
+            id="horizontal-form-url"
+            name={textName}
+            onChange={this.onChangeUrl}
+          />
+        </FormGroup>
+      );
+    } else {
       fieldJsx = (
         <FormGroup label={field.label} fieldId={fieldId} key={key}>
           <TextInput
