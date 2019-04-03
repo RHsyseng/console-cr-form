@@ -3,7 +3,6 @@ import { Form } from "@patternfly/react-core";
 
 import PageBase from "../PageBase";
 import { MockupData_JSON } from "../common/MockupData";
-import { EnvRender_JSON } from "../rhpam/EnvObjData";
 
 //import * as objJson from "../common/MultipleObjData";
 import { OPERATOR_NAME } from "../common/GuiConstants";
