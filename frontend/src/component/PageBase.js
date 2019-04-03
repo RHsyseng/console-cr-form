@@ -16,6 +16,7 @@ import validator from "validator";
 import JSONPATH from "jsonpath";
 import * as objJson from "./common/MultipleObjData";
 import { OPERATOR_NAME } from "./common/GuiConstants";
+import * as utils from "./common/CommonUtils";
 
 export default class PageBase extends Component {
   onSubmit = () => {
@@ -40,6 +41,12 @@ export default class PageBase extends Component {
 
   onChange = value => {
     console.log("onChange with value: " + value);
+  };
+  onChangeCheckBox = (_, event) => {
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+
+    this.setState({ [event.target.name]: value });
   };
 
   onChangeEmail = (value, event) => {
@@ -211,7 +218,8 @@ export default class PageBase extends Component {
     var fieldJsx = "";
     if (field.type == "dropDown") {
       var options = [];
-      const optionValues = this.findValueFromSchema(field.jsonPath);
+      const tmpJsonPath = utils.getJsonSchemaPathForJsonPath(field.jsonPath);
+      const optionValues = this.findValueFromSchema(tmpJsonPath + ".enum");
       optionValues.forEach((option, i) => {
         const oneOption = {
           label: option,
@@ -220,8 +228,8 @@ export default class PageBase extends Component {
         options.push(oneOption);
       });
 
-      const tmpJsonPath = "$..spec.properties.environment.description";
-      const helpText = this.findValueFromSchema(tmpJsonPath);
+      //  const tmpJsonPath = "$..spec.properties.environment.description";
+      const helpText = this.findValueFromSchema(tmpJsonPath + ".description");
 
       fieldJsx = (
         <FormGroup label={field.label} fieldId={fieldId} helperText={helpText}>
@@ -296,6 +304,29 @@ export default class PageBase extends Component {
             id="horizontal-form-url"
             name={textName}
             onChange={this.onChangeUrl}
+          />
+        </FormGroup>
+      );
+    } else if (field.type == "password") {
+      fieldJsx = (
+        <FormGroup label={field.label} fieldId={fieldId} key={key}>
+          <TextInput
+            type="password"
+            id="horizontal-form-url"
+            name={textName}
+            onChange={this.onChange}
+          />
+        </FormGroup>
+      );
+    } else if (field.type == "checkbox") {
+      var name = "check" + i;
+      fieldJsx = (
+        <FormGroup label={field.label} fieldId="horizontal-radio1" key={key}>
+          <Checkbox
+            isChecked={field.default}
+            onChange={this.onChangeCheckBox}
+            id="check-1"
+            name={name}
           />
         </FormGroup>
       );
