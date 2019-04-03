@@ -1,6 +1,65 @@
 export const MockupData_JSON = {
   pages: [
-    {},
+    {
+      fields: [
+        {
+          label: "Application Name",
+          default: "rhpam-trial",
+          required: true,
+          jsonPath: "$.metadata.name",
+          type: "text"
+        },
+        {
+          label: "Environment",
+          default: "env2 default",
+          required: true,
+          jsonPath: "$.spec.environment",
+          type: "dropDown"
+        },
+        {
+          label: "Image Registry",
+          default: "rhpam-trial",
+          required: false,
+          jsonPath: "$.spec.imageRegistry.registry",
+          type: "text"
+        },
+        {
+          label: "Insecure",
+          default: false,
+          required: false,
+          jsonPath: "$.spec.imageRegistry.insecure",
+          type: "checkbox"
+        },
+        {
+          label: "User Name",
+          default: "rhpam-trial",
+          required: false,
+          jsonPath: "$.spec.commonConfig.adminuser",
+          type: "text"
+        },
+        {
+          label: "Password",
+          default: "env2 default",
+          required: false,
+          jsonPath: "$.spec.commonConfig.adminuser",
+          type: "password"
+        }
+      ],
+      buttons: [
+        {
+          label: "Deploy",
+          action: "submit"
+        },
+        {
+          label: "Close",
+          action: "close"
+        },
+        {
+          label: "Next",
+          action: "next"
+        }
+      ]
+    },
     {
       fields: [
         {
@@ -26,7 +85,7 @@ export const MockupData_JSON = {
           label: "Environment",
           default: "env2 default",
           required: true,
-          jsonPath: "$..spec.properties.environment.enum",
+          jsonPath: "$.spec.environment",
           type: "dropDown"
         }
       ],
@@ -47,20 +106,20 @@ export const MockupData_JSON = {
           label: "KeyStoreSecret",
           default: "",
           required: false,
-          jsonPath: "$.metadata.name",
+          jsonPath: "$.spec.objects.console.keystoreSecret",
           type: "text"
         },
         {
           label: "Replicas",
           default: "",
           required: false,
-          jsonPath: "$.metadata.name",
+          jsonPath: "$.spec.objects.console.replicas",
           type: "text"
         },
         {
           label: "Env",
           required: false,
-          jsonPath: "$.metadata.name",
+          jsonPath: "$.spec.objects.console.env",
           type: "object",
           min: 0,
           max: 100

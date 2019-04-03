@@ -9,7 +9,7 @@ import { OPERATOR_NAME } from "../common/GuiConstants";
 export default class Page3 extends PageBase {
   constructor(props) {
     super(props);
-    let envRenderDef = EnvRender_JSON;
+    let envRenderDef = "";
     let pageDef = this.props.jsonForm.pages[2];
     if (pageDef == null) {
       console.log(
