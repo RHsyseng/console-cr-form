@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import { Form } from "@patternfly/react-core";
 
 import PageBase from "../PageBase";
-import { MockupData_JSON } from "../common/MockupData";
 
 //import * as objJson from "../common/MultipleObjData";
 import { OPERATOR_NAME } from "../common/GuiConstants";
@@ -11,6 +10,7 @@ export default class Page3 extends PageBase {
     super(props);
     let envRenderDef = "";
     let pageDef = this.props.jsonForm.pages[2];
+    let children = this.props.children;
     if (pageDef == null) {
       console.log(
         "!!!!!jsonForm doesn't have this page, might be an error in loading the data, set to 1st page"
@@ -20,7 +20,7 @@ export default class Page3 extends PageBase {
 
     this.state = {
       pageDef,
-      children: [],
+      children,
       envRenderDef,
       passedInJson: {},
       renderJson: {}
