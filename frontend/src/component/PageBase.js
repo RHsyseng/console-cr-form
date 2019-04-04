@@ -4,7 +4,6 @@ import {
   FormGroup,
   TextInput,
   TextArea,
-  Form,
   FormSelectOption,
   FormSelect,
   Radio,
@@ -49,7 +48,8 @@ export default class PageBase extends Component {
     this.setState({ [event.target.name]: value });
   };
 
-  onChangeEmail = (value, event) => {
+  //onChangeEmail = (value, event) => {
+  onChangeEmail = value => {
     //console.log("onChangeEmail: " + value);
     //console.log("handleEmailchange, event.target.name: " + event.target.name);
     //console.log("handleEmailchange, event.target.value: " +  event.target.value);
@@ -66,7 +66,8 @@ export default class PageBase extends Component {
     }
   };
 
-  onChangeUrl = (value, event) => {
+  //onChangeUrl = (value, event) => {
+  onChangeUrl = value => {
     if (value != null && value != "" && !validator.isURL(value)) {
       console.log("not valid URL " + value);
       this.setState({
@@ -104,9 +105,11 @@ export default class PageBase extends Component {
       children.push(buttonsComponent);
     }
 
-    this.setState({
-      children: [this.state.children, children]
-    });
+    // this.setState({
+    //   children: [this.state.children, children]
+    // });
+
+    this.setState({ children });
   };
 
   findValueFromSchema(jsonPath) {
@@ -126,6 +129,7 @@ export default class PageBase extends Component {
 
   renderMultipleComponents = (label, operator, tempRenderJson) => {
     const objDef = objJson[operator + "_" + label];
+
     console.log(
       "!!!!!!!!!! renderComponents tempRenderJson objDefobjDef***: " +
         JSON.stringify(objDef)
@@ -139,15 +143,14 @@ export default class PageBase extends Component {
       tempRenderJson.push(obj[x]);
       // jsonStr = JSON.stringify(obj);
     }
-    this.state.children = [];
-    //this.renderComponents(pageDef);
+    // this.state.children = [];
     return tempRenderJson;
   };
 
   onAddObject = () => {
     var x, currentFields, fields;
     currentFields = this.state.renderJson.fields;
-    //  console.log("onAddObject is clicked****", currentFields);
+    //console.log("onAddObject is clicked****", currentFields);
     var tempRenderJson = [];
 
     for (x in currentFields) {
@@ -163,49 +166,51 @@ export default class PageBase extends Component {
           tempRenderJson
         );
       }
-      // console.log(
-      //   "!!!!!!!!!! renderComponents tempRenderJson:::: " +
-      //     JSON.stringify(tempRenderJson)
-      // );
-      let newRenderJson = {
-        fields: [{}],
-        buttons: [{}]
-      };
-      // console.log(
-      //   "!!!!!!!!!! renderComponents newRenderJs+===== " +
-      //     JSON.stringify(newRenderJson.fields)
-      // );
-      newRenderJson = { ...newRenderJson, fields: tempRenderJson };
-      newRenderJson = {
-        ...newRenderJson,
-        buttons: this.state.pageDef.buttons
-      };
-
-      // console.log(
-      //   "!!!!!!!!!! renderComponents newRenderJson:::: " +
-      //     JSON.stringify(newRenderJson)
-      // );
-
-      this.setState({ renderJson: newRenderJson });
-      this.state.children = [];
-      this.renderComponents(newRenderJson);
     }
+    // console.log(
+    //   "!!!!!!!!!! renderComponents tempRenderJson:::: " +
+    //     JSON.stringify(tempRenderJson)
+    // );
+    let newRenderJson = {
+      fields: [{}],
+      buttons: [{}]
+    };
+    // console.log(
+    //   "!!!!!!!!!! renderComponents newRenderJs+===== " +
+    //     JSON.stringify(newRenderJson.fields)
+    // );
+    newRenderJson = { ...newRenderJson, fields: tempRenderJson };
+    newRenderJson = {
+      ...newRenderJson,
+      buttons: this.state.pageDef.buttons
+    };
+
+    // console.log(
+    //   "!!!!!!!!!! renderComponents newRenderJson:::: " +
+    //     JSON.stringify(newRenderJson)
+    // );
+
+    this.setState({ renderJson: newRenderJson });
+    //  this.state.children = [];
+
+    this.renderComponents(newRenderJson);
   };
 
   onDeleteObject = () => {
-    console.log(
-      "!!!!!!!!!! renderComponents newRenderJson:::: " +
-        JSON.stringify(this.state.renderJson)
-    );
+    // console.log(
+    //   "!!!!!!!!!! renderComponents newRenderJson:::: " +
+    //     JSON.stringify(this.state.renderJson)
+    // );
 
     var tempRenderJson = this.state.renderJson;
-
-    var deletedItem = tempRenderJson.fields.splice(
-      tempRenderJson.fields.length - 2,
-      2
-    );
+    var newChildren = [];
+    tempRenderJson.fields.splice(tempRenderJson.fields.length - 2, 2);
     this.setState({ renderJson: tempRenderJson });
-    this.state.children = [];
+    //  this.state.children = [];
+    this.setState({
+      children: [this.state.children, newChildren]
+    });
+
     this.renderComponents(tempRenderJson);
   };
 
@@ -220,7 +225,7 @@ export default class PageBase extends Component {
       var options = [];
       const tmpJsonPath = utils.getJsonSchemaPathForJsonPath(field.jsonPath);
       const optionValues = this.findValueFromSchema(tmpJsonPath + ".enum");
-      optionValues.forEach((option, i) => {
+      optionValues.forEach(option => {
         const oneOption = {
           label: option,
           value: option

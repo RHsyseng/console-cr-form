@@ -119,8 +119,6 @@ export default class MainPage extends Component {
   };
 
   render() {
-    const golangJsonForm = document.getElementById("golang_json_form")
-      .innerHTML;
     return (
       <div>
         <font size="6">{this.state.useMockdataWarning}</font>

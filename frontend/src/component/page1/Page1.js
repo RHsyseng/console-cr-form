@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   FormGroup,
   TextInput,
@@ -6,10 +6,7 @@ import {
   Form,
   FormSelectOption,
   FormSelect,
-  Radio,
-  Button,
-  ActionGroup,
-  Checkbox
+  Radio
 } from "@patternfly/react-core";
 
 import PageBase from "../PageBase";
@@ -25,7 +22,8 @@ export default class Page1 extends PageBase {
     this.renderComponents(this.state.pageDef);
   }
 
-  onChange = (value, event) => {
+  //onChange = (value, event) => {
+  onChange = value => {
     //this.setState({ value });
     this.props.setValue4(value);
   };
@@ -56,8 +54,6 @@ export default class Page1 extends PageBase {
   ];
 
   render() {
-    const { value1, value2, value3 } = this.props;
-
     return (
       <Form isHorizontal>
         <FormGroup label="testRadio" fieldId="horizontal-radio1">
