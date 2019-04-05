@@ -1,6 +1,6 @@
 # Custom Resource Form Generation
 
-[![Go Report](https://goreportcard.com/badge/github.com/kiegroup/kie-cloud-operator)](https://goreportcard.com/report/github.com/kiegroup/kie-cloud-operator)
+[![Go Report Card](https://goreportcard.com/badge/github.com/RHsyseng/console-cr-form)](https://goreportcard.com/report/github.com/RHsyseng/console-cr-form)
 
 ## Requirements
 
@@ -27,4 +27,3 @@ go build cmd/testwebapp.go
 ```bash
 ./testwebapp
 ```
-
