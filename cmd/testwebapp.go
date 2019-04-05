@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/RHsyseng/console-cr-form/pkg/web"
+	"github.com/ghodss/yaml"
 	"github.com/go-openapi/spec"
 	"github.com/sirupsen/logrus"
-	"github.com/ghodss/yaml"
 )
 
 func main() {
