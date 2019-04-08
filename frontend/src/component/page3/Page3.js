@@ -3,7 +3,6 @@ import { Form } from "@patternfly/react-core";
 
 import PageBase from "../PageBase";
 
-//import * as objJson from "../common/MultipleObjData";
 import { OPERATOR_NAME } from "../common/GuiConstants";
 export default class Page3 extends PageBase {
   constructor(props) {
@@ -21,6 +20,7 @@ export default class Page3 extends PageBase {
     this.state = {
       pageDef,
       children,
+      pageNumber: "page3",
       envRenderDef,
       passedInJson: {},
       renderJson: {}

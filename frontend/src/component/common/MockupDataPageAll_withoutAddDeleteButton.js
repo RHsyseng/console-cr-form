@@ -615,6 +615,30 @@ export const MockupData_JSON = {
               description: "Namespace where the object is located"
             },
             {
+              label: "Env",
+              required: false,
+              jsonPath: "$.spec.objects.servers.env",
+              type: "object",
+              min: 0,
+              max: 100,
+              fields: [
+                {
+                  label: "name",
+                  type: "text",
+                  required: true,
+                  jsonPath: "$.spec.objects.servers.env.name",
+                  default: ""
+                },
+                {
+                  label: "value",
+                  type: "text",
+                  jsonPath: "$.spec.objects.servers.env.value",
+                  required: true,
+                  default: ""
+                }
+              ]
+            },
+            {
               label: "Request(Memory)",
               type: "text",
               jsonPath: "$.spec.objects.console.resources.request.memory",
