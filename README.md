@@ -1,6 +1,7 @@
 # Custom Resource Form Generation
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/RHsyseng/console-cr-form)](https://goreportcard.com/report/github.com/RHsyseng/console-cr-form)
+[![Build Status](https://travis-ci.org/RHsyseng/console-cr-form.svg?branch=master)](https://travis-ci.org/RHsyseng/console-cr-form)
 
 ## Requirements
 
