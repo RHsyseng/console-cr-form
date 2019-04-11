@@ -3,6 +3,6 @@ export function getJsonSchemaPathForJsonPath(jsonPath) {
   jsonPath = jsonPath.replace(".", ".properties.");
   jsonPath = "$.." + jsonPath;
 
-  console.log("jsonSchema Path: " + jsonPath);
+  //console.log("jsonSchema Path: " + jsonPath);
   return jsonPath;
 }

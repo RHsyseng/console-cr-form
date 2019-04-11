@@ -408,6 +408,16 @@ export const MockupData_JSON = {
           type: "object",
           min: 0,
           max: 100,
+          buttons: [
+            {
+              label: "Add Env",
+              action: "submit"
+            },
+            {
+              label: "Delete Env",
+              action: "submit"
+            }
+          ],
           fields: [
             {
               label: "name",
@@ -483,6 +493,16 @@ export const MockupData_JSON = {
           type: "object",
           min: 1,
           max: 100,
+          buttons: [
+            {
+              label: "Add Server",
+              action: "submit"
+            },
+            {
+              label: "Delete Server",
+              action: "submit"
+            }
+          ],
           fields: [
             {
               label: "Name",
@@ -613,6 +633,40 @@ export const MockupData_JSON = {
               jsonPath: "$.spec.objects.servers.from.namespace",
               default: "",
               description: "Namespace where the object is located"
+            },
+            {
+              label: "Env",
+              required: false,
+              jsonPath: "$.spec.objects.servers.env",
+              type: "object",
+              min: 0,
+              max: 100,
+              buttons: [
+                {
+                  label: "Add Env",
+                  action: "submit"
+                },
+                {
+                  label: "Delete Env",
+                  action: "submit"
+                }
+              ],
+              fields: [
+                {
+                  label: "name",
+                  type: "text",
+                  required: true,
+                  jsonPath: "$.spec.objects.servers.env.name",
+                  default: ""
+                },
+                {
+                  label: "value",
+                  type: "text",
+                  jsonPath: "$.spec.objects.servers.env.value",
+                  required: true,
+                  default: ""
+                }
+              ]
             },
             {
               label: "Request(Memory)",
@@ -833,6 +887,16 @@ export const MockupData_JSON = {
           type: "object",
           min: 0,
           max: 100,
+          buttons: [
+            {
+              label: "Add Env",
+              action: "submit"
+            },
+            {
+              label: "Delete Env",
+              action: "submit"
+            }
+          ],
           fields: [
             {
               label: "name",

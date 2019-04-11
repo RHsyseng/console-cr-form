@@ -18,6 +18,7 @@ export default class Page2 extends PageBase {
     this.state = {
       pageDef,
       children: [],
+      pageNumber: "page2",
       validationMessageEmail: "",
       validationMessageUrl: ""
     };
