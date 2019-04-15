@@ -23,8 +23,62 @@ export default class PageBase extends Component {
   }
 
   onSubmit = () => {
-    console.log("onSubmit is clicked");
-    alert("onSubmit is clicked");
+    console.log("onSubmit is clicked" + this.state.pageNumber);
+    console.log(
+      "onSubmit is clicked" + this.state.jsonForm.pages[0].fields.length
+    );
+    var j = this.state.pageNumber;
+    var cnt = 0;
+    if (j < 2) {
+      while (j >= 0) {
+        console.log(
+          "onSubmit is clicked" + this.state.jsonForm.pages[j].fields.length
+        );
+        cnt = cnt + this.state.jsonForm.pages[j].fields.length + 2;
+        j--;
+      }
+    }
+    //console.log(The no of field needed for yaml creation on editcnt + "cnt");
+    var elem = document.getElementById("main_form").elements;
+    const len = cnt > 0 ? cnt : elem.length;
+    var str = "";
+    var sampleYaml = {};
+    for (var i = 0; i < len; i++) {
+      if (elem[i].type != "button") {
+        var jsonpath = document
+          .getElementById(elem[i].id)
+          .getAttribute("jsonpath");
+        if (
+          elem[i].value != null &&
+          elem[i].value != "" &&
+          elem[i].name != "alt-form-checkbox-1" &&
+          jsonpath != "$.spec.auth.sso" &&
+          jsonpath != "$.spec.auth.ldap"
+        ) {
+          str += "Name: " + elem[i].name + " ";
+          str += "Type: " + elem[i].type + " ";
+          str += "Value: " + elem[i].value + " ";
+          str += "                                                 ";
+
+          var tmpJsonPath = utils.getJsonSchemaPathForYaml(jsonpath);
+          const value =
+            elem[i].type === "checkbox" ? elem[i].checked : elem[i].value;
+          if (tmpJsonPath.search(/\*/g) != -1) {
+            tmpJsonPath = utils.replaceStarwithPos(elem[i], tmpJsonPath);
+          }
+          //
+          sampleYaml[tmpJsonPath] = value;
+          //  }
+        }
+      }
+    }
+    alert(str);
+    console.log(sampleYaml);
+    var result = this.props.createResultYaml(sampleYaml);
+    console.log(result);
+    //  alert(result);
+    //  this.props.setResultYaml(result);
+    this.props.togglePopup();
   };
 
   onCancel = () => {
@@ -162,6 +216,7 @@ export default class PageBase extends Component {
     );
     */
     this.state.objectMap.set(key, JSON.stringify(field.fields));
+    this.state.objectCntMap.set(key, field.fields.length);
   }
 
   subtractLastOneFromCurrentFields(allSubFieldsStr, sampleObjStr) {
@@ -321,6 +376,7 @@ export default class PageBase extends Component {
     );
 
     var value = this.retrieveObjectMap(field, fieldnumber);
+    const objCnt = this.retrieveObjectCntMap(field, fieldnumber) + 1; //getting how many field in obj e.g env has 2 name and value +1 for devider
     if (value == "") {
       //it's the first time here, never store the sample in the objectMap,
       this.storeObjectMap(field, fieldnumber);
@@ -338,13 +394,32 @@ export default class PageBase extends Component {
       }
     }
 
+    var pos = 0,
+      cnt = 1,
+      attrs = {};
     field.fields.forEach((subfield, i) => {
       if (field.min == 0) {
         //means don't generate the 1st one unless user press button
         //console.log("field.min == 0, won't render ");
       } else {
-        let oneComponent = this.buildOneField(subfield, i);
+        //add extra attributes in fields to recognise the position of field are created  envpos, serverpos etc.
+        // these attr will be replace *  by serverpos and envpos in jsonpath like  $.spec.objects.servers[*].env[*].value
+        var posKey = field.label.toLowerCase() + "pos";
+        attrs = {
+          ...attrs,
+          [posKey]: pos
+        };
+
+        let oneComponent = this.buildOneField(subfield, i, attrs);
         jsxArray.push(oneComponent);
+
+        //assigning each fiels for object with same pos and increment the pos when all fields are done
+        if (cnt == objCnt) {
+          //console.log("Incrementing pos from " + pos + " to " + (pos + 1));
+          pos++;
+          cnt = 0;
+        }
+        cnt++;
       }
     });
     jsxArray.push(
@@ -355,7 +430,21 @@ export default class PageBase extends Component {
     return jsxArray;
   }
 
-  buildOneField(field, fieldNumber) {
+  retrieveObjectCntMap(field, fieldnumber) {
+    const key = this.state.pageNumber + "_" + fieldnumber;
+    var value = this.state.objectCntMap.get(key);
+
+    // console.log(
+    //   "retrieveObjectCntMap value::::::::: " + key + " : " + value
+    // );
+
+    if (value == null) {
+      return "";
+    } else {
+      return value;
+    }
+  }
+  buildOneField(field, fieldNumber, attrs) {
     //console.log("buildOneField " + fieldNumber);
     //console.log("55555555555field.type: " + JSON.stringify(field));
 
@@ -405,7 +494,12 @@ export default class PageBase extends Component {
           key={fieldGroupKey}
           helperText={helpText}
         >
-          <FormSelect id={fieldId} key={fieldKey} name={textName}>
+          <FormSelect
+            id={fieldId}
+            key={fieldKey}
+            name={textName}
+            jsonpath={field.jsonPath}
+          >
             {options.map((option, index) => (
               <FormSelectOption
                 isDisabled={option.disabled}
@@ -431,6 +525,7 @@ export default class PageBase extends Component {
             name="horizontal-form-exp"
             id={fieldId}
             key={fieldKey}
+            jsonpath={field.jsonPath}
           />
         </FormGroup>
       );
@@ -451,6 +546,7 @@ export default class PageBase extends Component {
             id={fieldIdTrue}
             key={fieldKeyTrue}
             name="horizontal-radios"
+            jsonpath={field.jsonPath}
           />
           <Radio
             label="No"
@@ -458,6 +554,7 @@ export default class PageBase extends Component {
             id={fieldIdFalse}
             key={fieldKeyFalse}
             name="horizontal-radios"
+            jsonpath={field.jsonPath}
           />
         </FormGroup>
       );
@@ -476,6 +573,7 @@ export default class PageBase extends Component {
             key={fieldKey}
             name={textName}
             onChange={this.onChangeEmail}
+            jsonpath={field.jsonPath}
           />
         </FormGroup>
       );
@@ -492,6 +590,7 @@ export default class PageBase extends Component {
             key={fieldKey}
             name={textName}
             onChange={this.onChangeUrl}
+            jsonpath={field.jsonPath}
           />
         </FormGroup>
       );
@@ -508,6 +607,7 @@ export default class PageBase extends Component {
             key={fieldKey}
             name={textName}
             onChange={this.onChange}
+            jsonpath={field.jsonPath}
           />
         </FormGroup>
       );
@@ -527,6 +627,7 @@ export default class PageBase extends Component {
             key={fieldKey}
             aria-label="checkbox yes"
             name={name}
+            jsonpath={field.jsonPath}
           />
         </FormGroup>
       );
@@ -551,6 +652,8 @@ export default class PageBase extends Component {
             aria-describedby="horizontal-form-name-helper"
             name={textName}
             onChange={this.onChange}
+            jsonpath={field.jsonPath}
+            {...attrs}
           />
         </FormGroup>
       );

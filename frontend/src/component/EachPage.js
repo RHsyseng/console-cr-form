@@ -11,7 +11,8 @@ export default class EachPage extends PageBase {
       jsonForm: this.props.jsonForm,
       pageNumber: this.props.pageNumber,
       children: [],
-      objectMap: new Map()
+      objectMap: new Map(),
+      objectCntMap: new Map()
     };
   }
 
