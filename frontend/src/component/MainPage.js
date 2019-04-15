@@ -3,7 +3,13 @@ import React, { Component } from "react";
 import YAML from "js-yaml";
 
 //import { Form } from "@patternfly/react-core";
-import { Button, ActionGroup, Checkbox } from "@patternfly/react-core";
+import {
+  Button,
+  ActionGroup,
+  Checkbox,
+  Modal,
+  TextArea
+} from "@patternfly/react-core";
 
 import { USE_MOCK_DATA } from "./common/GuiConstants";
 import { MockupData_JSON, MockupData_JSON_SCHEMA } from "./common/MockupData";
@@ -11,6 +17,9 @@ import { MockupData_JSON, MockupData_JSON_SCHEMA } from "./common/MockupData";
 import Page1 from "./pages/Page1";
 import Page2 from "./pages/Page2";
 import Page3 from "./pages/Page3";
+import CopyToClipboard from "react-copy-to-clipboard";
+import * as utils from "./common/CommonUtils";
+import Dot from "dot-object";
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -42,7 +51,11 @@ export default class MainPage extends Component {
     this.state = {
       useMockdataWarning,
       jsonForm,
-      jsonSchema
+      jsonSchema,
+      sampleYaml: {},
+      showPopup: false,
+      resultYaml: "",
+      copied: false
     };
   }
 
@@ -137,22 +150,49 @@ export default class MainPage extends Component {
 
   submit = () => {
     var str = "";
+    var sampleYaml = {};
     var elem = document.getElementById("main_form").elements;
     for (var i = 0; i < elem.length; i++) {
       if (elem[i].type != "button") {
-        if (elem[i].value != null && elem[i].value != "") {
+        var jsonpath = document
+          .getElementById(elem[i].id)
+          .getAttribute("jsonpath");
+        if (
+          elem[i].value != null &&
+          elem[i].value != "" &&
+          elem[i].name != "alt-form-checkbox-1" &&
+          jsonpath != "$.spec.auth.sso" &&
+          jsonpath != "$.spec.auth.ldap"
+        ) {
           str += "Name: " + elem[i].name + " ";
           str += "Type: " + elem[i].type + " ";
           str += "Value: " + elem[i].value + " ";
           str += "                                                 ";
+
+          var tmpJsonPath = utils.getJsonSchemaPathForYaml(jsonpath);
+          const value =
+            elem[i].type === "checkbox" ? elem[i].checked : elem[i].value;
+          if (tmpJsonPath.search(/\*/g) != -1) {
+            tmpJsonPath = utils.replaceStarwithPos(elem[i], jsonpath);
+          }
+          //
+          sampleYaml[tmpJsonPath] = value;
+          //  }
         }
       }
     }
     alert(str);
+    console.log(sampleYaml);
+    var result = this.createResultYaml(sampleYaml);
+    console.log(result);
+    //alert(result);
   };
 
   handleAddPlanFormChange = e => {
     console.log("handleAddPlanFormChange, e.target.name: " + e.target.name);
+
+    //console.log("handleAddPlanFormChange, e.target.name: " + jsonpath);
+
     if (e.target.name == "name") {
       this.setState({ name: e.target.value });
     } else if (e.target.name == "description") {
@@ -168,17 +208,47 @@ export default class MainPage extends Component {
     }
   };
 
-  render() {
-    /*
-//This can dynamically generate the pages, but it mess up the map which store the sampleObj for array, so can't use it now
+  createResultYaml = sampleYaml => {
+    Dot.object(sampleYaml);
+    // this.setState({
+    //   sampleYaml
+    // });
+    var resultYaml = YAML.safeDump(sampleYaml);
+    this.setState({
+      resultYaml
+    });
+
+    return resultYaml;
+  };
+
+  setResultYaml = resultYaml => {
+    this.setState({
+      resultYaml
+    });
+  };
+
+  togglePopup = () => {
+    //  alert("Swat")
+    //alert(this.state.showPopup);
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  };
+
+  onCopyYaml = () => {
+    this.setState({ copied: true });
+  };
+
+  /*
+//This can dynamically generate the pages, but it messTextAreap the map which store the sampleObj for array, so can't use it now
     function DisplayPages(props) {
       const jsonForm = props.jsonForm;
-      //generate all fields
-      if (jsonForm.pages != null) {
-        //loop through all pages
-
-        var jsxArray = [];
-
+import CopyToClipboard from "react-copy-to-clipboard";TextArea
+import CopyToClipboard from "react-copy-to-clipboard";TextArea
+import CopyToClipboard from "react-copy-to-clipboard";TextArea
+import CopyToClipboard from "react-copy-to-clipboard";
+import CopyToClipboard from "react-copy-to-clipboard";
+import CopyToClipboard from "react-copy-to-clipboard";
         jsonForm.pages.forEach((page, pageNumber) => {
           const eachPage = (
             <div key={pageNumber}>
@@ -194,9 +264,9 @@ export default class MainPage extends Component {
           jsxArray.push(eachPage);
         });
         return jsxArray;
-      }
-    }
-
+import CopyToClipboard from "react-copy-to-clipboard";
+import CopyToClipboard from "react-copy-to-clipboard";
+import CopyToClipboard from "react-copy-to-clipboard";
     <!--tr>
       <td>
         <DisplayPages
@@ -208,8 +278,53 @@ export default class MainPage extends Component {
     </tr-->
 
 */
-    return (
-      <div>
+  onChangeYaml = value => {
+    this.setResultYaml(value);
+  };
+
+  render() {
+    if (this.state.showPopup) {
+      return (
+        // Remove url parameter to see about:blank support
+        <React.Fragment>
+          <Modal
+            title=" "
+            isOpen={this.state.showPopup}
+            onClose={this.togglePopup}
+            actions={[
+              <CopyToClipboard
+                key="yaml_copy"
+                className="pf-c-button pf-m-primary"
+                onCopy={this.onCopyYaml}
+                text={this.state.resultYaml}
+              >
+                <button key="yaml_button_copy">Copy to clipboard</button>
+              </CopyToClipboard>,
+              <Button
+                key="cancel"
+                variant="secondary"
+                onClick={this.togglePopup}
+              >
+                Cancel
+              </Button>
+            ]}
+          >
+            <TextArea
+              id="yaml_edit_text"
+              key="yaml_text"
+              onChange={this.onChangeYaml}
+              rows={25}
+              cols={15}
+              value={this.state.resultYaml}
+            />
+          </Modal>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        // {this.state.showPopup ? (
+        //   <Popup text="Close Me" closePopup={this.togglePopup} />
+        // ) : null}
         <form
           className="form-horizontal"
           name="dynamic_operator_form"
@@ -225,6 +340,10 @@ export default class MainPage extends Component {
                     jsonForm={this.state.jsonForm}
                     jsonSchema={this.state.jsonSchema}
                     saveJsonForm={this.saveJsonForm}
+                    createResultYaml={this.createResultYaml}
+                    showPopup={this.state.showPopup}
+                    togglePopup={this.togglePopup}
+                    setResultYaml={this.setResultYaml}
                   />
                 </td>
               </tr>
@@ -234,6 +353,10 @@ export default class MainPage extends Component {
                     jsonForm={this.state.jsonForm}
                     jsonSchema={this.state.jsonSchema}
                     saveJsonForm={this.saveJsonForm}
+                    createResultYaml={this.createResultYaml}
+                    showPopup={this.state.showPopup}
+                    togglePopup={this.togglePopup}
+                    setResultYaml={this.setResultYaml}
                   />
                 </td>
               </tr>
@@ -243,6 +366,10 @@ export default class MainPage extends Component {
                     jsonForm={this.state.jsonForm}
                     jsonSchema={this.state.jsonSchema}
                     saveJsonForm={this.saveJsonForm}
+                    createResultYaml={this.createResultYaml}
+                    showPopup={this.state.showPopup}
+                    togglePopup={this.togglePopup}
+                    setResultYaml={this.setResultYaml}
                   />
                 </td>
               </tr>
@@ -268,7 +395,7 @@ export default class MainPage extends Component {
             </tbody>
           </table>
         </form>
-      </div>
-    );
+      );
+    }
   }
 }

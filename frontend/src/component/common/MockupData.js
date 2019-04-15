@@ -73,7 +73,7 @@ export const MockupData_JSON = {
           label: "SSO",
           type: "checkbox",
           jsonPath: "$.spec.auth.sso",
-          default: "false"
+          default: false
         },
         {
           label: "url",
@@ -108,7 +108,7 @@ export const MockupData_JSON = {
           label: "Disable SSL Cert Validation",
           type: "checkbox",
           jsonPath: "$.spec.auth.sso.disableSSLCertValidation",
-          default: "false",
+          default: false,
           description: "RH-SSO Disable SSL Certificate Validation"
         },
         {
@@ -122,7 +122,7 @@ export const MockupData_JSON = {
           label: "LDAP",
           type: "checkbox",
           jsonPath: "$.spec.auth.ldap",
-          default: "false"
+          default: false
         },
         {
           label: "url",
@@ -157,7 +157,7 @@ export const MockupData_JSON = {
           label: "baseCtxDN",
           type: "checkbox",
           jsonPath: "$.spec.auth.ldap.baseCtxDN",
-          default: "false",
+          default: false,
           description:
             "LDAP Base DN of the top-level context to begin the user search."
         },
@@ -195,7 +195,7 @@ export const MockupData_JSON = {
           label: "parseUsername",
           type: "checkbox",
           jsonPath: "$.spec.auth.ldap.parseUsername",
-          default: "false",
+          default: false,
           description:
             "A flag indicating if the DN is to be parsed for the username. If set to true, the DN is parsed for the username. If set to false the DN is not parsed for the username. This option is used together with usernameBeginString and usernameEndString."
         },
@@ -265,7 +265,7 @@ export const MockupData_JSON = {
           label: "parseRoleNameFromDN",
           type: "checkbox",
           jsonPath: "$.spec.auth.ldap.parseRoleNameFromDN",
-          default: "false",
+          default: false,
           description:
             "A flag indicating if the DN returned by a query contains the roleNameAttributeID. If set to true, the DN is checked for the roleNameAttributeID. If set to false, the DN is not checked for the roleNameAttributeID. This flag can improve the performance of LDAP queries."
         },
@@ -273,7 +273,7 @@ export const MockupData_JSON = {
           label: "roleAttributeIsDN",
           type: "checkbox",
           jsonPath: "$.spec.auth.ldap.roleAttributeIsDN",
-          default: "false",
+          default: false,
           description:
             "Whether or not the roleAttributeID contains the fully-qualified DN of a role object. If false, the role name is taken from the value of the roleNameAttributeId attribute of the context name. Certain directory schemas, such as Microsoft Active Directory, require this attribute to be set to true."
         },
@@ -297,7 +297,7 @@ export const MockupData_JSON = {
           label: "Replace Role",
           type: "checkbox",
           jsonPath: "$.spec.auth.roleMapper.replaceRole",
-          default: "false",
+          default: false,
           description:
             " Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
         },
@@ -413,14 +413,14 @@ export const MockupData_JSON = {
               label: "name",
               type: "text",
               required: true,
-              jsonPath: "$.spec.objects.console.env.name",
+              jsonPath: "$.spec.objects.console.env[*].name",
               default: "Some text here"
             },
             {
               label: "value",
               type: "text",
               required: true,
-              jsonPath: "$.spec.objects.console.env.value",
+              jsonPath: "$.spec.objects.console.env[*].value",
               default: "Some text here"
             }
           ]
@@ -838,14 +838,14 @@ export const MockupData_JSON = {
               label: "name",
               type: "text",
               required: true,
-              jsonPath: "$.spec.objects.smartRouter.env.name",
+              jsonPath: "$.spec.objects.smartRouter.env[*].name",
               default: "Some text here"
             },
             {
               label: "value",
               type: "text",
               required: true,
-              jsonPath: "$.spec.objects.smartRouter.env.value",
+              jsonPath: "$.spec.objects.smartRouter.env[*].value",
               default: "Some text here"
             }
           ]
@@ -1072,6 +1072,56 @@ export const MockupData_JSON_SCHEMA = {
             }
           }
         },
+        commonConfig: {
+          description: "Configuration of the RHPAM components",
+          type: "object",
+          properties: {
+            adminPassword: {
+              description: "The password to use for the adminUser.",
+              type: "string"
+            },
+            amqClusterPassword: {
+              description: "The password to use for amq cluster user.",
+              type: "string"
+            },
+            amqPassword: {
+              description: "The password to use for amq user.",
+              type: "string"
+            },
+            applicationName: {
+              description: "The name of the application deployment.",
+              type: "string"
+            },
+            controllerPassword: {
+              description: "The password to use for the controllerUser.",
+              type: "string"
+            },
+            dbPassword: {
+              description: "The password to use for databases.",
+              type: "string"
+            },
+            imageTag: {
+              description: "The tag to use for the application images.",
+              type: "string"
+            },
+            keyStorePassword: {
+              description: "The password to use for keystore generation.",
+              type: "string"
+            },
+            mavenPassword: {
+              description: "The password to use for the mavenUser.",
+              type: "string"
+            },
+            serverPassword: {
+              description: "The password to use for the executionUser.",
+              type: "string"
+            },
+            version: {
+              description: "The version of the application deployment.",
+              type: "string"
+            }
+          }
+        },
         environment: {
           description: "The name of the environment used as a baseline",
           type: "string",
@@ -1272,6 +1322,119 @@ export const MockupData_JSON_SCHEMA = {
                             }
                           }
                         }
+                      }
+                    }
+                  },
+                  database: {
+                    type: "object",
+                    required: ["type"],
+                    properties: {
+                      externalConfig: {
+                        description: "External Database configuration",
+                        type: "object",
+                        required: [
+                          "driver",
+                          "dialect",
+                          "jndiName",
+                          "username",
+                          "password"
+                        ],
+                        oneOf: [
+                          {
+                            required: ["name", "host"]
+                          },
+                          {
+                            required: ["jdbcURL"]
+                          }
+                        ],
+                        properties: {
+                          backgroundValidation: {
+                            description:
+                              "Sets the sql validation method to background-validation, if set to false the validate-on-match method will be used.",
+                            type: "string"
+                          },
+                          backgroundValidationMillis: {
+                            description:
+                              "Defines the interval for the background-validation check for the jdbc connections.",
+                            type: "string"
+                          },
+                          connectionChecker: {
+                            description:
+                              "An org.jboss.jca.adapters.jdbc.ValidConnectionChecker that provides a SQLException isValidConnection(Connection e) method to validate if a connection is valid.",
+                            type: "string"
+                          },
+                          dialect: {
+                            description:
+                              "Hibernate dialect class to use. For example, org.hibernate.dialect.MySQL57Dialect",
+                            type: "string"
+                          },
+                          driver: {
+                            description:
+                              "Driver name to use. For example, mysql",
+                            type: "string"
+                          },
+                          exceptionSorter: {
+                            description:
+                              "An org.jboss.jca.adapters.jdbc.ExceptionSorter that provides a boolean isExceptionFatal(SQLException e) method to validate if an exception should be broadcast to all javax.resource.spi.ConnectionEventListener as a connectionErrorOccurred.",
+                            type: "string"
+                          },
+                          host: {
+                            description:
+                              "Database Host. For example, mydb.example.com",
+                            type: "string"
+                          },
+                          jdbcURL: {
+                            description:
+                              "Database JDBC URL. For example, jdbc:mysql:mydb.example.com:3306/rhpam",
+                            type: "string"
+                          },
+                          jndiName: {
+                            description:
+                              "Database JNDI name used by application to resolve the datasource, e.g. java:/jboss/datasources/ExampleDS",
+                            type: "string"
+                          },
+                          maxPoolSize: {
+                            description:
+                              "Sets xa-pool/max-pool-size for the configured datasource.",
+                            type: "string"
+                          },
+                          minPoolSize: {
+                            description:
+                              "Sets xa-pool/min-pool-size for the configured datasource.",
+                            type: "string"
+                          },
+                          name: {
+                            description: "Database Name. For example, rhpam",
+                            type: "string"
+                          },
+                          nonXA: {
+                            description:
+                              "Sets the datasources type. It can be XA or NONXA. For non XA set it to true. Default value is false.",
+                            type: "string"
+                          },
+                          password: {
+                            description: "External database password",
+                            type: "string"
+                          },
+                          port: {
+                            description: "Database Port. For example, 3306",
+                            type: "string"
+                          },
+                          username: {
+                            description: "External database username",
+                            type: "string"
+                          }
+                        }
+                      },
+                      size: {
+                        description:
+                          "Size of the PersistentVolumeClaim to create. For example, 100Gi",
+                        type: "string"
+                      },
+                      type: {
+                        description: "Database type to use",
+                        type: "string",
+                        enum: ["mysql", "postgresql", "external", "h2"]
                       }
                     }
                   },

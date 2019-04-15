@@ -8,7 +8,8 @@ export default class Page2 extends PageBase {
       jsonForm: this.props.jsonForm,
       children: [],
       pageNumber: 1,
-      objectMap: new Map()
+      objectMap: new Map(),
+      objectCntMap: new Map()
     };
   }
 }
