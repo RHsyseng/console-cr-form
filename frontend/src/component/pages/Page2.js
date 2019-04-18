@@ -9,7 +9,8 @@ export default class Page2 extends PageBase {
       children: [],
       pageNumber: 1,
       objectMap: new Map(),
-      objectCntMap: new Map()
+      objectCntMap: new Map(),
+      ssoORldap: ""
     };
   }
 }

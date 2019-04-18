@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+//import ReactDOM from "react-dom";
 //import { Form } from "@patternfly/react-core";
 import {
   FormGroup,
@@ -12,6 +12,7 @@ import {
   ActionGroup,
   Checkbox
 } from "@patternfly/react-core";
+import { PlusCircleIcon, MinusCircleIcon } from "@patternfly/react-icons";
 import validator from "validator";
 import JSONPATH from "jsonpath";
 //import { OPERATOR_NAME } from "./common/GuiConstants";
@@ -191,12 +192,15 @@ export default class PageBase extends Component {
 
   retrieveObjectMap(field, fieldnumber) {
     const key = this.state.pageNumber + "_" + fieldnumber;
+    // const key=fieldGroupKey;
     var value = this.state.objectMap.get(key);
-    /*
-    console.log(
-      "44444444444444444444: retrieveObjectMap value: " + key + " : " + value
-    );
-    */
+
+    // console.log(
+    //   "44444444444444444444: retrieveObjectMap value: " + key + " : " + value
+    // );
+    // console.log(
+    //   "44444444444444444444: retrieveObjectMap value: " + this.state.objectMap
+    // );
     if (value == null) {
       return "";
     } else {
@@ -207,6 +211,7 @@ export default class PageBase extends Component {
   storeObjectMap(field, fieldnumber) {
     //first time deal with this key value pair, store fields (the whole array, can't be just field[0]) to the map
     const key = this.state.pageNumber + "_" + fieldnumber;
+    // const key=fieldGroupKey;
     /*
     console.log(
       "3333333333333333333: storeObjectMap value: " +
@@ -220,8 +225,9 @@ export default class PageBase extends Component {
   }
 
   subtractLastOneFromCurrentFields(allSubFieldsStr, sampleObjStr) {
-    sampleObjStr = sampleObjStr.replace("[", "");
-    sampleObjStr = sampleObjStr.replace("]", "");
+    // sampleObjStr = sampleObjStr.replace("[", "");
+    // sampleObjStr = sampleObjStr.replace("]", "");
+    sampleObjStr = sampleObjStr.substring(1, sampleObjStr.length - 1);
 
     const n = allSubFieldsStr.lastIndexOf(sampleObjStr);
     /*
@@ -287,6 +293,7 @@ export default class PageBase extends Component {
     var fieldnumber = document
       .getElementById(event.target.id)
       .getAttribute("fieldnumber");
+
     console.log("addOneFieldForObj, fieldnumber: " + JSON.parse(fieldnumber));
 
     const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
@@ -374,12 +381,13 @@ export default class PageBase extends Component {
         =====================================================================
       </div>
     );
-
-    var value = this.retrieveObjectMap(field, fieldnumber);
-    const objCnt = this.retrieveObjectCntMap(field, fieldnumber) + 1; //getting how many field in obj e.g env has 2 name and value +1 for devider
+    console.log("fieldnumber Object" + fieldnumber);
+    var value = this.retrieveObjectMap(field, fieldnumber, fieldGroupKey);
+    const objCnt =
+      this.retrieveObjectCntMap(field, fieldnumber, fieldGroupKey) + 1; //getting how many field in obj e.g env has 2 name and value +1 for devider
     if (value == "") {
       //it's the first time here, never store the sample in the objectMap,
-      this.storeObjectMap(field, fieldnumber);
+      this.storeObjectMap(field, fieldnumber, fieldGroupKey);
 
       if (field.min == 0) {
         //if it's the 1st time here, and field.min ==0
@@ -637,6 +645,10 @@ export default class PageBase extends Component {
           ------------------------------------------------------------------------------------------------------------------
         </div>
       );
+    } else if (field.type == "section") {
+      fieldJsx = this.buildSection(fieldNumber);
+    } else if (field.type == "section_radio") {
+      fieldJsx = this.buildMutualExclusiveObject(fieldNumber);
     } else {
       fieldJsx = (
         <FormGroup
@@ -662,6 +674,174 @@ export default class PageBase extends Component {
     return fieldJsx;
   }
 
+  buildSection(fieldnumber) {
+    const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
+      fieldnumber
+    ];
+
+    var randomNum = Math.floor(Math.random() * 100000000 + 1);
+    const fieldGroupId =
+      this.state.pageNumber +
+      "-fieldGroup-" +
+      fieldnumber +
+      "-" +
+      field.label +
+      "-" +
+      randomNum;
+    const fieldGroupKey = "fieldGroupKey-" + fieldGroupId;
+    const fieldId =
+      this.state.pageNumber +
+      "-field-" +
+      fieldnumber +
+      "-" +
+      field.label +
+      "-" +
+      randomNum;
+    const fieldKey = "fieldKey-" + fieldId;
+    var section = field.label + "section";
+    var jsxArray = [];
+    var iconIdPlus = section + "plus";
+    var iconIdMinus = section + "minus";
+
+    var fieldJsx = (
+      <FormGroup fieldId={fieldGroupId} key={fieldGroupKey}>
+        <Button
+          variant="link"
+          id={fieldId}
+          key={fieldKey}
+          fieldnumber={fieldnumber}
+          onClick={this.expandSection}
+          name={section}
+          style={{ display: "inline-block" }}
+        >
+          {field.label}
+          <PlusCircleIcon id={iconIdPlus} style={{ display: "block" }} />{" "}
+          <MinusCircleIcon id={iconIdMinus} style={{ display: "none" }} />
+        </Button>
+      </FormGroup>
+    );
+
+    //console.log("fieldnumber Section" + fieldnumber);
+
+    var children = [];
+    if (field.fields != null && field.fields != "") {
+      //loop through all fields
+      field.fields.forEach((subfield, i) => {
+        let oneComponent = this.buildOneField(subfield, i);
+        children.push(oneComponent);
+      });
+    }
+    jsxArray.push(fieldJsx);
+    fieldJsx = (
+      <div id={section} key={section} style={{ display: "none" }}>
+        {children}
+      </div>
+    );
+
+    jsxArray.push(fieldJsx);
+    console.log(jsxArray);
+    return jsxArray;
+  }
+
+  buildMutualExclusiveObject(fieldnumber) {
+    const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
+      fieldnumber
+    ];
+
+    // var randomNum = Math.floor(Math.random() * 100000000 + 1);
+
+    // const fieldId =
+    //   this.state.pageNumber +
+    //   "-field-" +
+    //   fieldnumber +
+    //   "-" +
+    //   field.label +
+    //   "-" +
+    //   randomNum;
+    //const fieldKey = "fieldKey-" + fieldId;
+    var section = field.label + "section";
+    var jsxArray = [];
+
+    // var name = "checkbox-" + fieldNumber;
+    // var isChecked = field.default == "true" || field.default == "TRUE";
+    // this.setState({ ssoORldap:section });
+    var isCheckedRadio = this.state.ssoORldap === section;
+    // console.log(
+    //   "isCheckedRadioisCheckedRadio" + isCheckedRadio + this.state.ssoORldap
+    // );
+    var fieldJsx = (
+      <Radio
+        value={section}
+        isChecked={isCheckedRadio}
+        name="ssoOrldap"
+        onChange={this.handleChangeRadio}
+        label={field.label}
+        id={field.label}
+      />
+    );
+    var children = [];
+    if (field.fields != null && field.fields != "") {
+      //loop through all fields
+      field.fields.forEach((subfield, i) => {
+        let oneComponent = this.buildOneField(subfield, i);
+        children.push(oneComponent);
+      });
+    }
+    jsxArray.push(fieldJsx);
+    fieldJsx = (
+      <div id={section} key={section} style={{ display: "none" }}>
+        {children}
+      </div>
+    );
+
+    jsxArray.push(fieldJsx);
+    console.log(jsxArray);
+    return jsxArray;
+  }
+
+  handleChangeRadio = (checked, event) => {
+    /// const target = event.target;
+    const value = event.currentTarget.value;
+    this.setState({ ssoORldap: value });
+    // const name = target.name;
+
+    //var elem = document.getElementById(value);
+    if (value == "LDAPsection") {
+      document.getElementById("SSOsection").style.display = "none";
+      document.getElementById("LDAPsection").style.display = "block";
+    } else {
+      document.getElementById("LDAPsection").style.display = "none";
+      document.getElementById("SSOsection").style.display = "block";
+    }
+    // if (value.search(event.target.id)!=-1){
+    //         elem.style.display="block";
+
+    //        }
+    //         else{
+    //         elem.style.display="none";
+
+    //         }
+  };
+
+  expandSection = event => {
+    const target = event.target;
+    const name = target.name;
+
+    //this.setState({ [name]: value });
+    var elem = document.getElementById(name);
+    console.log(elem);
+
+    if (elem.style.display === "block") {
+      elem.style.display = "none";
+      document.getElementById(name + "plus").style.display = "block";
+      document.getElementById(name + "minus").style.display = "none";
+    } else {
+      elem.style.display = "block";
+      document.getElementById(name + "plus").style.display = "none";
+      document.getElementById(name + "minus").style.display = "block";
+    }
+  };
+
   buildAllButtons(buttons) {
     var buttonsJsx = [];
     //loop through all
@@ -679,6 +859,7 @@ export default class PageBase extends Component {
         buttonJsx = (
           <Button variant="secondary" key={key} onClick={this.onCancel}>
             {button.label}
+            Component
           </Button>
         );
       } else if (button.action != null && button.action == "next") {
