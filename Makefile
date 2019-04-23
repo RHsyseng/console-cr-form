@@ -1,18 +1,36 @@
+# kernel-style V=1 build verbosity
+ifeq ("$(origin V)", "command line")
+       BUILD_VERBOSE = $(V)
+endif
+
+ifeq ($(BUILD_VERBOSE),1)
+       Q =
+else
+       Q = @
+endif
+
+#VERSION = $(shell git describe --dirty --tags --always)
+#REPO = github.com/RHsyseng/console-cr-form
+
+#export CGO_ENABLED:=0
+
 .PHONY: all
-all: test
+all: build
 
 .PHONY: dep
 dep:
 	dep ensure -v
 
-.PHONY: format
-format: dep
-	go fmt ./...
+.PHONY: go-generate
+go-generate: dep
+	$(Q)go generate ./...
 
-.PHONY: vet
-vet: format
-	go vet ./...
+.PHONY: build
+build: go-generate
+	CGO_ENABLED=0 go build -v -a -o build/console-cr-form github.com/RHsyseng/console-cr-form/cmd
 
-.PHONY: test
-test: vet
-	go test ./...
+.PHONY: clean
+clean:
+	rm -rf build \
+		pkg/web/packrd \
+		pkg/web/web-packr.go

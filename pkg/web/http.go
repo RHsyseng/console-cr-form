@@ -1,6 +1,6 @@
 package web
 
-//go:generate packr2 -v
+//go:generate go run .packr/packr.go
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ type GoTemplate struct {
 
 func RunWebServer(config Configuration) error {
 	//Redirect requests from known locations to the embedded content from ./frontend
-	box := packr.New("frontend", "./frontend")
+	box := packr.New("frontend", "../../frontend")
 	http.Handle("/bundle.js", http.FileServer(box))
 	http.Handle("/src", http.FileServer(box))
 
