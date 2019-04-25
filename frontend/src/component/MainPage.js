@@ -12,10 +12,7 @@ import {
 } from "@patternfly/react-core";
 
 import { USE_MOCK_DATA } from "./common/GuiConstants";
-import {
-  MockupData_JSON,
-  MockupData_JSON_SCHEMA
-} from "./common/MockupData_collapsible";
+import { MockupData_JSON, MockupData_JSON_SCHEMA } from "./common/MockupData";
 
 import Page1 from "./pages/Page1";
 import Page2 from "./pages/Page2";
