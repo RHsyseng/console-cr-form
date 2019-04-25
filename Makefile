@@ -17,6 +17,12 @@ endif
 .PHONY: all
 all: build
 
+.PHONY: npm
+npm:
+	rm -f frontend/package-lock.json
+	cd frontend; npm install
+	npm --prefix frontend run build
+
 .PHONY: dep
 dep:
 	dep ensure -v
@@ -26,7 +32,7 @@ go-generate: dep
 	$(Q)go generate ./...
 
 .PHONY: build
-build: go-generate
+build: npm go-generate
 	CGO_ENABLED=0 go build -v -a -o build/console-cr-form github.com/RHsyseng/console-cr-form/cmd
 
 .PHONY: clean
