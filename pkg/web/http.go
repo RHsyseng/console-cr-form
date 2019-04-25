@@ -18,13 +18,14 @@ type GoTemplate struct {
 
 func RunWebServer(config Configuration) error {
 	//Redirect requests from known locations to the embedded content from ./frontend
-	box := packr.New("frontend", "../../frontend")
+	box := packr.New("frontend", "../../frontend/dist")
 	http.Handle("/bundle.js", http.FileServer(box))
-	http.Handle("/src", http.FileServer(box))
+	http.Handle("/fonts/", http.FileServer(box))
+	http.Handle("/favicon.ico", http.FileServer(box))
 
 	//For anything else, including index.html and root requests, send back the processed index.html
 	http.HandleFunc("/", func(writer http.ResponseWriter, reader *http.Request) {
-		templateString, err := box.FindString("./index.html")
+		templateString, err := box.FindString("index.html")
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 		}

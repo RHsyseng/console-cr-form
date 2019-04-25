@@ -9,22 +9,24 @@
 - dep v0.5.0+
 - npm
 
-## Temporary Build
+## Build
 
-### Generate bundle.js
-Change to `frontend` directory and run:
+### Clean generated Go files
 ```bash
-npm install
-npm run build
+make clean
 ```
 
-### Build executable to run/test
-Change back to root directory and run:
+### Build a local binary
 ```bash
-go build cmd/testwebapp.go
+make
+```
+
+### Only rebuild npm modules / webpack
+```bash
+make npm
 ```
 
 ## Run & Test
 ```bash
-./testwebapp
+./build/console-cr-form
 ```
