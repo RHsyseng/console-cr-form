@@ -28,9 +28,6 @@ tramp
 *.rel
 # AUCTeX auto folder
 /auto/
-# cask packages
-.cask/
-dist/
 # Flycheck
 flycheck_*.el
 # server auth directory
