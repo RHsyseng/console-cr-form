@@ -4,6 +4,7 @@ import { FormGroup, TextInput } from "@patternfly/react-core";
 export class DefaultTextField {
   constructor(props) {
     this.props = props;
+    this.onBlurText = this.onBlurText.bind(this);
   }
 
   getJsx() {
@@ -38,7 +39,7 @@ export class DefaultTextField {
       this.props.fieldDef.value = value;
       // this.props.fieldDef.default="";
 
-      document.getElementById(event.target.id).value = value;
+      //document.getElementById(event.target.id).value = value;
     }
   };
 }
