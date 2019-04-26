@@ -6,6 +6,7 @@ import FieldFactory from "./FieldFactory";
  * These are the complex objects that need to create new childs.
  */
 export class ObjectField {
+  childDef = [];
   /**
    * How many times we've added an element chunk
    */
@@ -20,6 +21,8 @@ export class ObjectField {
     this.addElements = this.addElements.bind(this);
     this.deleteElements = this.deleteElements.bind(this);
     if (Array.isArray(this.props.fieldDef.fields)) {
+      // let's copy the reference to keep a clear reference in memory.
+      this.childDef = JSON.parse(JSON.stringify(this.props.fieldDef.fields));
       this.elementChunkCount = this.props.fieldDef.fields.length;
     }
   }
@@ -54,12 +57,11 @@ export class ObjectField {
   }
 
   addElements() {
-    var childDef = this.props.fieldDef.fields;
     var children = [];
-    if (Array.isArray(childDef)) {
+    if (Array.isArray(this.childDef) && this.childDef.length > 0) {
       children.push(
         ...FieldFactory.newInstances(
-          childDef,
+          JSON.parse(JSON.stringify(this.childDef)),
           this.props.jsonSchema,
           this.props.pageNumber,
           this.props.page
