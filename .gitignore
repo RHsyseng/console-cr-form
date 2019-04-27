@@ -1,7 +1,7 @@
 # Temporary Build Files
+frontend/dist/bundle.js
 build
 target/
-*-packr.go
 
 # Created by https://www.gitignore.io/api/go,vim,emacs,visualstudiocode
 ### Emacs ###
