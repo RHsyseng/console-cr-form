@@ -1,6 +1,6 @@
 package web
 
-//go:generate packr2 -v
+//go:generate go run .packr/packr.go
 
 import (
 	"encoding/json"
@@ -18,13 +18,15 @@ type GoTemplate struct {
 
 func RunWebServer(config Configuration) error {
 	//Redirect requests from known locations to the embedded content from ./frontend
-	box := packr.New("frontend", "./frontend")
+	box := packr.New("frontend", "../../frontend/dist")
 	http.Handle("/bundle.js", http.FileServer(box))
-	http.Handle("/src", http.FileServer(box))
+	http.Handle("/fonts/", http.FileServer(box))
+	http.Handle("/favicon.ico", http.FileServer(box))
+	http.Handle("/health", checkHealth(box))
 
 	//For anything else, including index.html and root requests, send back the processed index.html
 	http.HandleFunc("/", func(writer http.ResponseWriter, reader *http.Request) {
-		templateString, err := box.FindString("./index.html")
+		templateString, err := box.FindString("index.html")
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 		}
@@ -52,4 +54,18 @@ func RunWebServer(config Configuration) error {
 	logrus.Info("Will listen on ", listenAddr)
 	err := http.ListenAndServe(listenAddr, nil)
 	return err
+}
+
+func checkHealth(box *packr.Box) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, reader *http.Request) {
+		responseStatus := http.StatusNoContent
+		required := []string{"index.html", "bundle.js"}
+		for _, content := range required {
+			if !box.Has(content) {
+				logrus.Warnf("Packr box missing %s", content)
+				responseStatus = http.StatusFailedDependency
+			}
+		}
+		writer.WriteHeader(responseStatus)
+	})
 }

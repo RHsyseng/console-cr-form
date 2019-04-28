@@ -1,7 +1,5 @@
 import React from "react";
 import { Button } from "@patternfly/react-core";
-import YAML from "js-yaml";
-import Dot from "dot-object";
 
 const BUTTON_ACTION = {
   submit: "submit",
@@ -128,37 +126,38 @@ export class ButtonElement {
   };
 
   onEditYaml = () => {
-    const jsonObject = {};
-    const pageDef = this.props.page.props.pageDef;
-    if (pageDef != null && pageDef != "") {
-      if (pageDef.fields != null && pageDef.fields != "") {
-        pageDef.fields.forEach(field => {
-          if (field.type === "object") {
-            field.fields.forEach(child => {
-              console.log(YAML.safeDump(child));
-            });
-          }
-          if (field.value !== undefined && field.value !== "") {
-            let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
+    this.props.page.editYaml();
+    //   const jsonObject = {};
+    //   const pageDef = this.props.page.props.pageDef;
+    //   if (pageDef != null && pageDef != "") {
+    //     if (pageDef.fields != null && pageDef.fields != "") {
+    //       pageDef.fields.forEach(field => {
+    //         if (field.type === "object") {
+    //           field.fields.forEach(child => {
+    //             console.log(YAML.safeDump(child));
+    //           });
+    //         }
+    //         if (field.value !== undefined && field.value !== "") {
+    //           let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
-            jsonObject[jsonPath] = field.value;
-          }
-        });
-      }
+    //           jsonObject[jsonPath] = field.value;
+    //         }
+    //       });
+    //     }
 
-      // console.log(YAML.safeDump(jsonObject));
-      Dot.object(jsonObject);
-      console.log(YAML.safeDump(Dot.object(jsonObject)));
+    //     // console.log(YAML.safeDump(jsonObject));
+    //     Dot.object(jsonObject);
+    //     console.log(YAML.safeDump(Dot.object(jsonObject)));
 
-      alert(YAML.safeDump(Dot.object(jsonObject)));
-    }
+    //     alert(YAML.safeDump(Dot.object(jsonObject)));
+    //   }
+    // };
+
+    // getJsonSchemaPathForYaml(jsonPath) {
+    //   //console.log("json Path: " + jsonPath);
+    //   jsonPath = jsonPath.slice(2, jsonPath.length);
+
+    //   //console.log("jsonSchema Path: " + jsonPath);
+    //   return jsonPath;
   };
-
-  getJsonSchemaPathForYaml(jsonPath) {
-    //console.log("json Path: " + jsonPath);
-    jsonPath = jsonPath.slice(2, jsonPath.length);
-
-    //console.log("jsonSchema Path: " + jsonPath);
-    return jsonPath;
-  }
 }

@@ -1,8 +1,7 @@
 # Temporary Build Files
-build/_output/
-build/_test/
+frontend/dist/bundle.js
+build
 target/
-*-packr.go
 
 # Created by https://www.gitignore.io/api/go,vim,emacs,visualstudiocode
 ### Emacs ###
@@ -29,9 +28,6 @@ tramp
 *.rel
 # AUCTeX auto folder
 /auto/
-# cask packages
-.cask/
-dist/
 # Flycheck
 flycheck_*.el
 # server auth directory

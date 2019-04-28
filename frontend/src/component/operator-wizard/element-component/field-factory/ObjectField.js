@@ -68,12 +68,13 @@ export class ObjectField {
         )
       );
     }
+    //debugger;
     this.props.page.addElements(
-      this.props.fieldNumber +
-        1 +
-        this.elementAddCount * this.elementChunkCount,
+      1 + this.elementAddCount * this.elementChunkCount,
       children,
-      this.props.ids.fieldGroupId
+      this.props.ids.fieldGroupId,
+      this.elementAddCount,
+      this.props.fieldDef.jsonPath
     );
     this.elementAddCount++;
   }
@@ -81,10 +82,9 @@ export class ObjectField {
   deleteElements() {
     if (this.elementAddCount > 0) {
       this.props.page.deleteElements(
-        this.props.fieldNumber +
-          1 +
-          this.elementChunkCount * (this.elementAddCount - 1),
-        this.elementChunkCount
+        1 + this.elementChunkCount * (this.elementAddCount - 1),
+        this.elementChunkCount,
+        this.props.ids.fieldGroupId
       );
       this.elementAddCount--;
     }

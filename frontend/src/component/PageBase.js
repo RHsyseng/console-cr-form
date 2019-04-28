@@ -190,17 +190,11 @@ export default class PageBase extends Component {
     }
   };
 
-  retrieveObjectMap(field, fieldnumber) {
-    const key = this.state.pageNumber + "_" + fieldnumber;
+  retrieveObjectMap(fieldNumber) {
+    const key = this.state.pageNumber + "_" + fieldNumber;
     // const key=fieldGroupKey;
     var value = this.state.objectMap.get(key);
 
-    // console.log(
-    //   "44444444444444444444: retrieveObjectMap value: " + key + " : " + value
-    // );
-    // console.log(
-    //   "44444444444444444444: retrieveObjectMap value: " + this.state.objectMap
-    // );
     if (value == null) {
       return "";
     } else {
@@ -208,78 +202,45 @@ export default class PageBase extends Component {
     }
   }
 
-  storeObjectMap(field, fieldnumber) {
+  storeObjectMap(field, fieldNumber) {
     //first time deal with this key value pair, store fields (the whole array, can't be just field[0]) to the map
-    const key = this.state.pageNumber + "_" + fieldnumber;
+    const key = this.state.pageNumber + "_" + fieldNumber;
     // const key=fieldGroupKey;
-    /*
-    console.log(
-      "3333333333333333333: storeObjectMap value: " +
-        key +
-        " : " +
-        JSON.stringify(field.fields)
-    );
-    */
+
     this.state.objectMap.set(key, JSON.stringify(field.fields));
     this.state.objectCntMap.set(key, field.fields.length);
   }
 
-  subtractLastOneFromCurrentFields(allSubFieldsStr, sampleObjStr) {
-    // sampleObjStr = sampleObjStr.replace("[", "");
-    // sampleObjStr = sampleObjStr.replace("]", "");
-    sampleObjStr = sampleObjStr.substring(1, sampleObjStr.length - 1);
-
-    const n = allSubFieldsStr.lastIndexOf(sampleObjStr);
-    /*
-    console.log("!!!!!!!!!!!!!!!!!!!!sampleObjStr: " + sampleObjStr);
-        console.log("!!!!!!!!!!!!!!!!!!!!astIndexOf(sampleObjStr): " + n);
-    console.log(
-      "!!!!!!!!!!!!!!!!!!!!allSubFieldsStr.length: " + allSubFieldsStr.length
-    );
-    console.log(
-      "!!!!!!!!!!!!!!!!!!!!sampleObjStr.length: " + sampleObjStr.length
-    );
-    */
-    if (n >= 0) {
-      //remove the last one of sampleObjStr occurance
-      allSubFieldsStr = allSubFieldsStr.substring(0, n - 1);
-
-      if (allSubFieldsStr != "") {
-        allSubFieldsStr = allSubFieldsStr + "]";
-      }
-      //console.log("!!!!!!!!!!!!!!!!!!!!result after: " + allSubFieldsStr);
-    }
-    return allSubFieldsStr;
-  }
-
   deleteOneFieldForObj = event => {
-    var fieldnumber = document
+    var fieldNumber = document
       .getElementById(event.target.id)
       .getAttribute("fieldnumber");
-    //console.log("deleteOneFieldForObj, : " + JSON.parse(fieldnumber));
+    //console.log(      "deleteOneFieldForObj, fieldNumber : " + JSON.parse(fieldNumber)    );
 
-    var field = this.state.jsonForm.pages[this.state.pageNumber].fields[
-      fieldnumber
-    ];
+    var parentFieldNumber = document
+      .getElementById(event.target.id)
+      .getAttribute("parentfieldnumber");
+    //console.log(      "deleteOneFieldForObj, parentFieldNumber : " +        JSON.parse(parentFieldNumber)    );
+
+    var field;
+    if (parentFieldNumber == -1) {
+      field = this.state.jsonForm.pages[this.state.pageNumber].fields[
+        fieldNumber
+      ];
+    } else {
+      field = this.state.jsonForm.pages[this.state.pageNumber].fields[
+        parentFieldNumber
+      ].fields[fieldNumber];
+    }
     //console.log("deleteOneFieldForObj, field.min current value: " + field.min);
 
-    const sampleObjStr = JSON.stringify(
-      this.retrieveObjectMap(field, fieldnumber)
-    );
-
-    var allSubFieldsStr = JSON.stringify(field.fields);
-    //console.log("deleteOneFieldForObj,  before delete: " + allSubFieldsStr);
+    var combinedFieldNumber = parentFieldNumber + "_" + fieldNumber;
+    const sampleObj = this.retrieveObjectMap(combinedFieldNumber);
+    //console.log("deleteOneFieldForObj, sampleObj length: " + sampleObj.length);
 
     if (field.min > 0) {
-      allSubFieldsStr = this.subtractLastOneFromCurrentFields(
-        allSubFieldsStr,
-        sampleObjStr
-      );
-      //console.log("deleteOneFieldForObj,  after delete: " + allSubFieldsStr);
-      if (allSubFieldsStr != null && allSubFieldsStr != "") {
-        field.fields = JSON.parse(allSubFieldsStr);
-      } else {
-        field.fields = [];
+      for (var i = 0; i < sampleObj.length; i++) {
+        field.fields.pop();
       }
 
       field.min = field.min - 1;
@@ -290,35 +251,42 @@ export default class PageBase extends Component {
   };
 
   addOneFieldForObj = event => {
-    var fieldnumber = document
+    var fieldNumber = document
       .getElementById(event.target.id)
       .getAttribute("fieldnumber");
+    //console.log("addOneFieldForObj, fieldNumber: " + JSON.parse(fieldNumber));
 
-    console.log("addOneFieldForObj, fieldnumber: " + JSON.parse(fieldnumber));
+    var parentFieldNumber = document
+      .getElementById(event.target.id)
+      .getAttribute("parentfieldnumber");
+    //console.log(      "addOneFieldForObj, parentFieldNumber: " + JSON.parse(parentFieldNumber)    );
 
-    const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
-      fieldnumber
-    ];
-    console.log("addOneFieldForObj, field.min current value: " + field.min);
+    var field;
+    //parentFieldNumber == -1 means it's 1st tier object field
+    if (parentFieldNumber == -1) {
+      field = this.state.jsonForm.pages[this.state.pageNumber].fields[
+        fieldNumber
+      ];
+    } else {
+      field = this.state.jsonForm.pages[this.state.pageNumber].fields[
+        parentFieldNumber
+      ].fields[fieldNumber];
+    }
 
-    const sampleObj = this.retrieveObjectMap(field, fieldnumber);
+    //console.log("addOneFieldForObj, field.min current value: " + field.min);
+
+    var combinedFieldNumber = parentFieldNumber + "_" + fieldNumber;
+    const sampleObj = this.retrieveObjectMap(combinedFieldNumber);
 
     if (field.min < field.max) {
-      console.log("addOneFieldForObj, min < max, add another object");
+      //console.log("addOneFieldForObj, min < max, add another object");
       field.min = field.min + 1;
-      console.log("addOneFieldForObj, field.min new value:" + field.min);
-
-      /* can't use this, otherwise no way to delete since string changed.
-      sampleObj.forEach((tmpField, i) => {
-        console.log("addOneFieldForObj, tmpField.label:" + tmpField.label);
-        tmpField.label = tmpField.label + "_" + field.min;
-      });
-*/
+      //console.log("addOneFieldForObj, field.min new value:" + field.min);
 
       //the whole idea about this seperateObjDiv is to make the screen looks cleaner when user add a new obj
-      const seperateObjDiv = JSON.parse('{"type":"seperateObjDiv"}');
+      //const seperateObjDiv = JSON.parse('{"type":"seperateObjDiv"}');
       field.fields = field.fields.concat(sampleObj);
-      field.fields = field.fields.concat(seperateObjDiv);
+      //field.fields = field.fields.concat(seperateObjDiv);
 
       this.props.saveJsonForm(this.state.jsonForm);
     } else {
@@ -327,39 +295,60 @@ export default class PageBase extends Component {
     this.renderComponents();
   };
 
-  buildObject(fieldnumber) {
-    const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
-      fieldnumber
-    ];
+  buildObject(field, fieldNumber, parentFieldNumber) {
+    /*
+    console.log(" field " + field.label);
 
+    console.log(" fieldNumber " + fieldNumber);
+    console.log(" parentFieldNumber " + parentFieldNumber);
+*/
     var randomNum = Math.floor(Math.random() * 100000000 + 1);
 
     const fieldGroupId =
       this.state.pageNumber +
-      "-fieldGroup-" +
-      fieldnumber +
-      "-" +
+      "_fieldGroup_" +
+      fieldNumber +
+      "_" +
+      parentFieldNumber +
+      "_" +
       field.label +
-      "-" +
-      randomNum;
-    const fieldGroupKey = "fieldGroupKey-" + fieldGroupId;
+      "_";
+    randomNum;
+    const fieldGroupKey = "fieldGroupKey_" + fieldGroupId;
     const fieldId =
       this.state.pageNumber +
-      "-field-" +
-      fieldnumber +
-      "-" +
+      "_field_" +
+      fieldNumber +
+      "_" +
+      parentFieldNumber +
+      "_" +
       field.label +
-      "-" +
+      "_" +
       randomNum;
-    const fieldKey = "fieldKey-" + fieldId;
+    const fieldKey = "fieldKey_" + fieldId;
     var jsxArray = [];
-    var fieldJsx = (
+    var fieldJsx;
+
+    //parentFieldNumber == -1   means this the 1st tier obj field, no parent field.
+    if (parentFieldNumber == -1) {
+      jsxArray.push(
+        <div key={fieldGroupId + 1}>
+          <br />
+          <br />
+          <br />
+          <br />
+        </div>
+      );
+    }
+
+    fieldJsx = (
       <ActionGroup fieldid={fieldGroupId} key={fieldGroupKey}>
         <Button
           variant="secondary"
           id={fieldId}
           key={fieldKey}
-          fieldnumber={fieldnumber}
+          fieldnumber={fieldNumber}
+          parentfieldnumber={parentFieldNumber}
           onClick={this.addOneFieldForObj}
         >
           Add new {field.label}
@@ -368,26 +357,52 @@ export default class PageBase extends Component {
           variant="secondary"
           id={fieldId + 1}
           key={fieldKey + 1}
-          fieldnumber={fieldnumber}
+          fieldnumber={fieldNumber}
+          parentfieldnumber={parentFieldNumber}
           onClick={this.deleteOneFieldForObj}
         >
           Delete last {field.label}
         </Button>
       </ActionGroup>
     );
+
     jsxArray.push(fieldJsx);
+    /*
     jsxArray.push(
       <div key={fieldGroupId + 1}>
-        =====================================================================
+        <br />
+        <br />
+        <br />
+        <br />
       </div>
-    );
-    console.log("fieldnumber Object" + fieldnumber);
-    var value = this.retrieveObjectMap(field, fieldnumber, fieldGroupKey);
+  );*/
+    var combinedFieldNumber = parentFieldNumber + "_" + fieldNumber;
+    //console.log("combinedFieldNumber " + combinedFieldNumber);
+
+    var sampleObj = this.retrieveObjectMap(combinedFieldNumber);
     const objCnt =
-      this.retrieveObjectCntMap(field, fieldnumber, fieldGroupKey) + 1; //getting how many field in obj e.g env has 2 name and value +1 for devider
-    if (value == "") {
-      //it's the first time here, never store the sample in the objectMap,
-      this.storeObjectMap(field, fieldnumber, fieldGroupKey);
+      this.retrieveObjectCntMap(field, fieldNumber, fieldGroupKey) + 1; //getting how many field in obj e.g env has 2 name and value +1 for devider
+    if (sampleObj == "") {
+      //it's the first time here, no such sample in the objectMap yet, so store it.
+      this.storeObjectMap(field, combinedFieldNumber);
+
+      if (parentFieldNumber != -1) {
+        //this is a 2nd tier object, double check if its parent is in the map or not.
+        const parentCombinedFieldNumber = "-1" + "_" + parentFieldNumber;
+        const parentSampleObj = this.retrieveObjectMap(
+          parentCombinedFieldNumber
+        );
+        if (parentSampleObj == "") {
+          //its parent is not store in object map yet, store the sample now.
+          const parentField = this.state.jsonForm.pages[this.state.pageNumber]
+            .fields[parentFieldNumber];
+          this.storeObjectMap(parentField, parentCombinedFieldNumber);
+
+          if (parentField.min == 0) {
+            parentField.fields = [];
+          }
+        }
+      }
 
       if (field.min == 0) {
         //if it's the 1st time here, and field.min ==0
@@ -418,8 +433,14 @@ export default class PageBase extends Component {
           [posKey]: pos
         };
 
-        let oneComponent = this.buildOneField(subfield, i, attrs);
-        jsxArray.push(oneComponent);
+        //console.log("!!!!!!!! here3, subfield: " + JSON.stringify(subfield));
+        if (subfield.type != "object") {
+          let oneComponent = this.buildOneField(subfield, i);
+          jsxArray.push(oneComponent);
+        } else {
+          let oneComponent = this.buildObject(subfield, i, fieldNumber);
+          jsxArray.push(oneComponent);
+        }
 
         //assigning each fiels for object with same pos and increment the pos when all fields are done
         if (cnt == objCnt) {
@@ -430,16 +451,22 @@ export default class PageBase extends Component {
         cnt++;
       }
     });
-    jsxArray.push(
-      <div key={fieldGroupId + 2}>
-        =====================================================================
-      </div>
-    );
+    if (parentFieldNumber == -1) {
+      jsxArray.push(
+        <div key={fieldGroupId + 2}>
+          <br />
+          <br />
+          <br />
+          <br />
+        </div>
+      );
+    }
+
     return jsxArray;
   }
 
-  retrieveObjectCntMap(field, fieldnumber) {
-    const key = this.state.pageNumber + "_" + fieldnumber;
+  retrieveObjectCntMap(field, fieldNumber) {
+    const key = this.state.pageNumber + "_" + fieldNumber;
     var value = this.state.objectCntMap.get(key);
 
     // console.log(
@@ -453,29 +480,26 @@ export default class PageBase extends Component {
     }
   }
   buildOneField(field, fieldNumber, attrs) {
-    //console.log("buildOneField " + fieldNumber);
-    //console.log("55555555555field.type: " + JSON.stringify(field));
-
     var randomNum = Math.floor(Math.random() * 100000000 + 1);
 
     const fieldGroupId =
       this.state.pageNumber +
-      "-fieldGroup-" +
+      "_fieldGroup_" +
       fieldNumber +
-      "-" +
+      "_" +
       field.label +
-      "-" +
+      "_" +
       randomNum;
-    const fieldGroupKey = "fieldGroupKey-" + fieldGroupId;
+    const fieldGroupKey = "fieldGroupKey_" + fieldGroupId;
     const fieldId =
       this.state.pageNumber +
-      "-field-" +
+      "_field_" +
       fieldNumber +
-      "-" +
+      "_" +
       field.label +
-      "-" +
+      "_" +
       randomNum;
-    const fieldKey = "fieldKey-" + fieldId;
+    const fieldKey = "fieldKey_" + fieldId;
     const textName = field.label;
 
     var fieldJsx = "";
@@ -567,7 +591,7 @@ export default class PageBase extends Component {
         </FormGroup>
       );
     } else if (field.type == "object") {
-      fieldJsx = this.buildObject(fieldNumber);
+      fieldJsx = this.buildObject(field, fieldNumber, -1);
     } else if (field.type == "email") {
       fieldJsx = (
         <FormGroup
@@ -642,7 +666,7 @@ export default class PageBase extends Component {
     } else if (field.type == "seperateObjDiv") {
       fieldJsx = (
         <div key={fieldKey}>
-          ------------------------------------------------------------------------------------------------------------------
+          <hr />
         </div>
       );
     } else if (field.type == "section") {
@@ -674,30 +698,30 @@ export default class PageBase extends Component {
     return fieldJsx;
   }
 
-  buildSection(fieldnumber) {
+  buildSection(fieldNumber) {
     const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
-      fieldnumber
+      fieldNumber
     ];
 
     var randomNum = Math.floor(Math.random() * 100000000 + 1);
     const fieldGroupId =
       this.state.pageNumber +
-      "-fieldGroup-" +
-      fieldnumber +
-      "-" +
+      "_fieldGroup_" +
+      fieldNumber +
+      "_" +
       field.label +
-      "-" +
+      "_" +
       randomNum;
-    const fieldGroupKey = "fieldGroupKey-" + fieldGroupId;
+    const fieldGroupKey = "fieldGroupKey_" + fieldGroupId;
     const fieldId =
       this.state.pageNumber +
-      "-field-" +
-      fieldnumber +
-      "-" +
+      "_field_" +
+      fieldNumber +
+      "_" +
       field.label +
-      "-" +
+      "_" +
       randomNum;
-    const fieldKey = "fieldKey-" + fieldId;
+    const fieldKey = "fieldKey_" + fieldId;
     var section = field.label + "section";
     var jsxArray = [];
     var iconIdPlus = section + "plus";
@@ -709,7 +733,7 @@ export default class PageBase extends Component {
           variant="link"
           id={fieldId}
           key={fieldKey}
-          fieldnumber={fieldnumber}
+          fieldNumber={fieldNumber}
           onClick={this.expandSection}
           name={section}
           style={{ display: "inline-block" }}
@@ -721,7 +745,7 @@ export default class PageBase extends Component {
       </FormGroup>
     );
 
-    //console.log("fieldnumber Section" + fieldnumber);
+    //console.log("fieldNumber Section" + fieldNumber);
 
     var children = [];
     if (field.fields != null && field.fields != "") {
@@ -743,22 +767,22 @@ export default class PageBase extends Component {
     return jsxArray;
   }
 
-  buildMutualExclusiveObject(fieldnumber) {
+  buildMutualExclusiveObject(fieldNumber) {
     const field = this.state.jsonForm.pages[this.state.pageNumber].fields[
-      fieldnumber
+      fieldNumber
     ];
 
     // var randomNum = Math.floor(Math.random() * 100000000 + 1);
 
     // const fieldId =
     //   this.state.pageNumber +
-    //   "-field-" +
-    //   fieldnumber +
-    //   "-" +
+    //   "_field_" +
+    //   fieldNumber +
+    //   "_" +
     //   field.label +
-    //   "-" +
+    //   "_" +
     //   randomNum;
-    //const fieldKey = "fieldKey-" + fieldId;
+    //const fieldKey = "fieldKey_" + fieldId;
     var section = field.label + "section";
     var jsxArray = [];
 
