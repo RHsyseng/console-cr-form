@@ -17,12 +17,6 @@ export default class Main extends Component {
   }
 
   render() {
-    // let showPop =  localStorage.getItem('showPop');
-    let showPop = false;
-    console.log("showPop" + showPop);
-    if (showPop === null) {
-      showPop = false;
-    }
     return (
       <React.Fragment>
         <OperatorWizard steps={this.state.steps} />
