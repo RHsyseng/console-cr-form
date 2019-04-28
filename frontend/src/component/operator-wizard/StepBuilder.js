@@ -46,9 +46,13 @@ export default class StepBuilder {
    * @param {JSON of page def} pageDefs
    */
   buildStep(pageDef, id) {
+    var stepName = "Page " + id;
+    if (pageDef.label !== undefined && pageDef.label !== "") {
+      stepName = pageDef.label;
+    }
     return {
       id: id,
-      name: "Page " + id, //TODO: this info could be set on the page def
+      name: stepName, //TODO: this info could be set on the page def
       component: (
         <Page
           key={"page" + id}

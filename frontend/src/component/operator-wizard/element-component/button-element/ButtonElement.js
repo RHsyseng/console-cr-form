@@ -5,7 +5,8 @@ const BUTTON_ACTION = {
   submit: "submit",
   cancel: "cancel",
   next: "next",
-  close: "close"
+  close: "close",
+  editYaml: "editYaml"
 };
 
 export class ButtonElement {
@@ -42,6 +43,9 @@ export class ButtonElement {
       case BUTTON_ACTION.close:
         clickEvent = this.onClose;
         break;
+      case BUTTON_ACTION.editYaml:
+        clickEvent = this.onEditYaml;
+        break;
     }
     return (
       <Button variant={buttonRole} key={this.key} onClick={clickEvent}>
@@ -51,6 +55,8 @@ export class ButtonElement {
   }
 
   onSubmit = () => {
+    alert("here");
+    console.log(this.props);
     //TODO: we'll figure this out later
     /*
     var j = this.props.pageNumber;
@@ -117,5 +123,41 @@ export class ButtonElement {
   onClose = () => {
     console.log("onClose is clicked");
     alert("onClose is clicked");
+  };
+
+  onEditYaml = () => {
+    this.props.page.editYaml();
+    //   const jsonObject = {};
+    //   const pageDef = this.props.page.props.pageDef;
+    //   if (pageDef != null && pageDef != "") {
+    //     if (pageDef.fields != null && pageDef.fields != "") {
+    //       pageDef.fields.forEach(field => {
+    //         if (field.type === "object") {
+    //           field.fields.forEach(child => {
+    //             console.log(YAML.safeDump(child));
+    //           });
+    //         }
+    //         if (field.value !== undefined && field.value !== "") {
+    //           let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
+
+    //           jsonObject[jsonPath] = field.value;
+    //         }
+    //       });
+    //     }
+
+    //     // console.log(YAML.safeDump(jsonObject));
+    //     Dot.object(jsonObject);
+    //     console.log(YAML.safeDump(Dot.object(jsonObject)));
+
+    //     alert(YAML.safeDump(Dot.object(jsonObject)));
+    //   }
+    // };
+
+    // getJsonSchemaPathForYaml(jsonPath) {
+    //   //console.log("json Path: " + jsonPath);
+    //   jsonPath = jsonPath.slice(2, jsonPath.length);
+
+    //   //console.log("jsonSchema Path: " + jsonPath);
+    //   return jsonPath;
   };
 }

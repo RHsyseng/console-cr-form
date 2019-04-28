@@ -12,11 +12,11 @@ export default class ElementFactory {
    */
   static newInstances(fieldDefs, buttonDefs, jsonSchema, pageNumber, page) {
     const children = [];
-
+    children.push(new ButtonGroup(buttonDefs, pageNumber, page));
     children.push(
       ...FieldFactory.newInstances(fieldDefs, jsonSchema, pageNumber, page)
     );
-    children.push(new ButtonGroup(buttonDefs, pageNumber, page));
+
     return children;
   }
 }

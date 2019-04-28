@@ -6,7 +6,8 @@ export class ButtonGroup {
   /**
    * Generates an array of child elements based on the button definitions.
    * @param {*} buttonDefs the button definitions
-   * @param {int} pageNumber the page number
+   * @param {int} pageNumber the page numbe￼
+r
    * @param {Page} page the Page reference
    */
   constructor(buttonDefs, pageNumber, page) {
@@ -26,7 +27,8 @@ export class ButtonGroup {
         var buttonElement = new ButtonElement({
           buttonDef: buttonDef,
           pageNumber: this.pageNumber,
-          buttonId: i
+          buttonId: i,
+          page: this.page
         });
         buttonsJsx.push(buttonElement.getJsx());
       });
