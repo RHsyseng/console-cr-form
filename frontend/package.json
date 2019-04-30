@@ -34,7 +34,7 @@
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "@patternfly/react-core": "^2.3.6",
+    "@patternfly/react-core": "^2.11.1",
     "axios": "^0.18.0",
     "babel-loader": "^8.0.5",
     "bootstrap": "^4.3.1",
