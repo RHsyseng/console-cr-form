@@ -155,6 +155,16 @@ export default class Page extends Component {
     });
     var result = this.createResultYaml(jsonObject);
     console.log(result);
+    fetch("/", {
+      method: "POST",
+      body: JSON.stringify(result),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(response => console.log("Success:", JSON.stringify(response)))
+      .catch(error => console.error("Error:", error));
   }
 
   getJsonSchemaPathForYaml(jsonPath) {
