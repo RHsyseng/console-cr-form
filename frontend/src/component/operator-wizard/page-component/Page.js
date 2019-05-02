@@ -116,7 +116,14 @@ export default class Page extends Component {
     //alert(YAML.safeDump(Dot.object(jsonObject)));
   }
   createResultYaml = jsonObject => {
-    var resultYaml = YAML.safeDump(Dot.object(jsonObject));
+    var resultYaml =
+      "apiVersion: " +
+      document.getElementById("apiVersion").value +
+      "\n" +
+      "kind: " +
+      document.getElementById("kind").value +
+      "\n" +
+      YAML.safeDump(Dot.object(jsonObject));
     this.setState({
       resultYaml
     });

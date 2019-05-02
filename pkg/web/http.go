@@ -13,8 +13,10 @@ import (
 )
 
 type GoTemplate struct {
-	Schema string
-	Form   string
+	ApiVersion string
+	Kind       string
+	Schema     string
+	Form       string
 }
 
 func RunWebServer(config Configuration) error {
@@ -26,7 +28,7 @@ func RunWebServer(config Configuration) error {
 	http.Handle("/health", checkHealth(box))
 	logrus.SetLevel(logrus.DebugLevel)
 
-	returnIndex := func(writer http.ResponseWriter, reader *http.Request){
+	returnIndex := func(writer http.ResponseWriter, reader *http.Request) {
 		templateString, err := box.FindString("index.html")
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -42,8 +44,10 @@ func RunWebServer(config Configuration) error {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 		}
 		goTemplate := GoTemplate{
-			Form:   string(formBytes),
-			Schema: string(schemaBytes),
+			ApiVersion: config.ApiVersion(),
+			Kind:       config.Kind(),
+			Form:       string(formBytes),
+			Schema:     string(schemaBytes),
 		}
 		if err := templates.ExecuteTemplate(writer, "template", goTemplate); err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -58,7 +62,7 @@ func RunWebServer(config Configuration) error {
 		} else {
 			request := string(body)
 			logrus.Debugf("Request is %v", request)
-			config.Apply(request)
+			config.CallBack(request)
 			writer.WriteHeader(http.StatusOK)
 		}
 	}
