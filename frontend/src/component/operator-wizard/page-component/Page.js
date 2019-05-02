@@ -116,7 +116,14 @@ export default class Page extends Component {
     //alert(YAML.safeDump(Dot.object(jsonObject)));
   }
   createResultYaml = jsonObject => {
-    var resultYaml = YAML.safeDump(Dot.object(jsonObject));
+    var resultYaml =
+      "apiVersion: " +
+      document.getElementById("apiVersion").value +
+      "\n" +
+      "kind: " +
+      document.getElementById("kind").value +
+      "\n" +
+      YAML.safeDump(Dot.object(jsonObject));
     this.setState({
       resultYaml
     });
@@ -185,7 +192,7 @@ export default class Page extends Component {
       method: "POST",
       body: JSON.stringify(result),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/yaml"
       }
     })
       .then(res => res.json())
