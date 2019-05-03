@@ -46,12 +46,6 @@ export const MockupData_JSON = {
           jsonPath: "$.spec.commonConfig.adminPassword",
           type: "password"
         }
-      ],
-      buttons: [
-        {
-          label: "Edit Yaml",
-          action: "editYaml"
-        }
       ]
     },
     {
@@ -360,12 +354,6 @@ export const MockupData_JSON = {
           default: "",
           description: "The password to use for the mavenUser."
         }
-      ],
-      buttons: [
-        {
-          label: "Edit Yaml",
-          action: "editYaml"
-        }
       ]
     },
     {
@@ -460,12 +448,6 @@ export const MockupData_JSON = {
               jsonPath: "$.spec.objects.console.ssoClient.hostnameHTTPS",
               default: "",
               description: "Secure hostname to set as redirect URL"
-            }
-          ],
-          buttons: [
-            {
-              label: "Edit Yaml",
-              action: "editYaml"
             }
           ]
         },
@@ -848,12 +830,6 @@ export const MockupData_JSON = {
                 }
               ]
             }
-          ],
-          buttons: [
-            {
-              label: "Edit Yaml",
-              action: "editYaml"
-            }
           ]
         },
 
@@ -921,12 +897,6 @@ export const MockupData_JSON = {
               type: "text",
               jsonPath: "$.spec.objects.smartRouter.resources.limits.cpu",
               default: "500m"
-            }
-          ],
-          buttons: [
-            {
-              label: "Edit Yaml",
-              action: "editYaml"
             }
           ]
         }
@@ -1166,7 +1136,6 @@ export const MockupData_JSON_SCHEMA = {
           enum: [
             "rhdm-authoring-ha",
             "rhdm-authoring",
-            "rhdm-optaweb-trial",
             "rhdm-production-immutable",
             "rhdm-trial",
             "rhpam-authoring-ha",
