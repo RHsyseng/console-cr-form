@@ -15,7 +15,7 @@ export const MockupData_JSON = {
           required: true,
           description: "The name of the environment used as a baseline",
           jsonPath: "$.spec.environment",
-
+          originalJsonPath: "$.spec.environment",
           type: "dropDown"
         },
         {
@@ -159,6 +159,7 @@ export const MockupData_JSON = {
               label: "searchScope",
               type: "dropDown",
               jsonPath: "$.spec.auth.ldap.searchScope",
+              originalJsonPath: "$.spec.auth.ldap.searchScope",
               default: "",
               description: "The search scope to use."
             },
@@ -496,6 +497,7 @@ export const MockupData_JSON = {
                   type: "dropDown",
                   required: true,
                   jsonPath: "$.spec.objects.servers[*].from.kind",
+                  originalJsonPath: "$.spec.objects.servers[*].from.kind",
                   default: ""
                 },
                 {
@@ -571,6 +573,8 @@ export const MockupData_JSON = {
                       type: "dropDown",
                       jsonPath:
                         "$.spec.objects.servers[*].build.webhooks[*].type",
+                      originalJsonPath:
+                        "$.spec.objects.servers[*].build.webhooks[*].type",
                       default: "",
                       required: false,
                       description: " WebHook type, either GitHub or Generic"
@@ -592,6 +596,7 @@ export const MockupData_JSON = {
                   type: "dropDown",
                   required: true,
                   jsonPath: "$.spec.objects.servers[*].from.kind",
+                  originalJsonPath: "$.spec.objects.servers[*].from.kind",
                   default: ""
                 },
                 {
@@ -687,6 +692,7 @@ export const MockupData_JSON = {
                   type: "dropDown",
                   required: true,
                   jsonPath: "$.spec.objects.servers[*].database.type",
+                  originalJsonPath: "$.spec.objects.servers[*].database.type",
                   default: ""
                 },
                 {
