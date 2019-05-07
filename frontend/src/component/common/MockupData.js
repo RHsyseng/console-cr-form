@@ -380,8 +380,8 @@ export const MockupData_JSON = {
               required: false,
               jsonPath: "$.spec.objects.console.env",
               type: "object",
-              min: 1,
-              max: 2,
+              min: 0,
+              max: 100,
               fields: [
                 {
                   label: "name",
@@ -460,7 +460,7 @@ export const MockupData_JSON = {
               required: false,
               jsonPath: "$.spec.objects.servers",
               type: "object",
-              min: 1,
+              min: 0,
               max: 100,
               fields: [
                 {
@@ -563,8 +563,8 @@ export const MockupData_JSON = {
                   required: false,
                   jsonPath: "$.spec.objects.servers[*].build.webhooks",
                   type: "object",
-                  min: 1,
-                  max: 1,
+                  min: 0,
+                  max: 100,
                   fields: [
                     {
                       label: "Type",
@@ -579,7 +579,7 @@ export const MockupData_JSON = {
                       label: "Secret",
                       type: "password",
                       jsonPath:
-                        "$.spec.objects.servers[*].build.webhooks.secret",
+                        "$.spec.objects.servers[*].build.webhooks[*].secret",
                       default: "",
                       required: true,
                       description: "Secret value for webhook"

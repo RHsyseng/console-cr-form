@@ -8,6 +8,7 @@ export default class StepBuilder {
       elementIdJson: "golang_json_form",
       elementIdJsonSchema: "golang_json_schema"
     });
+    this.objectMap = new Map();
   }
 
   /**
@@ -41,6 +42,13 @@ export default class StepBuilder {
     return steps;
   }
 
+  storeObjectMap(key, value) {
+    this.objectMap.set(key, value);
+  }
+  getObjectMap(key) {
+    return this.objectMap.get(key);
+  }
+
   /**
    * Builds a collection of steps based on the page definitions
    * @param {JSON of page def} pageDefs
@@ -60,6 +68,9 @@ export default class StepBuilder {
           jsonSchema={this.loader.jsonSchema}
           pageNumber={id}
           pages={this.loader.jsonForm.pages}
+          storeObjectMap={this.storeObjectMap}
+          getObjectMap={this.getObjectMap}
+          objectMap={this.objectMap}
         />
       ),
       enableNext: true //TODO: need to add logic - will enable next only if all fields are valid
