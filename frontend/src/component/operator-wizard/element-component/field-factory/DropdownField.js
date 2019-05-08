@@ -19,7 +19,7 @@ export class DropdownField {
     var options = [];
 
     const tmpJsonPath = utils.getJsonSchemaPathForJsonPath(
-      this.props.fieldDef.jsonPath
+      this.props.fieldDef.originalJsonPath
     );
     const optionValues = this.findValueFromSchema(tmpJsonPath + ".enum");
     if (optionValues !== undefined) {

@@ -208,12 +208,16 @@ export default class Page extends Component {
 
         if (Array.isArray(pageFields)) {
           pageFields.forEach(field => {
-            const value =
-              field.type === "checkbox" ? field.checked : field.value;
-            if (value !== undefined) {
-              let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
+            if (field.type === "object") {
+              jsonObject = this.addObjectFields(field, jsonObject);
+            } else {
+              const value =
+                field.type === "checkbox" ? field.checked : field.value;
+              if (field.jsonPath !== "" && value !== undefined) {
+                let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
-              jsonObject[jsonPath] = value;
+                jsonObject[jsonPath] = value;
+              }
             }
           });
         }
@@ -226,12 +230,16 @@ export default class Page extends Component {
             let subPageFields = subPage.fields;
 
             subPageFields.forEach(field => {
-              const value =
-                field.type === "checkbox" ? field.checked : field.value;
-              if (value !== undefined) {
-                let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
+              if (field.type === "object") {
+                jsonObject = this.addObjectFields(field, jsonObject);
+              } else {
+                const value =
+                  field.type === "checkbox" ? field.checked : field.value;
+                if (field.jsonPath !== "" && value !== undefined) {
+                  let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
-                jsonObject[jsonPath] = value;
+                  jsonObject[jsonPath] = value;
+                }
               }
             });
           });
@@ -242,9 +250,28 @@ export default class Page extends Component {
     return jsonObject;
   }
 
+  addObjectFields(field, jsonObject) {
+    //  let childJson ={};
+    if (Array.isArray(field.fields)) {
+      field.fields.forEach(field => {
+        if (field.type === "object") {
+          jsonObject = this.addObjectFields(field, jsonObject);
+        } else {
+          const value = field.type === "checkbox" ? field.checked : field.value;
+          if (field.jsonPath !== "" && value !== undefined) {
+            let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
+
+            jsonObject[jsonPath] = value;
+          }
+        }
+      });
+    }
+    return jsonObject;
+  }
+
   createSampleYaml() {
     var sampleYaml = {};
-    sampleYaml = this.createSampleYamlfromForm(sampleYaml);
+    // sampleYaml = this.createSampleYamlfromForm(sampleYaml);
     sampleYaml = this.createSampleYamlfromPages(sampleYaml);
     return sampleYaml;
   }
@@ -258,15 +285,6 @@ export default class Page extends Component {
   }
 
   renderPages() {
-    //const pages = this.state.jsonForm.pages;
-    // console.error("renderPages1");
-    /* // const pagesJsx = this.buildPages();
-    const wizardJsx= this.buildPages();
-  // const steps = this.buildPages();;
-    console.error("renderPages2:::" + wizardJsx);
-
-    this.setState({ wizardJsx });
-    //this.setState(steps)*/
     var div = document.createElement("div");
     div.id = "footerDiv";
     var footerElem = document.getElementsByTagName("FOOTER");
@@ -288,10 +306,6 @@ export default class Page extends Component {
       // </ActionGroup>
     );
 
-    //ReactDOM.render(fieldJsx, footerElem[0]);
-    //footerElem.appendChild(fieldJsx);
-    // footerElem.innerHTML +=fieldJsx;
-    // footerElem.innerHTML = (fieldJsx);
     if (footerElem[0] != undefined) {
       footerElem[0].appendChild(div);
     }
