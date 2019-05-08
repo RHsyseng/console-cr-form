@@ -19,7 +19,7 @@ export class FormJsonLoader {
     if (useMockData) {
       this.passedInJsonForm = MockupData_JSON;
       this.jsonSchema = MockupData_JSON_SCHEMA;
-      console.log("Loaded mock data into memmory");
+      console.log("Loaded mock data into memory");
     } else {
       //TODO: refactor to not access DOM directly
       this.passedInJsonForm = document.getElementById(
