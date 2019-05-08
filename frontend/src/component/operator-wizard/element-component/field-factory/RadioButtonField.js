@@ -27,18 +27,18 @@ export class RadioButtonField {
     );
   }
 
-  handleChangeRadio() {
-    //const value = event.currentTarget.value;
-    // this.isCheckedRadio = !this.isCheckedRadio;
+  handleChangeRadio = () => {
+    this.isCheckedRadio = !this.isCheckedRadio;
 
     let count = 0,
-      len = 0;
-    this.props.page.props.pageDef.fields.forEach(field => {
+      pos = 0;
+    this.props.page.props.pageDef.fields.forEach((field, i) => {
       if (field.label === this.props.parentid) {
-        len = field.fields.length;
+        //locate parent pos
+        pos = i;
         field.fields.forEach(subfield => {
           if (subfield.label !== this.props.fieldDef.label) {
-            count = subfield.fields.length;
+            count = subfield.fields.length; //previously added
             subfield.value = false;
           } else {
             subfield.value = true;
@@ -47,14 +47,17 @@ export class RadioButtonField {
       } // );
     });
 
-    //removed
-    this.props.page.props.pageDef.fields.splice(len, count);
+    //remove
+    if (this.props.page.props.pageDef.fields[pos].value !== undefined) {
+      this.props.page.props.pageDef.fields.splice(pos + 1, count);
+    }
 
-    //  add
+    //add
     this.props.fieldDef.fields.forEach((field, i) => {
-      this.props.page.props.pageDef.fields.splice(len - 1 + i, i + 1, field);
+      this.props.page.props.pageDef.fields.splice(pos + 1 + i, 0, field);
     });
-    //   debugger;
+    this.props.page.props.pageDef.fields[pos].value = this.props.fieldDef.label;
+
     this.props.page.loadPageChildren();
-  }
+  };
 }

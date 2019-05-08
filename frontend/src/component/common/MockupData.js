@@ -650,50 +650,51 @@ export const MockupData_JSON = {
                 {
                   label: "Request(Memory)",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.resources.request.memory",
+                  jsonPath:
+                    "$.spec.objects.servers[*].resources.request.memory",
                   default: "2Gi"
                 },
                 {
                   label: "Request(CPU)",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.resources.request.cpu",
+                  jsonPath: "$.spec.objects.servers[*].resources.request.cpu",
                   default: "500m"
                 },
                 {
                   label: "Limits(Memory)",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.resources.limits.memory",
+                  jsonPath: "$.spec.objects.servers[*].resources.limits.memory",
                   default: "2Gi"
                 },
                 {
                   label: "Limits(CPU)",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.resources.limits.cpu",
+                  jsonPath: "$.spec.objects.servers[*].resources.limits.cpu",
                   default: "500m"
                 },
                 {
                   label: "Client Name",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.ssoClient.name",
+                  jsonPath: "$.spec.objects.servers[*].ssoClient.name",
                   default: ""
                 },
                 {
                   label: "Client Secret",
                   type: "password",
-                  jsonPath: "$.spec.objects.console.ssoClient.secret",
+                  jsonPath: "$.spec.objects.servers[*].ssoClient.secret",
                   default: ""
                 },
                 {
                   label: "Hostname Http",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.ssoClient.hostnameHTTP",
+                  jsonPath: "$.spec.objects.servers[*].ssoClient.hostnameHTTP",
                   default: "",
                   description: "Hostname to set as redirect URL"
                 },
                 {
                   label: "Hostname Https",
                   type: "text",
-                  jsonPath: "$.spec.objects.console.ssoClient.hostnameHTTPS",
+                  jsonPath: "$.spec.objects.servers[*].ssoClient.hostnameHTTPS",
                   default: "",
                   description: "Secure hostname to set as redirect URL"
                 },

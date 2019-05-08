@@ -213,7 +213,7 @@ export default class Page extends Component {
             } else {
               const value =
                 field.type === "checkbox" ? field.checked : field.value;
-              if (value !== undefined) {
+              if (field.jsonPath !== "" && value !== undefined) {
                 let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
                 jsonObject[jsonPath] = value;
@@ -235,7 +235,7 @@ export default class Page extends Component {
               } else {
                 const value =
                   field.type === "checkbox" ? field.checked : field.value;
-                if (value !== undefined) {
+                if (field.jsonPath !== "" && value !== undefined) {
                   let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
                   jsonObject[jsonPath] = value;
@@ -258,7 +258,7 @@ export default class Page extends Component {
           jsonObject = this.addObjectFields(field, jsonObject);
         } else {
           const value = field.type === "checkbox" ? field.checked : field.value;
-          if (value !== undefined) {
+          if (field.jsonPath !== "" && value !== undefined) {
             let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
             jsonObject[jsonPath] = value;
