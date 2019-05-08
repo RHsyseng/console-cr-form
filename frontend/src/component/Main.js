@@ -16,10 +16,6 @@ export default class Main extends Component {
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <OperatorWizard steps={this.state.steps} />
-      </React.Fragment>
-    );
+    return <OperatorWizard steps={this.state.steps} />;
   }
 }
