@@ -7,8 +7,7 @@ export default class Main extends Component {
     super(props);
     this.stepBuilder = new StepBuilder();
     this.state = {
-      steps: [this.stepBuilder.buildPlaceholderStep()],
-      showPopup: false
+      steps: [this.stepBuilder.buildPlaceholderStep()]
     };
   }
 
