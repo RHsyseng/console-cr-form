@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FormGroup, Radio } from "@patternfly/react-core";
+import { FormGroup, Radio, Tooltip } from "@patternfly/react-core";
 
 export class RadioButtonField {
   constructor(props) {
@@ -14,15 +14,28 @@ export class RadioButtonField {
         fieldId={this.props.ids.fieldGroupId}
         key={this.props.ids.fieldGroupKey}
       >
-        <Radio
-          key={this.props.ids.fieldKey}
-          defaultValue={this.props.fieldDef.label}
-          onChange={this.handleChangeRadio}
-          name={this.props.parentid}
-          isChecked={this.props.fieldDef.value}
-          label={this.props.fieldDef.label}
-          id={this.props.fieldDef.label}
-        />
+        <Tooltip
+          position="left"
+          content={<div>{this.props.fieldDef.description}</div>}
+          enableFlip={true}
+          style={{
+            display:
+              this.props.fieldDef.description !== undefined &&
+              this.props.fieldDef.description !== ""
+                ? "block"
+                : "none"
+          }}
+        >
+          <Radio
+            key={this.props.ids.fieldKey}
+            defaultValue={this.props.fieldDef.label}
+            onChange={this.handleChangeRadio}
+            name={this.props.parentid}
+            isChecked={this.props.fieldDef.value}
+            label={this.props.fieldDef.label}
+            id={this.props.fieldDef.label}
+          />
+        </Tooltip>
       </FormGroup>
     );
   }

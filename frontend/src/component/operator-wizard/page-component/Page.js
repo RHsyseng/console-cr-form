@@ -30,6 +30,8 @@ export default class Page extends Component {
     };
     this.editYaml = this.editYaml.bind(this);
     this.formId = "form-page-" + this.props.pageNumber;
+    this.errFlag = false;
+    this.jsonObject = {};
   }
 
   loadPageChildren() {
@@ -112,34 +114,43 @@ export default class Page extends Component {
     return this.state.elements;
   }
   editYaml() {
-    var sampleYaml = this.createSampleYaml();
-    this.createResultYaml(sampleYaml);
-    this.handleModalToggle();
-    //alert(YAML.safeDump(Dot.object(jsonObject)));
+    this.errFlag = false;
+
+    this.createSampleYamlfromPages();
+    // console.log("len" + Object.getOwnPropertyNames(this.jsonObject).length);
+    // console.log("errFlag" + this.errFlag);
+    if (this.errFlag === false) {
+      this.createResultYaml();
+      this.handleModalToggle();
+    }
   }
-  createResultYaml = jsonObject => {
+  createResultYaml() {
     var resultYaml =
       "apiVersion: " +
       document.getElementById("apiVersion").value +
       "\n" +
       "kind: " +
       document.getElementById("kind").value +
-      "\n" +
-      YAML.safeDump(Dot.object(jsonObject));
+      "\n";
+    if (Object.getOwnPropertyNames(this.jsonObject).length > 0) {
+      resultYaml = resultYaml + YAML.safeDump(Dot.object(this.jsonObject));
+    }
+
     this.setState({
       resultYaml
     });
 
     return resultYaml;
-  };
+  }
   onChangeYaml = value => {
     this.setResultYaml(value);
   };
 
   deploy = () => {
     //alert("deploy here");
-    var sampleYaml = this.createSampleYaml();
-    var result = this.createResultYaml(sampleYaml);
+    // var sampleYaml = this.createSampleYaml();
+    this.createSampleYamlfromPages();
+    var result = this.createResultYaml();
     console.log(result);
     fetch("/", {
       method: "POST",
@@ -197,8 +208,8 @@ export default class Page extends Component {
 
     return sampleYaml;
   }
-  createSampleYamlfromPages(jsonObject) {
-    // const jsonObject = {};
+  createSampleYamlfromPages() {
+    let jsonObject = {};
 
     if (Array.isArray(this.props.pages)) {
       this.props.pages.forEach(page => {
@@ -213,7 +224,16 @@ export default class Page extends Component {
             } else {
               const value =
                 field.type === "checkbox" ? field.checked : field.value;
-              if (field.jsonPath !== "" && value !== undefined) {
+              if (field.errMsg !== undefined && field.errMsg !== "") {
+                // console.log("err:::" + field.label + "....." + field.errMsg);
+                this.errFlag = true;
+              }
+              if (
+                field.jsonPath !== undefined &&
+                field.jsonPath !== "" &&
+                value !== undefined &&
+                value !== ""
+              ) {
                 let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
                 jsonObject[jsonPath] = value;
@@ -235,7 +255,16 @@ export default class Page extends Component {
               } else {
                 const value =
                   field.type === "checkbox" ? field.checked : field.value;
-                if (field.jsonPath !== "" && value !== undefined) {
+                if (field.errMsg !== undefined && field.errMsg !== "") {
+                  //console.log("err:::" + field.label + "....." + field.errMsg);
+                  this.errFlag = true;
+                }
+                if (
+                  field.jsonPath !== undefined &&
+                  field.jsonPath !== "" &&
+                  value !== undefined &&
+                  value !== ""
+                ) {
                   let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
                   jsonObject[jsonPath] = value;
@@ -246,8 +275,7 @@ export default class Page extends Component {
         }
       });
     }
-
-    return jsonObject;
+    this.jsonObject = jsonObject;
   }
 
   addObjectFields(field, jsonObject) {
@@ -258,7 +286,16 @@ export default class Page extends Component {
           jsonObject = this.addObjectFields(field, jsonObject);
         } else {
           const value = field.type === "checkbox" ? field.checked : field.value;
-          if (field.jsonPath !== "" && value !== undefined) {
+          if (field.errMsg !== undefined && field.errMsg !== "") {
+            //console.log("err:::" + field.label + "....." + field.errMsg);
+            this.errFlag = true;
+          }
+          if (
+            field.jsonPath !== undefined &&
+            field.jsonPath !== "" &&
+            value !== undefined &&
+            value !== ""
+          ) {
             let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
             jsonObject[jsonPath] = value;
@@ -267,13 +304,6 @@ export default class Page extends Component {
       });
     }
     return jsonObject;
-  }
-
-  createSampleYaml() {
-    var sampleYaml = {};
-    // sampleYaml = this.createSampleYamlfromForm(sampleYaml);
-    sampleYaml = this.createSampleYamlfromPages(sampleYaml);
-    return sampleYaml;
   }
 
   getJsonSchemaPathForYaml(jsonPath) {
