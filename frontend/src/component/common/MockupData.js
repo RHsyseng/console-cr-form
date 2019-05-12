@@ -701,7 +701,7 @@ export const MockupData_JSON = {
                 {
                   label: "Type",
                   type: "dropDown",
-                  required: true,
+                  required: false,
                   jsonPath: "$.spec.objects.servers[*].database.type",
                   originalJsonPath: "$.spec.objects.servers[*].database.type",
                   default: ""
@@ -717,7 +717,7 @@ export const MockupData_JSON = {
                 {
                   label: "Driver",
                   type: "text",
-                  required: true,
+                  required: false,
                   jsonPath:
                     "$.spec.objects.servers[*].database.type.externalConfig.driver",
                   default: ""
@@ -725,7 +725,7 @@ export const MockupData_JSON = {
                 {
                   label: "Dialect",
                   type: "text",
-                  required: true,
+                  required: false,
                   jsonPath:
                     "$.spec.objects.servers[*].database.type.externalConfig.dialect",
                   default: ""
@@ -768,7 +768,7 @@ export const MockupData_JSON = {
                 {
                   label: "jndiName",
                   type: "text",
-                  required: true,
+                  required: false,
                   jsonPath:
                     "$.spec.objects.servers[*].database.type.externalConfig.jndiName",
                   default: ""
@@ -776,7 +776,7 @@ export const MockupData_JSON = {
                 {
                   label: "User Name",
                   type: "text",
-                  required: true,
+                  required: false,
                   jsonPath:
                     "$.spec.objects.servers[*].database.type.externalConfig.username",
                   default: ""
@@ -784,7 +784,7 @@ export const MockupData_JSON = {
                 {
                   label: "Password",
                   type: "password",
-                  required: true,
+                  required: false,
                   jsonPath:
                     "$.spec.objects.servers[*].database.type.externalConfig.password",
                   default: ""
