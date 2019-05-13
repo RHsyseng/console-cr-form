@@ -12,6 +12,12 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "dist"),
     hot: true,
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        secure: false
+      }
+    }
   },
   module: {
     rules: [

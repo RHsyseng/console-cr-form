@@ -124,6 +124,7 @@
   digest = "1:2374d98db3b458bf448bbbeba076cd73267f00ac2828e0fde8b64f8e9abc48d3"
   name = "github.com/gobuffalo/packr"
   packages = [
+    ".",
     "v2",
     "v2/file",
     "v2/file/resolver",
@@ -341,6 +342,8 @@
     "collate/build",
     "internal/colltab",
     "internal/gen",
+    "internal/language",
+    "internal/language/compact",
     "internal/tag",
     "internal/triegen",
     "internal/ucd",

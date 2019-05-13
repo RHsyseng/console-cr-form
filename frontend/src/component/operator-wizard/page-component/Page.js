@@ -6,6 +6,8 @@ import Dot from "dot-object";
 import { TextArea, Button, Modal } from "@patternfly/react-core";
 import CopyToClipboard from "react-copy-to-clipboard";
 import ReactDOM from "react-dom";
+import * as jsonLoader from "../FormJsonLoader";
+import { BACKEND_URL } from "../../common/GuiConstants";
 
 /**
  * The Page component to handle each element individually.
@@ -32,6 +34,11 @@ export default class Page extends Component {
     this.formId = "form-page-" + this.props.pageNumber;
     this.errFlag = false;
     this.jsonObject = {};
+    this.spec = this.getSpec().then(spec => (this.spec = spec));
+  }
+
+  async getSpec() {
+    return await jsonLoader.loadJsonSpec;
   }
 
   loadPageChildren() {
@@ -127,10 +134,10 @@ export default class Page extends Component {
   createResultYaml() {
     var resultYaml =
       "apiVersion: " +
-      document.getElementById("apiVersion").value +
+      this.spec.apiVersion +
       "\n" +
       "kind: " +
-      document.getElementById("kind").value +
+      this.spec.kind +
       "\n";
     if (Object.getOwnPropertyNames(this.jsonObject).length > 0) {
       resultYaml = resultYaml + YAML.safeDump(Dot.object(this.jsonObject));
@@ -147,12 +154,10 @@ export default class Page extends Component {
   };
 
   deploy = () => {
-    //alert("deploy here");
-    // var sampleYaml = this.createSampleYaml();
     this.createSampleYamlfromPages();
     var result = this.createResultYaml();
     console.log(result);
-    fetch("/", {
+    fetch(BACKEND_URL + "/", {
       method: "POST",
       body: JSON.stringify(result),
       headers: {
