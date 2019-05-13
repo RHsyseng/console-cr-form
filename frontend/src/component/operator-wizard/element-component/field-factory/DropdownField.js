@@ -14,7 +14,6 @@ import JSONPATH from "jsonpath";
 export class DropdownField {
   constructor(props) {
     this.props = props;
-    this.onSelect = this.onSelect.bind(this);
     this.errMsg = "";
     this.isValid = true;
   }
@@ -96,7 +95,6 @@ export class DropdownField {
 
   onSelect = (_, event) => {
     let value = event.target.value;
-    // console.log("DD::::::::" + event.target.value);
     this.props.fieldDef.value = value;
 
     if (this.props.fieldDef.required === true && value === "") {
