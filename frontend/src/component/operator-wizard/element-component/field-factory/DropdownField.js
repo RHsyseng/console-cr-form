@@ -51,94 +51,47 @@ export class DropdownField {
       this.isValid = true;
     }
     this.props.fieldDef.errMsg = this.errMsg;
-    //const helpText = this.findValueFromSchema(tmpJsonPath + ".description");
-    if (this.props.fieldDef.required === true) {
-      return (
-        <FormGroup
-          label={this.props.fieldDef.label}
-          id={this.props.ids.fieldGroupId}
-          key={this.props.ids.fieldGroupKey}
-          helperTextInvalid={this.errMsg}
-          fieldId={this.props.ids.fieldId}
-          isValid={this.isValid}
-          isRequired
+    return (
+      <FormGroup
+        label={this.props.fieldDef.label}
+        id={this.props.ids.fieldGroupId}
+        key={this.props.ids.fieldGroupKey}
+        helperTextInvalid={this.errMsg}
+        fieldId={this.props.ids.fieldId}
+        isValid={this.isValid}
+        isRequired={this.props.fieldDef.required}
+      >
+        <Tooltip
+          position="left"
+          content={<div>{this.props.fieldDef.description}</div>}
+          enableFlip={true}
+          style={{
+            display:
+              this.props.fieldDef.description !== undefined &&
+              this.props.fieldDef.description !== ""
+                ? "block"
+                : "none"
+          }}
         >
-          <Tooltip
-            position="left"
-            content={<div>{this.props.fieldDef.description}</div>}
-            enableFlip={true}
-            style={{
-              display:
-                this.props.fieldDef.description !== undefined &&
-                this.props.fieldDef.description !== ""
-                  ? "block"
-                  : "none"
-            }}
+          <FormSelect
+            id={this.props.ids.fieldId}
+            key={this.props.ids.fieldKey}
+            name={this.props.fieldDef.label}
+            jsonpath={this.props.fieldDef.jsonPath}
+            onChange={this.onSelect}
+            value={this.props.fieldDef.value}
           >
-            <FormSelect
-              id={this.props.ids.fieldId}
-              key={this.props.ids.fieldKey}
-              name={this.props.fieldDef.label}
-              jsonpath={this.props.fieldDef.jsonPath}
-              onChange={this.onSelect}
-              value={this.props.fieldDef.value}
-              defaultValue={this.props.fieldDef.value}
-              isRequired
-            >
-              {options.map((option, index) => (
-                <FormSelectOption
-                  key={this.props.ids.fieldKey + index}
-                  value={option.value}
-                  label={option.label}
-                />
-              ))}
-            </FormSelect>
-          </Tooltip>
-        </FormGroup>
-      );
-    } else {
-      return (
-        <FormGroup
-          label={this.props.fieldDef.label}
-          id={this.props.ids.fieldGroupId}
-          key={this.props.ids.fieldGroupKey}
-          helperTextInvalid={this.errMsg}
-          fieldId={this.props.ids.fieldId}
-          isValid={this.isValid}
-        >
-          <Tooltip
-            position="left"
-            content={<div>{this.props.fieldDef.description}</div>}
-            enableFlip={true}
-            style={{
-              display:
-                this.props.fieldDef.description !== undefined &&
-                this.props.fieldDef.description !== ""
-                  ? "block"
-                  : "none"
-            }}
-          >
-            <FormSelect
-              id={this.props.ids.fieldId}
-              key={this.props.ids.fieldKey}
-              name={this.props.fieldDef.label}
-              jsonpath={this.props.fieldDef.jsonPath}
-              onChange={this.onSelect}
-              value={this.props.fieldDef.value}
-              defaultValue={this.props.fieldDef.value}
-            >
-              {options.map((option, index) => (
-                <FormSelectOption
-                  key={this.props.ids.fieldKey + index}
-                  value={option.value}
-                  label={option.label}
-                />
-              ))}
-            </FormSelect>
-          </Tooltip>
-        </FormGroup>
-      );
-    }
+            {options.map((option, index) => (
+              <FormSelectOption
+                key={this.props.ids.fieldKey + index}
+                value={option.value}
+                label={option.label}
+              />
+            ))}
+          </FormSelect>
+        </Tooltip>
+      </FormGroup>
+    );
   }
 
   onSelect = (_, event) => {

@@ -31,10 +31,6 @@
     "url": "git@github.com:calvinzhuca/operator-gui.git"
   },
   "dependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
-    "@babel/preset-react": "^7.0.0",
     "@patternfly/react-core": "^3.2.6",
     "axios": "^0.18.0",
     "babel-loader": "^8.0.5",
@@ -55,6 +51,10 @@
     "validator": "^10.11.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.7.1",

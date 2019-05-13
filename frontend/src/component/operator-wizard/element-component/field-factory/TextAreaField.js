@@ -13,74 +13,39 @@ export class TextAreaField {
   getJsx() {
     this.value = this.props.fieldDef.value;
     this.isValidField(this.value);
-    if (this.props.fieldDef.required === true) {
-      return (
-        <FormGroup
-          label={this.props.fieldDef.label}
-          fieldId={this.props.ids.fieldGroupId}
-          key={this.props.ids.fieldGroupKey}
-          helperTextInvalid={this.errMsg}
-          isValid={this.isValid}
-          isRequired
+    return (
+      <FormGroup
+        label={this.props.fieldDef.label}
+        fieldId={this.props.ids.fieldGroupId}
+        key={this.props.ids.fieldGroupKey}
+        helperTextInvalid={this.errMsg}
+        isValid={this.isValid}
+        isRequired={this.props.fieldDef.required}
+      >
+        <Tooltip
+          position="left"
+          content={<div>{this.props.fieldDef.description}</div>}
+          enableFlip={true}
+          style={{
+            display:
+              this.props.fieldDef.description !== undefined &&
+              this.props.fieldDef.description !== ""
+                ? "block"
+                : "none"
+          }}
         >
-          <Tooltip
-            position="left"
-            content={<div>{this.props.fieldDef.description}</div>}
-            enableFlip={true}
-            style={{
-              display:
-                this.props.fieldDef.description !== undefined &&
-                this.props.fieldDef.description !== ""
-                  ? "block"
-                  : "none"
-            }}
-          >
-            <TextArea
-              value={this.props.fieldDef.default}
-              name="horizontal-form-exp"
-              id={this.props.ids.fieldId}
-              key={this.props.ids.fieldKey}
-              jsonpath={this.props.fieldDef.jsonPath}
-              defaultValue={this.props.fieldDef.value}
-              onBlur={this.onBlurTextArea}
-            />
-          </Tooltip>
-        </FormGroup>
-      );
-    } else {
-      return (
-        <FormGroup
-          label={this.props.fieldDef.label}
-          fieldId={this.props.ids.fieldGroupId}
-          key={this.props.ids.fieldGroupKey}
-          helperTextInvalid={this.errMsg}
-          isValid={this.isValid}
-        >
-          <Tooltip
-            position="left"
-            content={<div>{this.props.fieldDef.description}</div>}
-            enableFlip={true}
-            style={{
-              display:
-                this.props.fieldDef.description !== undefined &&
-                this.props.fieldDef.description !== ""
-                  ? "block"
-                  : "none"
-            }}
-          >
-            <TextArea
-              value={this.props.fieldDef.default}
-              name="horizontal-form-exp"
-              id={this.props.ids.fieldId}
-              key={this.props.ids.fieldKey}
-              jsonpath={this.props.fieldDef.jsonPath}
-              defaultValue={this.props.fieldDef.value}
-              onBlur={this.onBlurTextArea}
-            />
-          </Tooltip>
-        </FormGroup>
-      );
-    }
+          <TextArea
+            value={this.props.fieldDef.default}
+            name="horizontal-form-exp"
+            id={this.props.ids.fieldId}
+            key={this.props.ids.fieldKey}
+            jsonpath={this.props.fieldDef.jsonPath}
+            defaultValue={this.props.fieldDef.value}
+            onBlur={this.onBlurTextArea}
+          />
+        </Tooltip>
+      </FormGroup>
+    );
   }
 
   onBlurTextArea = event => {

@@ -13,85 +13,43 @@ export class DefaultTextField {
   getJsx() {
     this.value = this.props.fieldDef.value;
     this.isValidField(this.value);
-    if (this.props.fieldDef.required === true) {
-      return (
-        <FormGroup
-          label={this.props.fieldDef.label}
-          fieldId={this.props.ids.fieldGroupId}
-          key={this.props.ids.fieldGroupKey}
-          helperTextInvalid={this.errMsg}
-          isValid={this.isValid}
-          isRequired
+    return (
+      <FormGroup
+        label={this.props.fieldDef.label}
+        fieldId={this.props.ids.fieldGroupId}
+        key={this.props.ids.fieldGroupKey}
+        helperTextInvalid={this.errMsg}
+        isValid={this.isValid}
+        isRequired={this.props.fieldDef.required}
+      >
+        <Tooltip
+          position="left"
+          content={<div>{this.props.fieldDef.description}</div>}
+          enableFlip={true}
+          style={{
+            display:
+              this.props.fieldDef.description !== undefined &&
+              this.props.fieldDef.description !== ""
+                ? "block"
+                : "none"
+          }}
         >
-          <Tooltip
-            position="left"
-            content={<div>{this.props.fieldDef.description}</div>}
-            enableFlip={true}
-            style={{
-              display:
-                this.props.fieldDef.description !== undefined &&
-                this.props.fieldDef.description !== ""
-                  ? "block"
-                  : "none"
-            }}
-          >
-            <TextInput
-              isRequired
-              type="text"
-              id={this.props.ids.fieldId}
-              key={this.props.ids.fieldKey}
-              aria-describedby="horizontal-form-name-helper"
-              name={this.props.fieldDef.label}
-              // onChange={this.onChangeText}
-              onBlur={this.onBlurText}
-              jsonpath={this.props.fieldDef.jsonPath}
-              // value={((this.props.fieldDef.default!==undefined ) ? this.props.fieldDef.default:this.props.fieldDef.value)}
-              defaultValue={this.value}
-              {...this.props.attrs}
-            />
-          </Tooltip>
-        </FormGroup>
-      );
-    } else {
-      return (
-        <FormGroup
-          label={this.props.fieldDef.label}
-          id={this.props.ids.fieldGroupId}
-          key={this.props.ids.fieldGroupKey}
-          helperTextInvalid={this.errMsg}
-          fieldId={this.props.ids.fieldId}
-          isValid={this.isValid}
-        >
-          <Tooltip
-            position="left"
-            content={<div>{this.props.fieldDef.description}</div>}
-            enableFlip={true}
-            style={{
-              display:
-                this.props.fieldDef.description !== undefined &&
-                this.props.fieldDef.description !== ""
-                  ? "block"
-                  : "none"
-            }}
-          >
-            <TextInput
-              type="text"
-              id={this.props.ids.fieldId}
-              key={this.props.ids.fieldKey}
-              aria-describedby="horizontal-form-name-helper"
-              name={this.props.fieldDef.label}
-              // onChange={this.onChangeText}
-              onBlur={this.onBlurText}
-              jsonpath={this.props.fieldDef.jsonPath}
-              // value={((this.props.fieldDef.default!==undefined ) ? this.props.fieldDef.default:this.props.fieldDef.value)}
-              defaultValue={this.value}
-              //value={this.value}
-              {...this.props.attrs}
-            />
-          </Tooltip>
-        </FormGroup>
-      );
-    }
+          <TextInput
+            type="text"
+            id={this.props.ids.fieldId}
+            key={this.props.ids.fieldKey}
+            aria-describedby="horizontal-form-name-helper"
+            name={this.props.fieldDef.label}
+            // onChange={this.onChangeText}
+            onBlur={this.onBlurText}
+            jsonpath={this.props.fieldDef.jsonPath}
+            // value={((this.props.fieldDef.default!==undefined ) ? this.props.fieldDef.default:this.props.fieldDef.value)}
+            defaultValue={this.value}
+            {...this.props.attrs}
+          />
+        </Tooltip>
+      </FormGroup>
+    );
   }
 
   onBlurText = event => {

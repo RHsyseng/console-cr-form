@@ -2,6 +2,9 @@
 frontend/dist/bundle.js
 build
 target/
+# Packr generated files
+packrd/
+*-packr.go
 
 # Created by https://www.gitignore.io/api/go,vim,emacs,visualstudiocode
 ### Emacs ###
