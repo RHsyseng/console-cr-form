@@ -1,7 +1,5 @@
 package main
 
-//go:generate go run .packr/packr.go
-
 import (
 	"encoding/json"
 	"io/ioutil"
@@ -9,12 +7,11 @@ import (
 
 	"github.com/RHsyseng/console-cr-form/pkg/web"
 	"github.com/go-openapi/spec"
-	"github.com/gobuffalo/packr"
 	"github.com/sirupsen/logrus"
 )
 
-const defaultJSONForm = "full-form.json"
-const defaultJSONSchema = "full-schema.json"
+const defaultJSONForm = "test/examples/full-form.json"
+const defaultJSONSchema = "test/examples/full-schema.json"
 const envJSONForm = "JSON_FORM"
 const envJSONSchema = "JSON_SCHEMA"
 
@@ -22,9 +19,7 @@ func main() {
 	logrus.Info("Starting test server. Using default JSON Form and Schema.")
 	logrus.Info("Provide a different Form and Schema using JSON_FORM and JSON_SCHEMA env vars")
 
-	box := packr.NewBox("../test/examples")
-
-	config, err := web.NewConfiguration("", 8080, getSchema(box), "app.kiegroup.org/v1", "KieApp", getForm(box), callback)
+	config, err := web.NewConfiguration("", 8080, getSchema(), "app.kiegroup.org/v1", "KieApp", getForm(), callback)
 	if err != nil {
 		logrus.Errorf("Failed to configure web server: %v", err)
 	}
@@ -55,8 +50,8 @@ func getFilePath(env, defaultPath string) string {
 	return path
 }
 
-func getForm(box packr.Box) web.Form {
-	byteValue, err := box.Find(defaultJSONForm)
+func getForm() web.Form {
+	byteValue, err := readJSONFile(envJSONForm, defaultJSONForm)
 	if err != nil {
 		logrus.Error("Unable to read file as byte array: ", err)
 	}
@@ -67,8 +62,8 @@ func getForm(box packr.Box) web.Form {
 	return form
 }
 
-func getSchema(box packr.Box) spec.Schema {
-	byteValue, err := box.Find(defaultJSONSchema)
+func getSchema() spec.Schema {
+	byteValue, err := readJSONFile(envJSONSchema, defaultJSONSchema)
 	if err != nil {
 		logrus.Error("Unable to read file as byte array: ", err)
 	}

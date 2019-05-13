@@ -157,7 +157,7 @@ export default class Page extends Component {
     this.createSampleYamlfromPages();
     var result = this.createResultYaml();
     console.log(result);
-    fetch(BACKEND_URL + "/", {
+    fetch(BACKEND_URL, {
       method: "POST",
       body: JSON.stringify(result),
       headers: {

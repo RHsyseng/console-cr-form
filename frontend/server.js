@@ -43,7 +43,14 @@ app.get('/api/spec', (req, res) => {
 });
 
 app.post('/api', (req, res) => {
-  return console.log("Hey I deployed this stuff: ", req.body);
+  let body = "";
+  req.on("data", chunk => {
+    body += chunk.toString();
+  });
+  req.on("end", () => {
+    console.log("Hey I deployed this stuff: ", body);
+    res.end("{\"Result\": \"Success\"}");
+  });
 });
 
 

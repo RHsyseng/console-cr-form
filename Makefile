@@ -43,6 +43,4 @@ build: npm go-generate
 clean:
 	rm -rf build \
 		pkg/web/packrd \
-		pkg/web/web-packr.go \
-		cmd/packrd \
-		cmd/main-packr.go
+		pkg/web/web-packr.go

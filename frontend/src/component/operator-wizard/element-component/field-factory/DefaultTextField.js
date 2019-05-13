@@ -35,7 +35,6 @@ export class DefaultTextField {
           }}
         >
           <TextInput
-            isRequired={this.props.fieldDef.required}
             type="text"
             id={this.props.ids.fieldId}
             key={this.props.ids.fieldKey}

@@ -11,9 +11,8 @@ import * as utils from "../../../common/CommonUtils";
 
 import JSONPATH from "jsonpath";
 
-export class DropdownField extends React.Component {
+export class DropdownField {
   constructor(props) {
-    super(props);
     this.props = props;
     this.onSelect = this.onSelect.bind(this);
     this.errMsg = "";
@@ -81,8 +80,6 @@ export class DropdownField extends React.Component {
             jsonpath={this.props.fieldDef.jsonPath}
             onChange={this.onSelect}
             value={this.props.fieldDef.value}
-            defaultValue={this.props.fieldDef.value}
-            isRequired={this.props.fieldDef.required}
           >
             {options.map((option, index) => (
               <FormSelectOption

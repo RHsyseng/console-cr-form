@@ -81,6 +81,7 @@ func RunWebServer(config Configuration) error {
 			}
 			config.CallBack(request)
 			writer.WriteHeader(http.StatusOK)
+			writer.Write([]byte("{\"Result\": \"Success\"}"))
 		}
 	}
 
