@@ -67,6 +67,7 @@ export const MockupData_JSON = {
                 {
                   label: "url",
                   type: "text",
+                  required: true,
                   jsonPath: "$.spec.auth.sso.url",
                   default: "",
                   description: "RH-SSO URL"
@@ -74,6 +75,7 @@ export const MockupData_JSON = {
                 {
                   label: "realm",
                   type: "text",
+                  required: true,
                   jsonPath: "$.spec.auth.sso.realm",
                   default: "",
                   description: "RH-SSO Realm name"
@@ -120,6 +122,7 @@ export const MockupData_JSON = {
                 {
                   label: "url",
                   type: "text",
+                  required: true,
                   jsonPath: "$.spec.auth.ldap.url",
                   default: "",
                   description: " LDAP Endpoint to connect for authentication"
