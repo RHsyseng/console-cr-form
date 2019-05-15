@@ -124,8 +124,6 @@ export default class Page extends Component {
     this.errFlag = false;
 
     this.createSampleYamlfromPages();
-    // console.log("len" + Object.getOwnPropertyNames(this.jsonObject).length);
-    // console.log("errFlag" + this.errFlag);
     if (this.errFlag === false) {
       this.createResultYaml();
       this.handleModalToggle();
@@ -175,69 +173,40 @@ export default class Page extends Component {
     });
   };
 
-  createSampleYamlfromForm(sampleYaml) {
-    //var str = "";
-
-    var elem = document.getElementById(this.formId).elements;
-    for (var i = 0; i < elem.length; i++) {
-      if (elem[i].type != "button" && elem[i].type != "div") {
-        var jsonpath = document
-          .getElementById(elem[i].id)
-          .getAttribute("jsonpath");
-        if (
-          elem[i].value != null &&
-          elem[i].value != "" &&
-          elem[i].name != "alt-form-checkbox-1" &&
-          jsonpath != "$.spec.auth.sso" &&
-          jsonpath != "$.spec.auth.ldap" &&
-          jsonpath != null &&
-          elem[i].style.display !== "none"
-        ) {
-          // str += "Name: " + elem[i].name + " ";
-          // str += "Type: " + elem[i].type + " ";
-          // str += "Value: " + elem[i].value + " ";
-          // str += "                                                 ";
-
-          var tmpJsonPath = this.getJsonSchemaPathForYaml(jsonpath);
-          const value =
-            elem[i].type === "checkbox" ? elem[i].checked : elem[i].value;
-          // if (tmpJsonPath.search(/\*/g) != -1) {
-          //   tmpJsonPath = utils.replaceStarwithPos(elem[i], jsonpath);
-          // }
-          //
-
-          sampleYaml[tmpJsonPath] = value;
-        }
-      }
-    }
-
-    return sampleYaml;
-  }
   createSampleYamlfromPages() {
     let jsonObject = {};
-
+    this.errFlag = false;
     if (Array.isArray(this.props.pages)) {
       this.props.pages.forEach(page => {
-        //  let pageFields = JSON.parse(JSON.stringify(pages.fields));
-
         let pageFields = page.fields;
 
         if (Array.isArray(pageFields)) {
           pageFields.forEach(field => {
-            if (field.type === "object") {
+            if (
+              field.type === "dropDown" &&
+              field.fields !== undefined &&
+              (field.visible === undefined || field.visible === true)
+            ) {
+              jsonObject = this.addObjectFields(field, jsonObject);
+            }
+            if (field.type === "object" || field.type === "fieldGroup") {
               jsonObject = this.addObjectFields(field, jsonObject);
             } else {
               const value =
                 field.type === "checkbox" ? field.checked : field.value;
-              if (field.errMsg !== undefined && field.errMsg !== "") {
-                // console.log("err:::" + field.label + "....." + field.errMsg);
+              if (
+                field.errMsg !== undefined &&
+                field.errMsg !== "" &&
+                (field.visible === undefined || field.visible === true)
+              ) {
                 this.errFlag = true;
               }
               if (
                 field.jsonPath !== undefined &&
                 field.jsonPath !== "" &&
                 value !== undefined &&
-                value !== ""
+                value !== "" &&
+                (field.visible === undefined || field.visible === true)
               ) {
                 let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
@@ -255,12 +224,23 @@ export default class Page extends Component {
             let subPageFields = subPage.fields;
 
             subPageFields.forEach(field => {
-              if (field.type === "object") {
+              if (
+                field.type === "dropDown" &&
+                field.fields !== undefined &&
+                (field.visible === undefined || field.visible === true)
+              ) {
+                jsonObject = this.addObjectFields(field, jsonObject);
+              }
+              if (field.type === "object" || field.type === "fieldGroup") {
                 jsonObject = this.addObjectFields(field, jsonObject);
               } else {
                 const value =
                   field.type === "checkbox" ? field.checked : field.value;
-                if (field.errMsg !== undefined && field.errMsg !== "") {
+                if (
+                  field.errMsg !== undefined &&
+                  field.errMsg !== "" &&
+                  (field.visible === undefined || field.visible === true)
+                ) {
                   //console.log("err:::" + field.label + "....." + field.errMsg);
                   this.errFlag = true;
                 }
@@ -268,7 +248,8 @@ export default class Page extends Component {
                   field.jsonPath !== undefined &&
                   field.jsonPath !== "" &&
                   value !== undefined &&
-                  value !== ""
+                  value !== "" &&
+                  (field.visible === undefined || field.visible === true)
                 ) {
                   let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
@@ -284,22 +265,32 @@ export default class Page extends Component {
   }
 
   addObjectFields(field, jsonObject) {
-    //  let childJson ={};
     if (Array.isArray(field.fields)) {
       field.fields.forEach(field => {
-        if (field.type === "object") {
+        if (
+          field.type === "dropDown" &&
+          field.fields !== undefined &&
+          (field.visible === undefined || field.visible === true)
+        ) {
+          jsonObject = this.addObjectFields(field, jsonObject);
+        }
+        if (field.type === "object" || field.type === "fieldGroup") {
           jsonObject = this.addObjectFields(field, jsonObject);
         } else {
           const value = field.type === "checkbox" ? field.checked : field.value;
-          if (field.errMsg !== undefined && field.errMsg !== "") {
-            //console.log("err:::" + field.label + "....." + field.errMsg);
+          if (
+            field.errMsg !== undefined &&
+            field.errMsg !== "" &&
+            (field.visible === undefined || field.visible === true)
+          ) {
             this.errFlag = true;
           }
           if (
             field.jsonPath !== undefined &&
             field.jsonPath !== "" &&
             value !== undefined &&
-            value !== ""
+            value !== "" &&
+            (field.visible === undefined || field.visible === true)
           ) {
             let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
 
@@ -312,10 +303,8 @@ export default class Page extends Component {
   }
 
   getJsonSchemaPathForYaml(jsonPath) {
-    //console.log("json Path: " + jsonPath);
     jsonPath = jsonPath.slice(2, jsonPath.length);
 
-    //console.log("jsonSchema Path: " + jsonPath);
     return jsonPath;
   }
 
@@ -323,13 +312,8 @@ export default class Page extends Component {
     var div = document.createElement("div");
     div.id = "footerDiv";
     var footerElem = document.getElementsByTagName("FOOTER");
-    //alert("footerElem"+footerElem);
-    // var index = document.getElementsByTagName("FOOTER").length;
 
-    // var buttonsJsx = [];
     var buttonJsx = (
-      // <ActionGroup fieldid="footer_buttons" key="footer_buttons_key">
-
       <Button
         variant="primary"
         id="deploy"
@@ -338,7 +322,6 @@ export default class Page extends Component {
       >
         Deploy{" "}
       </Button>
-      // </ActionGroup>
     );
 
     if (footerElem[0] != undefined) {
@@ -368,7 +351,6 @@ export default class Page extends Component {
 
           <Modal
             title=" "
-            width={"200%"}
             isOpen={isModalOpen}
             onClose={this.handleModalToggle}
             actions={[
@@ -393,7 +375,7 @@ export default class Page extends Component {
               id="yaml_edit_text"
               key="yaml_text"
               onChange={this.onChangeYaml}
-              rows={35}
+              rows={100}
               cols={35}
               value={this.state.resultYaml}
             />
