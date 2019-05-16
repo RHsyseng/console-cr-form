@@ -53,7 +53,7 @@ export class FieldGroupField {
     var pos = 0,
       elements = [];
 
-    if (this.props.fieldDef.fields !== undefined) {
+    if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach((subfield, i) => {
         if (
           subfield.parent === undefined ||

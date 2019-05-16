@@ -102,7 +102,7 @@ export class DropdownField {
   }
   addChildren() {
     var elements = [];
-    if (this.props.fieldDef.fields !== undefined) {
+    if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach((subfield, i) => {
         var parentjsonpath = this.props.fieldDef.jsonPath;
         parentjsonpath = parentjsonpath.slice(
@@ -165,7 +165,7 @@ export class DropdownField {
     this.props.page.loadPageChildren();
   };
   reBuildChildren(value) {
-    if (this.props.fieldDef.fields !== undefined) {
+    if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach(subfield => {
         if (subfield.type === "fieldGroup") {
           if (subfield.displayWhen === value) {
