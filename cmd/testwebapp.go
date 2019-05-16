@@ -74,15 +74,3 @@ func getSchema() spec.Schema {
 	}
 	return schema
 }
-
-type CustomResourceDefinition struct {
-	Spec CustomResourceDefinitionSpec `json:"spec,omitempty"`
-}
-
-type CustomResourceDefinitionSpec struct {
-	Validation CustomResourceDefinitionValidation `json:"validation,omitempty"`
-}
-
-type CustomResourceDefinitionValidation struct {
-	OpenAPIV3Schema spec.Schema `json:"openAPIV3Schema,omitempty"`
-}
