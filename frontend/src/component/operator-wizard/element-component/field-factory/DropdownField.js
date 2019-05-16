@@ -168,7 +168,7 @@ export class DropdownField {
     if (this.props.fieldDef.fields !== undefined) {
       this.props.fieldDef.fields.forEach(subfield => {
         if (subfield.type === "fieldGroup") {
-          if (subfield.label === value) {
+          if (subfield.displayWhen === value) {
             subfield.visible = true;
           } else {
             subfield.visible = false;

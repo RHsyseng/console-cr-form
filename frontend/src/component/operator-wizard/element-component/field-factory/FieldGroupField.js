@@ -37,7 +37,12 @@ export class FieldGroupField {
               : "none"
         }}
       >
-        {this.children}
+        <br />
+        <div style={{ "font-weight": "bold" }}>{this.props.fieldDef.label}</div>
+
+        <div className="pf-c-card">
+          <div className="pf-c-card__body">{this.children}</div>
+        </div>
       </div>
     );
     jsxArray.push(fieldJsx);

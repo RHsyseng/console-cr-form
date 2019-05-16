@@ -19,33 +19,56 @@
           "originalJsonPath": "$.spec.environment",
           "type": "dropDown"
         },
+
         {
-          "label": "Image Registry",
-          "default": "rhpam-trial",
+          "label": "External registry",
+          "type": "fieldGroup",
           "required": false,
-          "jsonPath": "$.spec.imageRegistry.registry",
-          "type": "text"
+          "jsonPath": "$.spec.imageRegistry",
+
+          "default": "",
+          "visible": true,
+          "fields": [
+            {
+              "label": "Image Registry",
+              "default": "rhpam-trial",
+              "required": false,
+              "jsonPath": "$.spec.imageRegistry.registry",
+              "type": "text"
+            },
+            {
+              "label": "Insecure",
+              "default": "false",
+              "required": false,
+              "jsonPath": "$.spec.imageRegistry.insecure",
+              "type": "checkbox"
+            }
+          ]
         },
         {
-          "label": "Insecure",
-          "default": "false",
+          "label": "Admin user",
+          "type": "fieldGroup",
           "required": false,
-          "jsonPath": "$.spec.imageRegistry.insecure",
-          "type": "checkbox"
-        },
-        {
-          "label": "User Name",
-          "default": "rhpam-trial",
-          "required": false,
-          "jsonPath": "$.spec.commonConfig.adminUser",
-          "type": "text"
-        },
-        {
-          "label": "Password",
-          "default": "env2 default",
-          "required": false,
-          "jsonPath": "$.spec.commonConfig.adminPassword",
-          "type": "password"
+          "jsonPath": "$.spec.commonConfig",
+
+          "default": "",
+          "visible": true,
+          "fields": [
+            {
+              "label": "User name",
+              "default": "rhpam-trial",
+              "required": false,
+              "jsonPath": "$.spec.commonConfig.adminUser",
+              "type": "text"
+            },
+            {
+              "label": "Password",
+              "default": "env2 default",
+              "required": false,
+              "jsonPath": "$.spec.commonConfig.adminPassword",
+              "type": "password"
+            }
+          ]
         }
       ]
     },
@@ -679,13 +702,13 @@
                       "description": "Size of the PersistentVolumeClaim to create. For example, 100Gi"
                     },
                     {
-                      "label": "external",
+                      "label": "External Database",
                       "type": "fieldGroup",
                       "required": true,
                       "jsonPath": "$.spec.objects.servers[*].database.externalConfig",
 
                       "default": "",
-
+                      "displayWhen": "external",
                       "visible": false,
                       "fields": [
                         {
