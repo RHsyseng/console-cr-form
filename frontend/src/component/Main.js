@@ -12,7 +12,9 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    this.stepBuilder.buildSteps(steps => this.setState({ steps: steps }));
+    this.stepBuilder.buildSteps((steps, pages) =>
+      this.setState({ steps: steps, pages: pages })
+    );
   }
 
   render() {
