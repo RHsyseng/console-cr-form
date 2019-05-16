@@ -2,18 +2,17 @@ import React, { Component } from "react";
 
 import { Wizard } from "@patternfly/react-core";
 
+import OperatorWizardFooter from "./OperatorWizardFooter";
+
 export default class OperatorWizard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: true,
-      allStepsValid: true
+      allStepsValid: true, //TODO: set false and change to true upon validation
+      currentStep: 1,
+      maxSteps: 1
     };
-    this.onGoToStep = this.onGoToStep.bind(this);
-    this.areAllStepsValid = this.areAllStepsValid.bind(this);
-    this.onNext = this.onNext.bind(this);
-    this.onBack = this.onBack.bind(this);
-    this.onGoToStep = this.onGoToStep.bind(this);
   }
 
   /*
@@ -24,32 +23,46 @@ export default class OperatorWizard extends Component {
 
   areAllStepsValid = () => {
     this.setState({
-      allStepsValid: false
+      //TODO: Set to the result of the validation
+      allStepsValid: true
     });
   };
 
-  onNext = ({ id, name, component }, { prevId, prevName }) => {
-    console.log(
-      `current id: ${id}, current name: ${name}, previous id: ${prevId}, previous name: ${prevName}`
-    );
-    console.log(` component: ${component}`);
-    this.areAllStepsValid();
+  static getDerivedStateFromProps(props) {
+    return {
+      maxSteps: OperatorWizard.calculateSteps(props.steps)
+    };
+  }
+
+  static calculateSteps = pages => {
+    let steps = 0;
+    pages.forEach(p => {
+      if (p.steps !== undefined) {
+        steps += this.calculateSteps(p.steps);
+      } else {
+        steps++;
+      }
+    });
+    return steps;
   };
 
-  onBack = ({ id, name }, { prevId, prevName }) => {
-    console.log(
-      `current id: ${id}, current name: ${name}, previous id: ${prevId}, previous name: ${prevName}`
-    );
+  onPageChange = ({ id }) => {
     this.areAllStepsValid();
-  };
-
-  onGoToStep = ({ id, name }, { prevId, prevName }) => {
-    console.log(
-      `current id: ${id}, current name: ${name}, previous id: ${prevId}, previous name: ${prevName}`
-    );
+    this.setState({
+      currentStep: id
+    });
   };
 
   render() {
+    const operatorFooter = (
+      <OperatorWizardFooter
+        canDeploy={this.state.allStepsValid}
+        maxSteps={this.state.maxSteps}
+        onNext={this.onPageChange}
+        onBack={this.onPageChange}
+        onGoToStep={this.onPageChange}
+      />
+    );
     return (
       <Wizard
         isOpen={true}
@@ -59,9 +72,7 @@ export default class OperatorWizard extends Component {
         isFullWidth
         onClose={() => {}}
         steps={this.props.steps}
-        onNext={this.onNext}
-        onBack={this.onBack}
-        onGoToStep={this.onGoToStep}
+        footer={operatorFooter}
       />
     );
   }
