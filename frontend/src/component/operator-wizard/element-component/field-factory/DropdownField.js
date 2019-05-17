@@ -7,7 +7,6 @@ import {
   Tooltip
 } from "@patternfly/react-core";
 
-import * as utils from "../../../common/CommonUtils";
 import FieldFactory from "./FieldFactory";
 import JSONPATH from "jsonpath";
 
@@ -20,10 +19,17 @@ export class DropdownField {
     this.reBuildChildren = this.reBuildChildren.bind(this);
   }
 
+  getJsonSchemaPathForJsonPath(jsonPath) {
+    jsonPath = jsonPath.slice(2, jsonPath.length);
+    jsonPath = jsonPath.replace(/\./g, ".properties.");
+    jsonPath = "$.." + jsonPath;
+    return jsonPath;
+  }
+
   getJsx() {
     var options = [{ value: "", label: "" }];
 
-    const tmpJsonPath = utils.getJsonSchemaPathForJsonPath(
+    const tmpJsonPath = this.getJsonSchemaPathForJsonPath(
       this.props.fieldDef.originalJsonPath
     );
     const optionValues = this.findValueFromSchema(tmpJsonPath + ".enum");
