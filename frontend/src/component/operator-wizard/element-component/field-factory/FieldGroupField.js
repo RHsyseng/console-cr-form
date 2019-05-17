@@ -38,7 +38,7 @@ export class FieldGroupField {
         }}
       >
         <br />
-        <div style={{ "font-weight": "bold" }}>{this.props.fieldDef.label}</div>
+        <div style={{ fontWeight: "bold" }}>{this.props.fieldDef.label}</div>
 
         <div className="pf-c-card">
           <div className="pf-c-card__body">{this.children}</div>
