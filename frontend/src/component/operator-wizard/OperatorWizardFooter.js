@@ -36,16 +36,22 @@ export default class OperatorWizardFooter extends React.Component {
                 >
                   Back
                 </Button>
-                {/*
-                Will be added in next iteration
+                <Button
+                  variant="secondary"
+                  type="submit"
+                  onClick={this.props.onEditYaml}
+                  className={this.props.isFormValid ? "" : "pf-m-disabled"}
+                >
+                  Edit YAML
+                </Button>
                 <Button
                   variant="primary"
                   type="submit"
                   onClick={this.props.onDeploy}
-                  className={this.props.canDeploy ? "" : "pf-m-disabled"}
+                  className={this.props.isFormValid ? "" : "pf-m-disabled"}
                 >
                   Deploy
-                </Button> */}
+                </Button>
               </>
             );
           }}
@@ -57,6 +63,7 @@ export default class OperatorWizardFooter extends React.Component {
 
 OperatorWizardFooter.propTypes = {
   maxSteps: PropTypes.number.isRequired,
-  canDeploy: PropTypes.bool.isRequired
-  // onDeploy: PropTypes.func.isRequired
+  isFormValid: PropTypes.bool.isRequired,
+  onDeploy: PropTypes.func.isRequired,
+  onEditYaml: PropTypes.func.isRequired
 };

@@ -11,36 +11,42 @@ export default class StepBuilder {
    * Just a placeholder while we build the actual ones. Wizard complains if we don't have at least one step defined.
    */
   buildPlaceholderStep() {
-    return {
-      id: 0,
-      name: "Loading",
-      component: <div>Loading</div>
-    };
+    return [
+      {
+        id: 0,
+        name: "Loading",
+        component: <div>Loading</div>
+      }
+    ];
   }
 
-  buildSteps(callback) {
-    Promise.all([jsonLoader.loadJsonForm, jsonLoader.loadJsonSchema]).then(
-      values => {
-        this.jsonForm = values[0];
-        this.jsonSchema = values[1];
-        let steps = [];
-        let pageId = 1;
-        this.jsonForm.pages.forEach(page => {
-          const step = this.buildStep(page, pageId);
-          if (Array.isArray(page.subPages) && page.subPages.length > 0) {
-            step.steps = [];
-            page.subPages.forEach(subPage => {
-              step.steps.push(this.buildStep(subPage, pageId));
-              pageId++;
-            });
-          } else {
+  buildSteps() {
+    return Promise.all([
+      jsonLoader.loadJsonForm,
+      jsonLoader.loadJsonSchema
+    ]).then(values => {
+      this.jsonForm = values[0];
+      this.jsonSchema = values[1];
+      let steps = [];
+      let pageId = 1;
+      this.jsonForm.pages.forEach(page => {
+        const step = this.buildStep(page, pageId);
+        if (Array.isArray(page.subPages) && page.subPages.length > 0) {
+          step.steps = [];
+          page.subPages.forEach(subPage => {
+            step.steps.push(this.buildStep(subPage, pageId));
             pageId++;
-          }
-          steps.push(step);
-        });
-        callback(steps, this.jsonForm.pages);
-      }
-    );
+          });
+        } else {
+          pageId++;
+        }
+        steps.push(step);
+      });
+      return {
+        steps: steps,
+        pages: this.jsonForm.pages
+      };
+    });
   }
 
   storeObjectMap(key, value) {
