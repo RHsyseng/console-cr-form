@@ -50,7 +50,6 @@
           "type": "fieldGroup",
           "required": false,
           "jsonPath": "$.spec.commonConfig",
-
           "default": "",
           "visible": true,
           "fields": [
@@ -717,7 +716,6 @@
                       "type": "fieldGroup",
                       "required": true,
                       "jsonPath": "$.spec.objects.servers[*].database.externalConfig",
-
                       "default": "",
                       "displayWhen": "external",
                       "visible": false,
@@ -847,7 +845,6 @@
             }
           ]
         },
-
         {
           "label": "Smart Router",
           "fields": [
