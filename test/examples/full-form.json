@@ -540,7 +540,7 @@
                   "type": "text",
                   "jsonPath": "$.spec.objects.servers[*].from.namespace",
                   "default": "",
-                  "description": "Namespace where the object is located"
+                  "description": "Namespace where the image/stream is located."
                 },
                 {
                   "label": "KIE Server Container Deployment",
@@ -613,6 +613,30 @@
                       "description": "Secret value for WebHook to configure."
                     }
                   ]
+                },
+                {
+                  "label": "Kind",
+                  "type": "dropDown",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.servers[*].build.from.kind",
+                  "originalJsonPath": "$.spec.objects.servers[*].build.from.kind",
+                  "default": "",
+                  "description": "Specify whether build config is created from an image stream, or a container image."
+                },
+                {
+                  "label": "Name",
+                  "type": "text",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.servers[*].build.from.name",
+                  "default": "",
+                  "description": "The name of the image stream or container image to use for build config."
+                },
+                {
+                  "label": "Namespace",
+                  "type": "text",
+                  "jsonPath": "$.spec.objects.servers[*].build.from.namespace",
+                  "default": "",
+                  "description": "Namespace where the build config image/stream is located."
                 },
                 {
                   "label": "Env",
