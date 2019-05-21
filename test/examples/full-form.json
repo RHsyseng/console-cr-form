@@ -407,7 +407,7 @@
                   "default": ""
                 },
                 {
-                  "label": "value",
+                  "label": "Value",
                   "type": "text",
                   "required": true,
                   "jsonPath": "$.spec.objects.console.env[*].value",
@@ -503,7 +503,7 @@
                   "description": "The number of distinct KIE server sets to auto-generate, when specifying a single server element here."
                 },
                 {
-                  "label": "KeyStoreSecret",
+                  "label": "Keystore Secret",
                   "default": "",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].keystoreSecret",
@@ -521,7 +521,7 @@
                 {
                   "label": "Kind",
                   "type": "dropDown",
-                  "required": true,
+                  "required": false,
                   "jsonPath": "$.spec.objects.servers[*].from.kind",
                   "originalJsonPath": "$.spec.objects.servers[*].from.kind",
                   "default": "",
@@ -530,7 +530,7 @@
                 {
                   "label": "Name",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "jsonPath": "$.spec.objects.servers[*].from.name",
                   "default": "",
                   "description": "The name of the image stream or container image to use."
@@ -540,12 +540,12 @@
                   "type": "text",
                   "jsonPath": "$.spec.objects.servers[*].from.namespace",
                   "default": "",
-                  "description": "Namespace where the object is located"
+                  "description": "Namespace where the image/stream is located."
                 },
                 {
                   "label": "KIE Server Container Deployment",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "jsonPath": "$.spec.objects.servers[*].build.kieServerContainerDeployment",
                   "default": "",
                   "description": "KIE packages to deploy to the KIE server."
@@ -569,7 +569,7 @@
                   "type": "text",
                   "jsonPath": "$.spec.objects.servers[*].build.gitSource.uri",
                   "default": "",
-                  "required": true,
+                  "required": false,
                   "description": "The URI of the Git repository to use in S2I build."
                 },
                 {
@@ -577,11 +577,11 @@
                   "type": "text",
                   "jsonPath": "$.spec.objects.servers[*].build.gitSource.reference",
                   "default": "",
-                  "required": true,
+                  "required": false,
                   "description": "Branch to use in the git repository for S2I build."
                 },
                 {
-                  "label": "contextDir",
+                  "label": "Context Directory",
                   "type": "text",
                   "jsonPath": "$.spec.objects.servers[*].build.gitSource.contextDir",
                   "default": "",
@@ -601,7 +601,7 @@
                       "jsonPath": "$.spec.objects.servers[*].build.webhooks[*].type",
                       "originalJsonPath": "$.spec.objects.servers[*].build.webhooks[*].type",
                       "default": "",
-                      "required": false,
+                      "required": true,
                       "description": "Git WebHook type to configure, either GitHub or Generic."
                     },
                     {
@@ -613,6 +613,30 @@
                       "description": "Secret value for WebHook to configure."
                     }
                   ]
+                },
+                {
+                  "label": "Kind",
+                  "type": "dropDown",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.servers[*].build.from.kind",
+                  "originalJsonPath": "$.spec.objects.servers[*].build.from.kind",
+                  "default": "",
+                  "description": "Specify whether build config is created from an image stream, or a container image."
+                },
+                {
+                  "label": "Name",
+                  "type": "text",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.servers[*].build.from.name",
+                  "default": "",
+                  "description": "The name of the image stream or container image to use for build config."
+                },
+                {
+                  "label": "Namespace",
+                  "type": "text",
+                  "jsonPath": "$.spec.objects.servers[*].build.from.namespace",
+                  "default": "",
+                  "description": "Namespace where the build config image/stream is located."
                 },
                 {
                   "label": "Env",
@@ -631,7 +655,7 @@
                       "description": "Environment variable name"
                     },
                     {
-                      "label": "value",
+                      "label": "Value",
                       "type": "text",
                       "required": true,
                       "jsonPath": "$.spec.objects.servers[*].env[*].value",
@@ -699,7 +723,7 @@
                 {
                   "label": "Database Type",
                   "type": "dropDown",
-                  "required": true,
+                  "required": false,
                   "jsonPath": "$.spec.objects.servers[*].database.type",
                   "originalJsonPath": "$.spec.objects.servers[*].database.type",
                   "default": "",
@@ -772,7 +796,7 @@
                           "description": "Select this option to configure database in non XA mode."
                         },
                         {
-                          "label": "jndiName",
+                          "label": "JNDI Name",
                           "type": "text",
                           "required": true,
                           "jsonPath": "$.spec.objects.servers[*].database.externalConfig.jndiName",
@@ -873,7 +897,7 @@
               "max": 100,
               "fields": [
                 {
-                  "label": "name",
+                  "label": "Name",
                   "type": "text",
                   "required": true,
                   "jsonPath": "$.spec.objects.smartRouter.env[*].name",
@@ -881,7 +905,7 @@
                   "description": "Environment variable name"
                 },
                 {
-                  "label": "value",
+                  "label": "Value",
                   "type": "text",
                   "required": true,
                   "jsonPath": "$.spec.objects.smartRouter.env[*].value",
