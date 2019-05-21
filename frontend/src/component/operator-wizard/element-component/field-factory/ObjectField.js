@@ -160,7 +160,7 @@ export class ObjectField {
               {this.props.fieldDef.label}
             </div>
             <div className="pf-c-card">
-              <div className="pf-c-card__body">{fieldBlock}</div>
+              <div className="pf-c-card__body pf-c-form">{fieldBlock}</div>
             </div>
           </div>
         );
