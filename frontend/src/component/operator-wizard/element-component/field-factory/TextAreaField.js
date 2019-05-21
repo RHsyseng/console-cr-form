@@ -5,14 +5,12 @@ export class TextAreaField {
   constructor(props) {
     this.props = props;
     this.onBlurTextArea = this.onBlurTextArea.bind(this);
-    this.value = "";
     this.errMsg = "";
     this.isValid = true;
   }
 
   getJsx() {
-    this.value = this.props.fieldDef.value;
-    this.isValidField(this.value);
+    this.isValidField();
     return (
       <FormGroup
         label={this.props.fieldDef.label}
@@ -41,6 +39,7 @@ export class TextAreaField {
             key={this.props.ids.fieldKey}
             jsonpath={this.props.fieldDef.jsonPath}
             defaultValue={this.props.fieldDef.value}
+            placeholder={this.props.fieldDef.default}
             onBlur={this.onBlurTextArea}
           />
         </Tooltip>
@@ -51,14 +50,13 @@ export class TextAreaField {
   onBlurTextArea = event => {
     let value = event.target.value;
     if (value !== undefined && value !== null) {
-      this.isValidField(value);
       this.props.fieldDef.value = value;
-      this.value = value;
-      //this.props.fieldDef.default = value;
+      this.isValidField();
     }
   };
 
-  isValidField(value) {
+  isValidField() {
+    const value = this.props.fieldDef.value;
     if (
       this.props.fieldDef.required === true &&
       (value === undefined || value === "")

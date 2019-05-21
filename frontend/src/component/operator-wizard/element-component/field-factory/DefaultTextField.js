@@ -4,15 +4,12 @@ import { FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
 export class DefaultTextField {
   constructor(props) {
     this.props = props;
-    this.onBlurText = this.onBlurText.bind(this);
-    this.value = "";
     this.errMsg = "";
     this.isValid = true;
   }
 
   getJsx() {
-    this.value = this.props.fieldDef.value;
-    this.isValidField(this.value);
+    this.isValidField();
     return (
       <FormGroup
         label={this.props.fieldDef.label}
@@ -40,28 +37,25 @@ export class DefaultTextField {
             key={this.props.ids.fieldKey}
             aria-describedby="horizontal-form-name-helper"
             name={this.props.fieldDef.label}
-            // onChange={this.onChangeText}
-            onBlur={this.onBlurText}
+            onChange={this.onChangeText}
             jsonpath={this.props.fieldDef.jsonPath}
-            // value={((this.props.fieldDef.default!==undefined ) ? this.props.fieldDef.default:this.props.fieldDef.value)}
-            defaultValue={this.value}
+            placeholder={this.props.fieldDef.default}
+            defaultValue={this.props.fieldDef.value}
             {...this.props.attrs}
           />
         </Tooltip>
       </FormGroup>
     );
   }
-
-  onBlurText = event => {
-    let value = event.target.value;
+  onChangeText = value => {
     if (value !== undefined && value !== null) {
-      this.isValidField(value);
       this.props.fieldDef.value = value;
-      this.value = value;
+      this.isValidField();
     }
   };
 
-  isValidField(value) {
+  isValidField() {
+    const value = this.props.fieldDef.value;
     if (
       this.props.fieldDef.required === true &&
       (value === undefined || value === "")
