@@ -39,7 +39,8 @@ export default class FieldFactory {
     pageNumber,
     jsonSchema,
     page,
-    parentid
+    parentid,
+    grandParentId
   ) {
     var fieldReference;
     var props = {
@@ -52,9 +53,11 @@ export default class FieldFactory {
         pageNumber,
         fieldNumber,
         fieldDef.label,
-        parentid
+        parentid,
+        grandParentId
       ),
-      parentid: parentid
+      parentid: parentid,
+      grandParentId: grandParentId
     };
     //TODO: rethink when we have the time
     switch (fieldDef.type) {
@@ -92,7 +95,6 @@ export default class FieldFactory {
         if (props.parentid === undefined) {
           props.parentid = -1;
         }
-
         fieldReference = new ObjectField(props);
         break;
       case FIELD_TYPE.fieldGroup:
