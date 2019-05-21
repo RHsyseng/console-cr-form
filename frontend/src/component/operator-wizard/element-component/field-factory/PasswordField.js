@@ -6,14 +6,12 @@ export class PasswordField {
   constructor(props) {
     this.props = props;
     this.onBlurText = this.onBlurPwd.bind(this);
-    this.value = "";
     this.errMsg = "";
     this.isValid = true;
   }
 
   getJsx() {
-    this.value = this.props.fieldDef.value;
-    this.isValidField(this.value);
+    this.isValidField();
 
     return (
       <FormGroup
@@ -45,8 +43,8 @@ export class PasswordField {
             // onChange={this.onChangeText}
             onBlur={this.onBlurPwd}
             jsonpath={this.props.fieldDef.jsonPath}
-            // value={((this.props.fieldDef.default!==undefined ) ? this.props.fieldDef.default:this.props.fieldDef.value)}
-            defaultValue={this.value}
+            defaultValue={this.props.fieldDef.value}
+            placeholder={this.props.fieldDef.default}
             {...this.props.attrs}
           />
         </Tooltip>
@@ -56,13 +54,13 @@ export class PasswordField {
   onBlurPwd = event => {
     let value = event.target.value;
     if (value !== undefined && value !== null) {
-      this.isValidField(value);
       this.props.fieldDef.value = value;
-      this.value = value;
+      this.isValidField();
     }
   };
 
-  isValidField(value) {
+  isValidField() {
+    const value = this.props.fieldDef.value;
     if (
       this.props.fieldDef.required === true &&
       (value === undefined || value === "")

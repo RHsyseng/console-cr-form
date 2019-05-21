@@ -43,9 +43,6 @@ export class DropdownField {
         options.push(oneOption);
       });
     }
-    if (this.props.fieldDef.value === undefined) {
-      this.props.fieldDef.value = "";
-    }
     if (
       this.props.fieldDef.required === true &&
       (this.props.fieldDef.value === undefined ||

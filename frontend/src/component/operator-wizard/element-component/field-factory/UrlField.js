@@ -6,15 +6,12 @@ export class UrlField {
   constructor(props) {
     this.props = props;
     this.onBlurText = this.onBlurUrl.bind(this);
-    this.value = "";
     this.errMsg = "";
     this.isValid = true;
   }
 
   getJsx() {
-    this.value = this.props.fieldDef.value;
-
-    this.isValidField(this.value);
+    this.isValidField();
 
     return (
       <FormGroup
@@ -46,8 +43,8 @@ export class UrlField {
             // onChange={this.onChangeText}
             onBlur={this.onBlurUrl}
             jsonpath={this.props.fieldDef.jsonPath}
-            // value={((this.props.fieldDef.default!==undefined ) ? this.props.fieldDef.default:this.props.fieldDef.value)}
-            defaultValue={this.value}
+            defaultValue={this.props.fieldDef.value}
+            placeholder={this.props.fieldDef.defaut}
             {...this.props.attrs}
           />
         </Tooltip>
@@ -58,15 +55,14 @@ export class UrlField {
   onBlurUrl = event => {
     let value = event.target.value;
     if (value !== undefined && value !== null) {
-      this.isValidField(value);
       this.props.fieldDef.value = value;
-      this.value = value;
-      //this.props.fieldDef.default = value;
+      this.isValidField();
     }
     this.props.page.loadPageChildren();
   };
 
-  isValidField(value) {
+  isValidField() {
+    const value = this.props.fieldDef.value;
     if (
       this.props.fieldDef.required === true &&
       (value === undefined || value === "")
