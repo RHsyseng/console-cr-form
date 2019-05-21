@@ -74,17 +74,24 @@
       "label": "Security",
       "fields": [
         {
-          "label": "Security",
-          "type": "section_radio",
+          "label": "",
+          "type": "dropDown",
+          "required": false,
           "jsonPath": "",
+          "options": [
+            { "value": "", "label": "Select here" },
+            { "value": "SSO", "label": "SSO" },
+            { "value": "LDAP", "label": "LDAP" },
+            { "value": "default", "label": "Default properties" }
+          ],
           "fields": [
             {
               "label": "SSO",
-              "type": "radioButton",
-              "required": false,
-              "description": "Red Hat Single Sign-On Configuration",
+              "type": "fieldGroup",
+              "required": true,
               "jsonPath": "$.spec.objects.console.env.sso",
-              "default": "false",
+              "displayWhen": "SSO",
+              "visible": false,
               "fields": [
                 {
                   "label": "URL",
@@ -129,13 +136,14 @@
                 }
               ]
             },
+
             {
               "label": "LDAP",
-              "type": "radioButton",
-              "required": false,
-              "description": "Use ldap as authentication provider",
+              "type": "fieldGroup",
+              "required": true,
               "jsonPath": "$.spec.objects.console.env.ldap",
-              "default": "false",
+              "displayWhen": "LDAP",
+              "visible": false,
               "fields": [
                 {
                   "label": "URL",
@@ -281,27 +289,29 @@
                   "description": "If you are not using referrals, you can ignore this option. When using referrals, this option denotes the attribute name which contains users defined for a certain role, for example member, if the role object is inside the referral. Users are checked against the content of this attribute name. If this option is not set, the check will always fail, so role objects cannot be stored in a referral tree"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "label": "Role mapping",
-          "type": "fieldGroup",
-          "jsonPath": "$.spec.auth.roleMapper",
-          "visible": true,
-          "fields": [
-            {
-              "label": "Roles properties file",
-              "type": "text",
-              "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
-              "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
             },
             {
-              "label": "Replace roles",
-              "type": "checkbox",
-              "jsonPath": "$.spec.auth.roleMapper.replaceRole",
-              "default": "false",
-              "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+              "label": "Default properties",
+              "type": "fieldGroup",
+              "required": true,
+              "jsonPath": "$.spec.auth.roleMapper",
+              "displayWhen": "default",
+              "visible": false,
+              "fields": [
+                {
+                  "label": "Roles properties file",
+                  "type": "text",
+                  "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
+                  "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
+                },
+                {
+                  "label": "Replace roles",
+                  "type": "checkbox",
+                  "jsonPath": "$.spec.auth.roleMapper.replaceRole",
+                  "default": "false",
+                  "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+                }
+              ]
             }
           ]
         },
