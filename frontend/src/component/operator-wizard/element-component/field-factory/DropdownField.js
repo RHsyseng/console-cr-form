@@ -3,8 +3,7 @@ import React from "react";
 import {
   FormGroup,
   FormSelectOption,
-  FormSelect,
-  Tooltip
+  FormSelect
 } from "@patternfly/react-core";
 
 import FieldFactory from "./FieldFactory";
@@ -64,39 +63,27 @@ export class DropdownField {
         id={this.props.ids.fieldGroupId}
         key={this.props.ids.fieldGroupKey}
         helperTextInvalid={this.errMsg}
+        helperText={this.props.fieldDef.description}
         fieldId={this.props.ids.fieldId}
         isValid={this.isValid}
         isRequired={this.props.fieldDef.required}
       >
-        <Tooltip
-          position="left"
-          content={<div>{this.props.fieldDef.description}</div>}
-          enableFlip={true}
-          style={{
-            display:
-              this.props.fieldDef.description !== undefined &&
-              this.props.fieldDef.description !== ""
-                ? "block"
-                : "none"
-          }}
+        <FormSelect
+          id={this.props.ids.fieldId}
+          key={this.props.ids.fieldKey}
+          name={this.props.fieldDef.label}
+          jsonpath={this.props.fieldDef.jsonPath}
+          onChange={this.onSelect}
+          value={this.props.fieldDef.value}
         >
-          <FormSelect
-            id={this.props.ids.fieldId}
-            key={this.props.ids.fieldKey}
-            name={this.props.fieldDef.label}
-            jsonpath={this.props.fieldDef.jsonPath}
-            onChange={this.onSelect}
-            value={this.props.fieldDef.value}
-          >
-            {options.map((option, index) => (
-              <FormSelectOption
-                key={this.props.ids.fieldKey + index}
-                value={option.value}
-                label={option.label}
-              />
-            ))}
-          </FormSelect>
-        </Tooltip>
+          {options.map((option, index) => (
+            <FormSelectOption
+              key={this.props.ids.fieldKey + index}
+              value={option.value}
+              label={option.label}
+            />
+          ))}
+        </FormSelect>
       </FormGroup>
     );
     jsxArray.push(fieldJsx);

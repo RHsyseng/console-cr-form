@@ -282,8 +282,8 @@ export default class OperatorWizard extends Component {
       <React.Fragment>
         <Wizard
           isOpen={true}
-          title="Operator GUI"
-          description="KIE Operator"
+          title="Operator Installer"
+          description="RHPAM Installer"
           isFullHeight
           isFullWidth
           onClose={() => {}}

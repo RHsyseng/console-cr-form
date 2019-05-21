@@ -1,5 +1,5 @@
 import React from "react";
-import { FormGroup, TextArea, Tooltip } from "@patternfly/react-core";
+import { FormGroup, TextArea } from "@patternfly/react-core";
 
 export class TextAreaField {
   constructor(props) {
@@ -17,32 +17,19 @@ export class TextAreaField {
         fieldId={this.props.ids.fieldGroupId}
         key={this.props.ids.fieldGroupKey}
         helperTextInvalid={this.errMsg}
+        helperText={this.props.fieldDef.description}
         isValid={this.isValid}
         isRequired={this.props.fieldDef.required}
       >
-        <Tooltip
-          position="left"
-          content={<div>{this.props.fieldDef.description}</div>}
-          enableFlip={true}
-          style={{
-            display:
-              this.props.fieldDef.description !== undefined &&
-              this.props.fieldDef.description !== ""
-                ? "block"
-                : "none"
-          }}
-        >
-          <TextArea
-            value={this.props.fieldDef.default}
-            name="horizontal-form-exp"
-            id={this.props.ids.fieldId}
-            key={this.props.ids.fieldKey}
-            jsonpath={this.props.fieldDef.jsonPath}
-            defaultValue={this.props.fieldDef.value}
-            placeholder={this.props.fieldDef.default}
-            onBlur={this.onBlurTextArea}
-          />
-        </Tooltip>
+        <TextArea
+          value={this.props.fieldDef.default}
+          name="horizontal-form-exp"
+          id={this.props.ids.fieldId}
+          key={this.props.ids.fieldKey}
+          jsonpath={this.props.fieldDef.jsonPath}
+          defaultValue={this.props.fieldDef.value}
+          onBlur={this.onBlurTextArea}
+        />
       </FormGroup>
     );
   }

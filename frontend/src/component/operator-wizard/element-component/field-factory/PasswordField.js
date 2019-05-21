@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FormGroup, TextInput, Tooltip } from "@patternfly/react-core";
+import { FormGroup, TextInput } from "@patternfly/react-core";
 
 export class PasswordField {
   constructor(props) {
@@ -19,35 +19,22 @@ export class PasswordField {
         fieldId={this.props.ids.fieldGroupId}
         key={this.props.ids.fieldGroupKey}
         helperTextInvalid={this.errMsg}
+        helperText={this.props.fieldDef.description}
         isValid={this.isValid}
         isRequired={this.props.fieldDef.required}
       >
-        <Tooltip
-          position="left"
-          content={<div>{this.props.fieldDef.description}</div>}
-          enableFlip={true}
-          style={{
-            display:
-              this.props.fieldDef.description !== undefined &&
-              this.props.fieldDef.description !== ""
-                ? "block"
-                : "none"
-          }}
-        >
-          <TextInput
-            type="password"
-            id={this.props.ids.fieldId}
-            key={this.props.ids.fieldKey}
-            aria-describedby="horizontal-form-name-helper"
-            name={this.props.fieldDef.label}
-            // onChange={this.onChangeText}
-            onBlur={this.onBlurPwd}
-            jsonpath={this.props.fieldDef.jsonPath}
-            defaultValue={this.props.fieldDef.value}
-            placeholder={this.props.fieldDef.default}
-            {...this.props.attrs}
-          />
-        </Tooltip>
+        <TextInput
+          type="password"
+          id={this.props.ids.fieldId}
+          key={this.props.ids.fieldKey}
+          aria-describedby="horizontal-form-name-helper"
+          name={this.props.fieldDef.label}
+          // onChange={this.onChangeText}
+          onBlur={this.onBlurPwd}
+          jsonpath={this.props.fieldDef.jsonPath}
+          defaultValue={this.props.fieldDef.value}
+          {...this.props.attrs}
+        />
       </FormGroup>
     );
   }

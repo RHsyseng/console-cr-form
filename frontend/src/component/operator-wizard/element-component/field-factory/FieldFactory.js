@@ -5,7 +5,6 @@ import { EmailField } from "./EmailField";
 import { UrlField } from "./UrlField";
 import { PasswordField } from "./PasswordField";
 import { CheckboxField } from "./CheckboxField";
-import { SeparateDivField } from "./SeparateDivField";
 import { SectionField } from "./SectionField";
 import { DefaultTextField } from "./DefaultTextField";
 import { SectionRadioField } from "./SectionRadioField";
@@ -81,9 +80,6 @@ export default class FieldFactory {
         break;
       case FIELD_TYPE.checkbox:
         fieldReference = new CheckboxField(props);
-        break;
-      case FIELD_TYPE.seperateObjDiv:
-        fieldReference = new SeparateDivField(props);
         break;
       case FIELD_TYPE.section:
         fieldReference = new SectionField(props);

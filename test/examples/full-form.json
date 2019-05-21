@@ -4,7 +4,7 @@
       "label": "Installation",
       "fields": [
         {
-          "label": "Application Name",
+          "label": "Application name",
           "default": "MyTrialEnvironment",
           "required": true,
           "jsonPath": "$.metadata.name",
@@ -27,7 +27,7 @@
           "visible": true,
           "fields": [
             {
-              "label": "Image Registry",
+              "label": "Image registry",
               "default": "registry.redhat.io",
               "required": false,
               "description": "URL of a custom registry where RHPAM images are stored",
@@ -61,7 +61,6 @@
             },
             {
               "label": "Password",
-              "default": "[Generated if empty]",
               "required": false,
               "description": "Administrative password to use instead of generating default value",
               "jsonPath": "$.spec.commonConfig.adminPassword",
@@ -103,26 +102,26 @@
                   "description": "RH-SSO Realm name"
                 },
                 {
-                  "label": "Admin User",
+                  "label": "Admin user",
                   "type": "text",
                   "jsonPath": "$.spec.auth.sso.adminuser",
                   "description": "RH-SSO Realm Admin Username used to create the Client if it doesn't exist"
                 },
                 {
-                  "label": "Admin Password",
+                  "label": "Admin password",
                   "type": "password",
                   "jsonPath": "$.spec.auth.sso.adminPassword",
                   "description": "RH-SSO Realm Admin Password used to create the Client"
                 },
                 {
-                  "label": "Disable SSL Cert Validation",
+                  "label": "Disable SSL cert validation",
                   "type": "checkbox",
                   "jsonPath": "$.spec.auth.sso.disableSSLCertValidation",
                   "default": "false",
                   "description": "Disable SSL Certificate Validation"
                 },
                 {
-                  "label": "Principal Attribute",
+                  "label": "Principal attribute",
                   "type": "text",
                   "default": "preferred_username",
                   "jsonPath": "$.spec.auth.sso.principalAttribute",
@@ -154,13 +153,13 @@
                   "description": "Bind DN used for authentication"
                 },
                 {
-                  "label": "BindDN Password",
+                  "label": "BindDN password",
                   "type": "password",
                   "jsonPath": "$.spec.auth.ldap.bindCredential",
                   "description": "LDAP Credentials used for authentication of bindDN"
                 },
                 {
-                  "label": "JAAS Security Domain",
+                  "label": "JAAS security domain",
                   "type": "password",
                   "jsonPath": "$.spec.auth.ldap.jaasSecurityDomain",
                   "description": "The JMX ObjectName of the JaasSecurityDomain used to decrypt the password."
@@ -173,7 +172,7 @@
                   "description": "Base DN of the top-level context to begin the user search."
                 },
                 {
-                  "label": "BaseFilter",
+                  "label": "Base filter",
                   "type": "text",
                   "default": "(uid={0})",
                   "jsonPath": "$.spec.auth.ldap.baseFilter",
@@ -194,7 +193,7 @@
                   "description": "The timeout in milliseconds for ldap searches."
                 },
                 {
-                  "label": "DN Attribute",
+                  "label": "DN attribute",
                   "type": "text",
                   "default": "distinguishedName",
                   "jsonPath": "$.spec.auth.ldap.distinguishedNameAttribute",
@@ -286,19 +285,19 @@
           ]
         },
         {
-          "label": "Role Mapping",
+          "label": "Role mapping",
           "type": "fieldGroup",
           "jsonPath": "$.spec.auth.roleMapper",
           "visible": true,
           "fields": [
             {
-              "label": "Roles Properties File",
+              "label": "Roles properties file",
               "type": "text",
               "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
               "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
             },
             {
-              "label": "Replace Roles",
+              "label": "Replace roles",
               "type": "checkbox",
               "jsonPath": "$.spec.auth.roleMapper.replaceRole",
               "default": "false",
@@ -307,60 +306,53 @@
           ]
         },
         {
-          "label": "Image Tag",
+          "label": "Image tag",
           "type": "text",
           "default": "1.0",
           "jsonPath": "$.spec.commonConfig.imageTag",
           "description": "The tag to use for the application images."
         },
         {
-          "label": "Keystore Password",
+          "label": "Keystore password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.keyStorePassword",
-          "description": "The password to use for keystore generation."
+          "description": "The password to use for keystore generation. Generated if empty"
         },
         {
-          "label": "Database Password",
+          "label": "Database password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.dbPassword",
-          "description": "The password to use for databases."
+          "description": "The password to use for databases. Generated if empty"
         },
         {
-          "label": "AMQ Password",
+          "label": "AMQ password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.amqPassword",
-          "description": "The password to use for AMQ user"
+          "description": "The password to use for AMQ user. Generated if empty"
         },
         {
-          "label": "AMQ Cluster Password",
+          "label": "AMQ cluster password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.amqClusterPassword",
-          "description": "Password for AMQ Cluster"
+          "description": "Password for AMQ Cluster. Generated if empty"
         },
         {
-          "label": "Controller Password",
+          "label": "Controller password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.controllerPassword",
-          "description": "The password to use for 'controllerUser'."
+          "description": "The password to use for 'controllerUser'. Generated if empty"
         },
         {
-          "label": "Server Password",
+          "label": "Server password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.serverPassword",
-          "description": "The password to use for 'executionUser'."
+          "description": "The password to use for 'executionUser'. Generated if empty"
         },
         {
-          "label": "Maven Password",
+          "label": "Maven password",
           "type": "password",
-          "default": "[Generated if empty]",
           "jsonPath": "$.spec.commonConfig.mavenPassword",
-          "description": "The password to use for 'mavenUser'."
+          "description": "The password to use for 'mavenUser'. Generated if empty"
         }
       ]
     },
@@ -371,11 +363,10 @@
           "label": "Console",
           "fields": [
             {
-              "label": "Keystore Secret",
+              "label": "Keystore secret",
               "required": false,
-              "default": "[Generated if empty]",
               "jsonPath": "$.spec.objects.console.keystoreSecret",
-              "description": "The secret name within the Java keystore used for https encryption.",
+              "description": "The secret name within the Java keystore used for https encryption. Generated if empty",
               "type": "text"
             },
             {
@@ -411,34 +402,34 @@
               ]
             },
             {
-              "label": "Resource Quotas",
+              "label": "Resource quotas",
               "type": "fieldGroup",
               "jsonPath": "$.spec.objects.console.resources",
               "visible": true,
               "fields": [
                 {
-                  "label": "Memory Request",
+                  "label": "Memory request",
                   "type": "text",
                   "jsonPath": "$.spec.objects.console.resources.request.memory",
                   "description": "Minimum amount of memory requested by the container",
                   "default": "2Gi"
                 },
                 {
-                  "label": "CPU Request",
+                  "label": "CPU request",
                   "type": "text",
                   "jsonPath": "$.spec.objects.console.resources.request.cpu",
                   "description": "Minimum processing power requested by the container",
                   "default": "500m"
                 },
                 {
-                  "label": "Memory Limit",
+                  "label": "Memory limit",
                   "type": "text",
                   "jsonPath": "$.spec.objects.console.resources.limits.memory",
                   "description": "Maximum amount of memory granted to the container",
                   "default": "2Gi"
                 },
                 {
-                  "label": "CPU Limit",
+                  "label": "CPU limit",
                   "type": "text",
                   "jsonPath": "$.spec.objects.console.resources.limits.cpu",
                   "description": "Maximum processing power granted to the container",
@@ -447,19 +438,19 @@
               ]
             },
             {
-              "label": "SSO Client",
+              "label": "SSO client",
               "type": "fieldGroup",
               "jsonPath": "$.spec.objects.console.ssoClient",
               "visible": true,
               "fields": [
                 {
-                  "label": "Client Name",
+                  "label": "Client name",
                   "type": "text",
                   "jsonPath": "$.spec.objects.console.ssoClient.name",
                   "description": "Client name used for console in RH-SSO, when configured"
                 },
                 {
-                  "label": "Client Secret",
+                  "label": "Client secret",
                   "type": "password",
                   "jsonPath": "$.spec.objects.console.ssoClient.secret",
                   "description": "Client secret to use for console in RH-SSO, when configured"
@@ -481,10 +472,10 @@
           ]
         },
         {
-          "label": "Server",
+          "label": "Process Servers",
           "fields": [
             {
-              "label": "Server",
+              "label": "Process Server",
               "required": false,
               "jsonPath": "$.spec.objects.servers",
               "type": "object",
@@ -496,29 +487,28 @@
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].name",
                   "type": "text",
-                  "description": "The name to use for this KIE Server."
+                  "description": "The name to use for this Process Server."
                 },
                 {
                   "label": "Deployments",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].deployments",
                   "type": "text",
-                  "description": "The number of distinct KIE server sets to auto-generate, when specifying a single server element here."
+                  "description": "The number of distinct Process Server sets to auto-generate, when specifying a single server element here."
                 },
                 {
-                  "label": "Keystore Secret",
+                  "label": "Keystore secret",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].keystoreSecret",
                   "type": "text",
-                  "description": "The secret name within the Java keystore used for https encryption.",
-                  "default": "[Generated if empty]"
+                  "description": "The secret name within the Java keystore used for https encryption. Generated if empty"
                 },
                 {
                   "label": "Replicas",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].replicas",
                   "type": "text",
-                  "description": "The number of replicas for this KIE server set."
+                  "description": "The number of replicas for this Process Server set."
                 },
                 {
                   "label": "Kind",
@@ -544,27 +534,27 @@
                   "default": "openshift"
                 },
                 {
-                  "label": "Build Configuration (Source to Image)",
+                  "label": "Build configuration (Source to Image)",
                   "type": "fieldGroup",
                   "jsonPath": "$.spec.objects.servers[*].build",
                   "visible": true,
                   "fields": [
                     {
-                      "label": "KIE Server Container Deployment",
+                      "label": "Process Server container deployment",
                       "type": "text",
                       "required": false,
                       "jsonPath": "$.spec.objects.servers[*].build.kieServerContainerDeployment",
-                      "description": "KIE packages to deploy to the KIE server.",
+                      "description": "KIE packages to deploy to the Process Server.",
                       "default": "rhpam-kieserver-library=org.openshift.quickstarts:rhpam-kieserver-library:1.5.0-SNAPSHOT"
                     },
                     {
-                      "label": "Maven Mirror URL",
+                      "label": "Maven mirror URL",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].build.mavenMirrorURL",
                       "description": "URL of a Maven mirror to use."
                     },
                     {
-                      "label": "Artifact Directory",
+                      "label": "Artifact directory",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].build.artifactDir",
                       "description": "Build artifact directory."
@@ -586,7 +576,7 @@
                       "default": "master"
                     },
                     {
-                      "label": "Context Directory",
+                      "label": "Context directory",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].build.gitSource.contextDir",
                       "description": "Context/subdirectory where the code is located, relatively to repository root, to use for S2I build.",
@@ -613,8 +603,7 @@
                           "type": "password",
                           "jsonPath": "$.spec.objects.servers[*].build.webhooks[*].secret",
                           "required": true,
-                          "description": "Secret value for WebHook to configure.",
-                          "default": "[Generated if empty]"
+                          "description": "Secret value for WebHook to configure. Generated if empty"
                         }
                       ]
                     },
@@ -668,34 +657,34 @@
                   ]
                 },
                 {
-                  "label": "Resource Quotas",
+                  "label": "Resource quotas",
                   "type": "fieldGroup",
                   "jsonPath": "$.spec.objects.servers[*].resources",
                   "visible": true,
                   "fields": [
                     {
-                      "label": "Memory Request",
+                      "label": "Memory request",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].resources.request.memory",
                       "default": "2Gi",
                       "description": "Minimum amount of memory requested by the container"
                     },
                     {
-                      "label": "CPU Request",
+                      "label": "CPU request",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].resources.request.cpu",
                       "default": "500m",
                       "description": "Minimum processing power requested by the container"
                     },
                     {
-                      "label": "Memory Limit",
+                      "label": "Memory limit",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].resources.limits.memory",
                       "default": "2Gi",
                       "description": "Maximum amount of memory granted to the container"
                     },
                     {
-                      "label": "CPU Limit",
+                      "label": "CPU limit",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].resources.limits.cpu",
                       "default": "500m",
@@ -704,19 +693,19 @@
                   ]
                 },
                 {
-                  "label": "SSO Client",
+                  "label": "SSO client",
                   "type": "fieldGroup",
                   "jsonPath": "$.spec.objects.servers[*].ssoClient",
                   "visible": true,
                   "fields": [
                     {
-                      "label": "Client Name",
+                      "label": "Client name",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].ssoClient.name",
                       "description": "Client name used for console in RH-SSO, when configured"
                     },
                     {
-                      "label": "Client Secret",
+                      "label": "Client secret",
                       "type": "password",
                       "jsonPath": "$.spec.objects.servers[*].ssoClient.secret",
                       "description": "Client secret to use for console in RH-SSO, when configured"
@@ -742,7 +731,7 @@
                   "jsonPath": "$.spec.objects.servers[*].database",
                   "fields": [
                     {
-                      "label": "Database Type",
+                      "label": "Database type",
                       "type": "dropDown",
                       "required": false,
                       "jsonPath": "$.spec.objects.servers[*].database.type",
@@ -756,7 +745,7 @@
                           "description": "Size of the Persistent Volume Claim to create. For example, 100Gi"
                         },
                         {
-                          "label": "External Database",
+                          "label": "External database",
                           "type": "fieldGroup",
                           "required": true,
                           "jsonPath": "$.spec.objects.servers[*].database.externalConfig",
@@ -815,7 +804,7 @@
                               "description": "Select this option to configure database in non XA mode."
                             },
                             {
-                              "label": "JNDI Name",
+                              "label": "JNDI name",
                               "type": "text",
                               "required": true,
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.jndiName",
@@ -823,11 +812,11 @@
                               "default": "java:jboss/datasources/jbpmDS"
                             },
                             {
-                              "label": "User Name",
+                              "label": "User name",
                               "type": "text",
                               "required": true,
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.username",
-                              "description": "KIE server external database username.",
+                              "description": "Process Server external database username.",
                               "default": "rhpam"
                             },
                             {
@@ -835,43 +824,43 @@
                               "type": "password",
                               "required": true,
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.password",
-                              "description": "KIE server external database password."
+                              "description": "Process Server external database password."
                             },
                             {
-                              "label": "Mininimum Connection Pool Size",
+                              "label": "Mininimum connection pool size",
                               "type": "text",
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.minPoolSize",
                               "description": "Sets xa-pool/min-pool-size for the configured datasource."
                             },
                             {
-                              "label": "Maximum Connection Pool Size",
+                              "label": "Maximum connection pool size",
                               "type": "text",
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.minPoolSize",
                               "description": "Sets xa-pool/max-pool-size for the configured datasource."
                             },
                             {
-                              "label": "Valid Connection Checker Class",
+                              "label": "Valid connection checker class",
                               "type": "text",
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.connectionChecker",
                               "description": "An org.jboss.jca.adapters.jdbc.ValidConnectionChecker that provides a SQLException isValidConnection(Connection e) method to validate if a connection is valid.",
                               "default": "org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"
                             },
                             {
-                              "label": "Exception Sorter Class",
+                              "label": "Exception sorter class",
                               "type": "text",
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.exceptionSorter",
                               "description": "An org.jboss.jca.adapters.jdbc.ExceptionSorter that provides a boolean isExceptionFatal(SQLException e) method to validate if an exception should be broadcast to all javax.resource.spi.ConnectionEventListener as a connectionErrorOccurred.",
                               "default": "org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"
                             },
                             {
-                              "label": "Background Validation",
+                              "label": "Background validation",
                               "type": "checkbox",
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.backgroundValidation",
                               "default": "false",
                               "description": "Sets the sql validation method to background-validation, if set to false the validate-on-match method will be used."
                             },
                             {
-                              "label": "Background Validation Interval (milliseconds)",
+                              "label": "Background validation interval (milliseconds)",
                               "type": "text",
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.backgroundValidationMillis",
                               "description": "Defines the interval for the background-validation check for the jdbc connections."
@@ -890,12 +879,11 @@
           "label": "Smart Router",
           "fields": [
             {
-              "label": "Keystore Secret",
+              "label": "Keystore secret",
               "required": false,
               "jsonPath": "$.spec.objects.smartRouter.keystoreSecret",
               "type": "text",
-              "description": "The secret name within the Java keystore used for https encryption.",
-              "default": "[Generated if empty]"
+              "description": "The secret name within the Java keystore used for https encryption. Generated if empty."
             },
             {
               "label": "Replicas",
@@ -929,34 +917,34 @@
               ]
             },
             {
-              "label": "Resource Quotas",
+              "label": "Resource quotas",
               "type": "fieldGroup",
               "jsonPath": "$.spec.objects.smartRouter.resources",
               "visible": true,
               "fields": [
                 {
-                  "label": "Memory Request",
+                  "label": "Memory request",
                   "type": "text",
                   "jsonPath": "$.spec.objects.smartRouter.resources.request.memory",
                   "default": "2Gi",
                   "description": "Minimum amount of memory requested by the container"
                 },
                 {
-                  "label": "CPU Request",
+                  "label": "CPU request",
                   "type": "text",
                   "jsonPath": "$.spec.objects.smartRouter.resources.request.cpu",
                   "default": "500m",
                   "description": "Minimum processing power requested by the container"
                 },
                 {
-                  "label": "Memory Limit",
+                  "label": "Memory limit",
                   "type": "text",
                   "jsonPath": "$.spec.objects.smartRouter.resources.limits.memory",
                   "default": "2Gi",
                   "description": "Maximum amount of memory granted to the container"
                 },
                 {
-                  "label": "CPU Limit",
+                  "label": "CPU limit",
                   "type": "text",
                   "jsonPath": "$.spec.objects.smartRouter.resources.limits.cpu",
                   "default": "500m",
