@@ -19,28 +19,36 @@ export class DropdownField {
   }
 
   getJsonSchemaPathForJsonPath(jsonPath) {
-    jsonPath = jsonPath.slice(2, jsonPath.length);
-    jsonPath = jsonPath.replace(/\./g, ".properties.");
-    jsonPath = "$.." + jsonPath;
+    if (jsonPath !== undefined && jsonPath !== "") {
+      jsonPath = jsonPath.slice(2, jsonPath.length);
+      jsonPath = jsonPath.replace(/\./g, ".properties.");
+      jsonPath = "$.." + jsonPath;
+    }
     return jsonPath;
   }
 
   getJsx() {
-    var options = [{ value: "", label: "" }];
+    let options = [];
 
-    const tmpJsonPath = this.getJsonSchemaPathForJsonPath(
-      this.props.fieldDef.originalJsonPath
-    );
-    const optionValues = this.findValueFromSchema(tmpJsonPath + ".enum");
+    if (this.props.fieldDef.options) {
+      options = this.props.fieldDef.options;
+    } else {
+      options = [{ value: "", label: "" }];
 
-    if (optionValues !== undefined) {
-      optionValues.forEach(option => {
-        const oneOption = {
-          label: option,
-          value: option
-        };
-        options.push(oneOption);
-      });
+      const tmpJsonPath = this.getJsonSchemaPathForJsonPath(
+        this.props.fieldDef.originalJsonPath
+      );
+      const optionValues = this.findValueFromSchema(tmpJsonPath + ".enum");
+
+      if (optionValues !== undefined) {
+        optionValues.forEach(option => {
+          const oneOption = {
+            label: option,
+            value: option
+          };
+          options.push(oneOption);
+        });
+      }
     }
     if (
       this.props.fieldDef.required === true &&
@@ -95,19 +103,20 @@ export class DropdownField {
     if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach((subfield, i) => {
         var parentjsonpath = this.props.fieldDef.jsonPath;
-        parentjsonpath = parentjsonpath.slice(
-          0,
-          parentjsonpath.lastIndexOf(".")
-        );
-        var res = "";
-        if (parentjsonpath.length < subfield.jsonPath.length) {
-          res = subfield.jsonPath.substring(
-            parentjsonpath.length,
-            subfield.jsonPath.length
+        if (parentjsonpath !== undefined && parentjsonpath !== "") {
+          parentjsonpath = parentjsonpath.slice(
+            0,
+            parentjsonpath.lastIndexOf(".")
           );
-          subfield.jsonPath = parentjsonpath.concat(res);
+          var res = "";
+          if (parentjsonpath.length < subfield.jsonPath.length) {
+            res = subfield.jsonPath.substring(
+              parentjsonpath.length,
+              subfield.jsonPath.length
+            );
+            subfield.jsonPath = parentjsonpath.concat(res);
+          }
         }
-
         if (subfield.type != "object") {
           let oneComponent = FieldFactory.newInstance(
             subfield,
