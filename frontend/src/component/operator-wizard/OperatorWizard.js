@@ -150,7 +150,14 @@ export default class OperatorWizard extends Component {
 
         if (Array.isArray(pageFields)) {
           pageFields.forEach(field => {
-            if (field.type === "object") {
+            if (
+              field.type === "dropDown" &&
+              field.fields !== undefined &&
+              field.visible !== false
+            ) {
+              jsonObject = this.addObjectFields(field, jsonObject);
+            }
+            if (field.type === "object" || field.type === "fieldGroup") {
               jsonObject = this.addObjectFields(field, jsonObject);
             } else {
               const value =
@@ -176,7 +183,14 @@ export default class OperatorWizard extends Component {
             let subPageFields = subPage.fields;
 
             subPageFields.forEach(field => {
-              if (field.type === "object") {
+              if (
+                field.type === "dropDown" &&
+                field.fields !== undefined &&
+                field.visible !== false
+              ) {
+                jsonObject = this.addObjectFields(field, jsonObject);
+              }
+              if (field.type === "object" || field.type === "fieldGroup") {
                 jsonObject = this.addObjectFields(field, jsonObject);
               } else {
                 const value =
@@ -202,7 +216,14 @@ export default class OperatorWizard extends Component {
   addObjectFields(field, jsonObject) {
     if (Array.isArray(field.fields)) {
       field.fields.forEach(field => {
-        if (field.type === "object") {
+        if (
+          field.type === "dropDown" &&
+          field.fields !== undefined &&
+          field.visible !== false
+        ) {
+          jsonObject = this.addObjectFields(field, jsonObject);
+        }
+        if (field.type === "object" || field.type === "fieldGroup") {
           jsonObject = this.addObjectFields(field, jsonObject);
         } else {
           const value = field.type === "checkbox" ? field.checked : field.value;
@@ -210,7 +231,8 @@ export default class OperatorWizard extends Component {
             field.jsonPath !== undefined &&
             field.jsonPath !== "" &&
             value !== undefined &&
-            value !== ""
+            value !== "" &&
+            field.visible !== false
           ) {
             let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
             jsonObject[jsonPath] = value;
