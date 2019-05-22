@@ -13,6 +13,8 @@ import StepBuilder from "./StepBuilder";
 export default class OperatorWizard extends Component {
   constructor(props) {
     super(props);
+    this.title = "Operator installer";
+    this.subtitle = "RHPAM installer";
     this.stepBuilder = new StepBuilder();
     this.state = {
       isOpen: true,
@@ -22,6 +24,7 @@ export default class OperatorWizard extends Component {
       maxSteps: 1,
       isModalOpen: false
     };
+    document.title = this.title;
 
     loadJsonSpec().then(spec =>
       this.setState({
@@ -282,8 +285,8 @@ export default class OperatorWizard extends Component {
       <React.Fragment>
         <Wizard
           isOpen={true}
-          title="Operator Installer"
-          description="RHPAM Installer"
+          title={this.title}
+          description={this.subtitle}
           isFullHeight
           isFullWidth
           onClose={() => {}}
