@@ -94,10 +94,14 @@ export class DropdownField {
     );
     jsxArray.push(fieldJsx);
     jsxArray.push(this.addChildren());
+    if (this.props.fieldDef.default !== undefined) {
+      this.props.fieldDef.value = this.props.fieldDef.default;
+    }
     return jsxArray;
   }
   addChildren() {
     var elements = [];
+
     if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach((subfield, i) => {
         var parentjsonpath = this.props.fieldDef.jsonPath;

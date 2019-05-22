@@ -28,10 +28,9 @@ type Field struct {
 }
 
 type Option struct {
-	Value            string  `json:"value,omitempty"` 
-    Label            string  `json:"label,omitempty"`
-
-}
+	Value           string  `json:"value,omitempty"`
+	Label          	string  `json:"label,omitempty"`
+}	
 
 type Button struct {
 	Label  string     `json:"label,omitempty"`

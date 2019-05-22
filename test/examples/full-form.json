@@ -61,7 +61,7 @@
             },
             {
               "label": "Password",
-              "required": true,
+              "required": false,
               "description": "Administrative password to use instead of generating default value",
               "jsonPath": "$.spec.commonConfig.adminPassword",
               "type": "password"
@@ -74,15 +74,15 @@
       "label": "Security",
       "fields": [
         {
-          "label": "",
+          "label": "Select your setting",
           "type": "dropDown",
           "required": false,
           "jsonPath": "",
+          "default": "default",
           "options": [
-            { "value": "", "label": "Select here" },
+            { "value": "default", "label": "Default properties" },
             { "value": "SSO", "label": "SSO" },
-            { "value": "LDAP", "label": "LDAP" },
-            { "value": "default", "label": "Default properties" }
+            { "value": "LDAP", "label": "LDAP" }
           ],
           "fields": [
             {
@@ -358,7 +358,7 @@
               "required": true,
               "jsonPath": "$.spec.commonConfig",
               "displayWhen": "default",
-              "visible": false,
+              "visible": true,
               "fields": [
                 {
                   "label": "AMQ password",
