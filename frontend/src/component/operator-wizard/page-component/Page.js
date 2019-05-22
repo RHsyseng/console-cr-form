@@ -96,7 +96,7 @@ export default class Page extends Component {
 
   render() {
     return (
-      <Form id={"form-page-" + this.props.pageNumber} isHorizontal>
+      <Form id={"form-page-" + this.props.pageNumber}>
         <Title headingLevel="h1" size="3xl">
           {this.props.pageDef.label}
         </Title>
