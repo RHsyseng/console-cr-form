@@ -149,6 +149,7 @@
                 {
                   "label": "Controller password",
                   "type": "password",
+                  "required": true,
                   "jsonPath": "$.spec.commonConfig.controllerPassword",
                   "description": "The password to use for 'controllerUser'. Generated if empty"
                 },
@@ -334,6 +335,7 @@
                 {
                   "label": "Controller password",
                   "type": "password",
+                  "required": true,
                   "jsonPath": "$.spec.commonConfig.controllerPassword",
                   "description": "The password to use for 'controllerUser'. Generated if empty"
                 },
