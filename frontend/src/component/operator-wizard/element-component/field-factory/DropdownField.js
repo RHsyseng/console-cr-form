@@ -28,13 +28,11 @@ export class DropdownField {
   }
 
   getJsx() {
-    let options = [];
+    let options = [{ value: "", label: "Select here" }];
 
     if (this.props.fieldDef.options) {
       options = this.props.fieldDef.options;
     } else {
-      options = [{ value: "", label: "" }];
-
       const tmpJsonPath = this.getJsonSchemaPathForJsonPath(
         this.props.fieldDef.originalJsonPath
       );
