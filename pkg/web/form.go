@@ -24,6 +24,13 @@ type Field struct {
 	Visible          bool    `json:"visible,omitempty"`
 	DisplayWhen      string  `json:"displayWhen,omitempty"`
 	Fields           []Field `json:"fields,omitempty"`
+	Options          []Option `json:"options,omitempty"`
+}
+
+type Option struct {
+	Value            string  `json:"value,omitempty"` 
+    Label            string  `json:"label,omitempty"`
+
 }
 
 type Button struct {

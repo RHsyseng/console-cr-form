@@ -61,7 +61,7 @@
             },
             {
               "label": "Password",
-              "required": false,
+              "required": true,
               "description": "Administrative password to use instead of generating default value",
               "jsonPath": "$.spec.commonConfig.adminPassword",
               "type": "password"
@@ -133,6 +133,37 @@
                   "default": "preferred_username",
                   "jsonPath": "$.spec.auth.sso.principalAttribute",
                   "description": "RH-SSO Principal Attribute to use as username"
+                },
+                {
+                  "label": "AMQ password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.amqPassword",
+                  "description": "The password to use for AMQ user. Generated if empty"
+                },
+                {
+                  "label": "AMQ cluster password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.amqClusterPassword",
+                  "description": "Password for AMQ Cluster. Generated if empty"
+                },
+                {
+                  "label": "Controller password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.controllerPassword",
+                  "description": "The password to use for 'controllerUser'. Generated if empty"
+                },
+                {
+                  "label": "Server password",
+                  "type": "password",
+                  "required": true,
+                  "jsonPath": "$.spec.commonConfig.serverPassword",
+                  "description": "The password to use for 'executionUser'. Generated if empty"
+                },
+                {
+                  "label": "Maven password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.mavenPassword",
+                  "description": "The password to use for 'mavenUser'. Generated if empty"
                 }
               ]
             },
@@ -287,6 +318,37 @@
                   "type": "text",
                   "jsonPath": "$.spec.auth.ldap.referralUserAttributeIDToCheck",
                   "description": "If you are not using referrals, you can ignore this option. When using referrals, this option denotes the attribute name which contains users defined for a certain role, for example member, if the role object is inside the referral. Users are checked against the content of this attribute name. If this option is not set, the check will always fail, so role objects cannot be stored in a referral tree"
+                },
+                {
+                  "label": "AMQ password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.amqPassword",
+                  "description": "The password to use for AMQ user. Generated if empty"
+                },
+                {
+                  "label": "AMQ cluster password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.amqClusterPassword",
+                  "description": "Password for AMQ Cluster. Generated if empty"
+                },
+                {
+                  "label": "Controller password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.controllerPassword",
+                  "description": "The password to use for 'controllerUser'. Generated if empty"
+                },
+                {
+                  "label": "Server password",
+                  "type": "password",
+                  "required": true,
+                  "jsonPath": "$.spec.commonConfig.serverPassword",
+                  "description": "The password to use for 'executionUser'. Generated if empty"
+                },
+                {
+                  "label": "Maven password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.mavenPassword",
+                  "description": "The password to use for 'mavenUser'. Generated if empty"
                 }
               ]
             },
@@ -294,75 +356,85 @@
               "label": "Default properties",
               "type": "fieldGroup",
               "required": true,
-              "jsonPath": "$.spec.auth.roleMapper",
+              "jsonPath": "$.spec.commonConfig",
               "displayWhen": "default",
               "visible": false,
               "fields": [
                 {
-                  "label": "Roles properties file",
-                  "type": "text",
-                  "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
-                  "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
+                  "label": "AMQ password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.amqPassword",
+                  "description": "The password to use for AMQ user. Generated if empty"
                 },
                 {
-                  "label": "Replace roles",
-                  "type": "checkbox",
-                  "jsonPath": "$.spec.auth.roleMapper.replaceRole",
-                  "default": "false",
-                  "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+                  "label": "AMQ cluster password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.amqClusterPassword",
+                  "description": "Password for AMQ Cluster. Generated if empty"
+                },
+                {
+                  "label": "Controller password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.controllerPassword",
+                  "description": "The password to use for 'controllerUser'. Generated if empty"
+                },
+                {
+                  "label": "Server password",
+                  "type": "password",
+                  "required": false,
+                  "jsonPath": "$.spec.commonConfig.serverPassword",
+                  "description": "The password to use for 'executionUser'. Generated if empty"
+                },
+                {
+                  "label": "Maven password",
+                  "type": "password",
+                  "jsonPath": "$.spec.commonConfig.mavenPassword",
+                  "description": "The password to use for 'mavenUser'. Generated if empty"
                 }
               ]
             }
           ]
         },
         {
-          "label": "Image tag",
-          "type": "text",
-          "default": "1.0",
-          "jsonPath": "$.spec.commonConfig.imageTag",
-          "description": "The tag to use for the application images."
-        },
-        {
-          "label": "Keystore password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.keyStorePassword",
-          "description": "The password to use for keystore generation. Generated if empty"
-        },
-        {
-          "label": "Database password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.dbPassword",
-          "description": "The password to use for databases. Generated if empty"
-        },
-        {
-          "label": "AMQ password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.amqPassword",
-          "description": "The password to use for AMQ user. Generated if empty"
-        },
-        {
-          "label": "AMQ cluster password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.amqClusterPassword",
-          "description": "Password for AMQ Cluster. Generated if empty"
-        },
-        {
-          "label": "Controller password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.controllerPassword",
-          "description": "The password to use for 'controllerUser'. Generated if empty"
-        },
-        {
-          "label": "Server password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.serverPassword",
-          "description": "The password to use for 'executionUser'. Generated if empty"
-        },
-        {
-          "label": "Maven password",
-          "type": "password",
-          "jsonPath": "$.spec.commonConfig.mavenPassword",
-          "description": "The password to use for 'mavenUser'. Generated if empty"
+          "label": "Common configuration",
+          "type": "fieldGroup",
+          "jsonPath": "$.spec",
+          "visible": true,
+          "fields": [
+            {
+              "label": "Roles properties file",
+              "type": "text",
+              "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
+              "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
+            },
+            {
+              "label": "Replace roles",
+              "type": "checkbox",
+              "jsonPath": "$.spec.auth.roleMapper.replaceRole",
+              "default": "false",
+              "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+            },
+
+            {
+              "label": "Image tag",
+              "type": "text",
+              "default": "1.0",
+              "jsonPath": "$.spec.commonConfig.imageTag",
+              "description": "The tag to use for the application images."
+            },
+            {
+              "label": "Keystore password",
+              "type": "password",
+              "jsonPath": "$.spec.commonConfig.keyStorePassword",
+              "description": "The password to use for keystore generation. Generated if empty"
+            },
+            {
+              "label": "Database password",
+              "type": "password",
+              "jsonPath": "$.spec.commonConfig.dbPassword",
+              "description": "The password to use for databases. Generated if empty"
+            }
+          ]
         }
       ]
     },
