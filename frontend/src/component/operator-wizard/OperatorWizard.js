@@ -128,15 +128,9 @@ export default class OperatorWizard extends Component {
           isValid = false;
           return;
         }
-        if (
-          field.required !== undefined &&
-          field.required &&
-          field.errMsg !== undefined &&
-          field.errMsg !== ""
-        ) {
-          console.log(
-            `Field ${field.label} is required and is not valid: ${field.errMsg}`
-          );
+        if (field.errMsg !== undefined && field.errMsg !== "") {
+          console.log(`Field ${field.label} is not valid: ${field.errMsg}`);
+
           isValid = false;
         }
       });
