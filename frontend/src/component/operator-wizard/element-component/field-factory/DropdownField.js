@@ -48,6 +48,9 @@ export class DropdownField {
         });
       }
     }
+    if (this.props.fieldDef.default !== undefined) {
+      this.props.fieldDef.value = this.props.fieldDef.default;
+    }
     if (
       this.props.fieldDef.required === true &&
       (this.props.fieldDef.value === undefined ||
@@ -60,10 +63,9 @@ export class DropdownField {
       this.isValid = true;
     }
     this.props.fieldDef.errMsg = this.errMsg;
-    var jsxArray = [];
-    var fieldJsx;
 
-    fieldJsx = (
+    var jsxArray = [];
+    jsxArray.push(
       <FormGroup
         label={this.props.fieldDef.label}
         id={this.props.ids.fieldGroupId}
@@ -92,11 +94,7 @@ export class DropdownField {
         </FormSelect>
       </FormGroup>
     );
-    jsxArray.push(fieldJsx);
     jsxArray.push(this.addChildren());
-    if (this.props.fieldDef.default !== undefined) {
-      this.props.fieldDef.value = this.props.fieldDef.default;
-    }
     return jsxArray;
   }
   addChildren() {
