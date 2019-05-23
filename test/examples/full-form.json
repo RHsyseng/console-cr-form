@@ -537,6 +537,13 @@
               "max": 100,
               "fields": [
                 {
+                  "label": "Id",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.servers[*].id",
+                  "type": "text",
+                  "description": "The id to use for this Process Server."
+                },
+                {
                   "label": "Name",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].name",
