@@ -42,7 +42,6 @@ export class FieldGroupField {
               : "none"
         }}
       >
-        <br />
         <div style={{ fontWeight: "bold" }}>{this.props.fieldDef.label}</div>
 
         <div className="pf-c-card">
