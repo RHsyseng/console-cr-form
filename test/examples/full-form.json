@@ -399,7 +399,6 @@
               "default": "false",
               "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
             },
-
             {
               "label": "Image tag",
               "type": "text",

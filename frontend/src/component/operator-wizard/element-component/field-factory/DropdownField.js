@@ -12,6 +12,12 @@ import JSONPATH from "jsonpath";
 export class DropdownField {
   constructor(props) {
     this.props = props;
+    if (
+      props.fieldDef.value === undefined &&
+      props.fieldDef.default !== undefined
+    ) {
+      this.props.fieldDef.value = props.fieldDef.default;
+    }
     this.errMsg = "";
     this.isValid = true;
     this.addChildren = this.addChildren.bind(this);
@@ -47,9 +53,6 @@ export class DropdownField {
           options.push(oneOption);
         });
       }
-    }
-    if (this.props.fieldDef.default !== undefined) {
-      this.props.fieldDef.value = this.props.fieldDef.default;
     }
     if (
       this.props.fieldDef.required === true &&
@@ -97,6 +100,7 @@ export class DropdownField {
     jsxArray.push(this.addChildren());
     return jsxArray;
   }
+
   addChildren() {
     var elements = [];
 
@@ -163,6 +167,7 @@ export class DropdownField {
 
     this.props.page.loadPageChildren();
   };
+
   reBuildChildren(value) {
     if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach(subfield => {
@@ -176,6 +181,7 @@ export class DropdownField {
       });
     }
   }
+
   findValueFromSchema(jsonPath) {
     try {
       var queryResults = JSONPATH.query(this.props.jsonSchema, jsonPath);
