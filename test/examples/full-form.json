@@ -89,7 +89,7 @@
               "label": "SSO",
               "type": "fieldGroup",
               "required": true,
-              "jsonPath": "$.spec.objects.console.env.sso",
+              "jsonPath": "$.spec",
               "displayWhen": "SSO",
               "visible": false,
               "fields": [
@@ -154,7 +154,7 @@
               "label": "LDAP",
               "type": "fieldGroup",
               "required": true,
-              "jsonPath": "$.spec.objects.console.env.ldap",
+              "jsonPath": "$.spec",
               "displayWhen": "LDAP",
               "visible": false,
               "fields": [
@@ -208,7 +208,7 @@
                 },
                 {
                   "label": "Search time limit",
-                  "type": "text",
+                  "type": "integer",
                   "default": "10000",
                   "jsonPath": "$.spec.auth.ldap.searchTimeLimit",
                   "description": "The timeout in milliseconds for ldap searches."
@@ -262,7 +262,7 @@
                 },
                 {
                   "label": "Role recursion",
-                  "type": "number",
+                  "type": "integer",
                   "jsonPath": "$.spec.auth.ldap.baseCtxDN",
                   "default": "1",
                   "description": "The number of levels of recursion the role search will go below a matching context. Disable recursion by setting this to 0."
@@ -321,7 +321,7 @@
               "label": "Internal",
               "type": "fieldGroup",
               "required": true,
-              "jsonPath": "$.spec.commonConfig",
+              "jsonPath": "$.spec",
               "displayWhen": "default",
               "visible": true,
               "fields": [
@@ -429,7 +429,7 @@
               "required": false,
               "jsonPath": "$.spec.objects.console.replicas",
               "description": "The number of replicas for the console component.",
-              "type": "text"
+              "type": "integer"
             },
             {
               "label": "Env",
@@ -547,7 +547,7 @@
                   "label": "Deployments",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].deployments",
-                  "type": "text",
+                  "type": "integer",
                   "description": "The number of distinct Process Server sets to auto-generate, when specifying a single server element here."
                 },
                 {
@@ -561,7 +561,7 @@
                   "label": "Replicas",
                   "required": false,
                   "jsonPath": "$.spec.objects.servers[*].replicas",
-                  "type": "text",
+                  "type": "integer",
                   "description": "The number of replicas for this Process Server set."
                 },
                 {
@@ -943,7 +943,7 @@
               "label": "Replicas",
               "required": false,
               "jsonPath": "$.spec.objects.smartRouter.replicas",
-              "type": "text",
+              "type": "integer",
               "description": "The number of replicas for the console component."
             },
             {
