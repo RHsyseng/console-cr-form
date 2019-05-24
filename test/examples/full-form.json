@@ -144,7 +144,6 @@
                 {
                   "label": "KIE Server password",
                   "type": "password",
-                  "required": true,
                   "jsonPath": "$.spec.commonConfig.serverPassword",
                   "description": "The password to use for 'executionUser' in external provider"
                 }
@@ -311,7 +310,6 @@
                 {
                   "label": "KIE Server password",
                   "type": "password",
-                  "required": true,
                   "jsonPath": "$.spec.commonConfig.serverPassword",
                   "description": "The password to use for 'executionUser' in external provider"
                 }
