@@ -97,12 +97,14 @@ export default class Page extends Component {
   render() {
     return (
       <Form id={"form-page-" + this.props.pageNumber}>
-        <Title headingLevel="h1" size="3xl">
-          {this.props.pageDef.label}
-        </Title>
-        {this.state.elements.map(element => {
-          return element.getJsx();
-        })}
+        <div key={"page" + this.props.pageNumber}>
+          <Title headingLevel="h1" size="3xl">
+            {this.props.pageDef.label}
+          </Title>
+          {this.state.elements.map(element => {
+            return element;
+          })}
+        </div>
       </Form>
     );
   }
