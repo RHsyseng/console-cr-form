@@ -65,8 +65,8 @@ export class DefaultTextField extends Component {
 
       isValid = false;
     } else {
-      this.errMsg = "";
-      this.isValid = true;
+      errMsg = "";
+      isValid = true;
     }
     this.props.fieldDef.errMsg = errMsg;
     this.setState({ value, isValid, errMsg });
