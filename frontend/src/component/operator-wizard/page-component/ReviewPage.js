@@ -20,10 +20,7 @@ export default class ReviewPage extends React.Component {
 
   render() {
     if (this.props.deployment.deployed === true) {
-      if (
-        this.props.deployment.result !== undefined &&
-        this.props.deployment.result.Result === "Success"
-      ) {
+      if (this.props.deployment.error === undefined) {
         return (
           <EmptyState variant={EmptyStateVariant.full}>
             <EmptyStateIcon icon={CheckCircleIcon} />
