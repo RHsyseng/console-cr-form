@@ -111,7 +111,6 @@ export default class OperatorWizard extends Component {
     });
   };
 
-  //TODO: Validation should only be done onFieldUpdated and only for this field
   validateForm = () => {
     let result = { isValid: true, errMsg: "" };
     if (this.state.pages === undefined) {
@@ -123,13 +122,20 @@ export default class OperatorWizard extends Component {
       }
       if (page.subPages !== undefined) {
         page.subPages.forEach(subPage => {
-          result = this.validateFields(subPage.fields);
           if (!result.isValid) {
             return;
           }
+          result = this.validateFields(subPage.fields);
         });
+        if (!result.isValid) {
+          return;
+        }
       }
+
       result = this.validateFields(page.fields);
+      if (!result.isValid) {
+        return;
+      }
     });
     this.setState({
       isFormValid: result.isValid,
@@ -141,25 +147,46 @@ export default class OperatorWizard extends Component {
 
   validateFields(fields) {
     let result = { isValid: true, errMsg: "" };
+
     if (fields !== undefined) {
       fields.forEach(field => {
         if (!result.isValid) {
           return;
         }
-        if (
-          field.type === "object" ||
-          ((field.type === "dropDown" || field.type === "fieldGroup") &&
-            field.fields !== undefined &&
-            (field.visible !== undefined && field.visible !== false))
-        ) {
+        if (field.type === "object" && field.min > 0) {
           result = this.validateFields(field.fields);
           if (!result.isValid) {
             return;
           }
-        }
-        if (field.errMsg !== undefined && field.errMsg !== "") {
-          console.log(`Field ${field.label} is not valid: ${field.errMsg}`);
-          result = { isValid: false, errMsg: field.errMsg };
+        } else if (
+          (field.type === "dropDown" || field.type === "fieldGroup") &&
+          field.fields !== undefined
+        ) {
+          if (field.visible !== undefined && field.visible !== false) {
+            result = this.validateFields(field.fields);
+            if (!result.isValid) {
+              return;
+            }
+          }
+        } else {
+          if (field.errMsg !== undefined && field.errMsg !== "") {
+            console.log(`Field ${field.label} is not valid: ${field.errMsg}`);
+            result = { isValid: false, errMsg: field.errMsg };
+          } else {
+            if (
+              field.required !== undefined &&
+              field.required &&
+              (field.value === undefined || field.value === "")
+            ) {
+              console.log(
+                `Field ${field.label} is required and is not valid: ${
+                  field.errMsg
+                }`
+              );
+              let errMsg = field.label + " is required.";
+              result = { isValid: false, errMsg: errMsg };
+            }
+          }
         }
       });
     }

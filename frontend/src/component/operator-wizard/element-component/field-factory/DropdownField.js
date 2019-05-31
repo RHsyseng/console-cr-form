@@ -159,7 +159,7 @@ export class DropdownField extends Component {
     this.isValidField(value);
     this.reBuildChildren(value);
 
-    this.props.page.loadPageChildren();
+    this.props.props.page.loadPageChildren();
   };
 
   reBuildChildren(value) {
