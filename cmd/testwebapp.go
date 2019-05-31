@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/RHsyseng/console-cr-form/pkg/web"
 	"github.com/go-openapi/spec"
@@ -29,8 +31,12 @@ func main() {
 	}
 }
 
-func callback(yamlString string) {
+func callback(yamlString string) error {
 	logrus.Infof("Mock deploy yaml:\n%s", yamlString)
+	if strings.Contains(yamlString, "fail-test") {
+		return fmt.Errorf("Failing on purpose")
+	}
+	return nil
 }
 
 func readJSONFile(envPath, defaultPath string) ([]byte, error) {

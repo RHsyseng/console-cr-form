@@ -78,9 +78,16 @@ func RunWebServer(config Configuration) error {
 				request = strings.TrimRight(request, "\"")
 				logrus.Infof("Request is now %s", request)
 			}
-			config.CallBack(request)
-			writer.WriteHeader(http.StatusOK)
-			writer.Write([]byte("{\"Result\": \"Success\"}"))
+			err := config.CallBack(request)
+			writer.Header().Set("Content-Type", "application/json")
+			if err != nil {
+				logrus.Errorf("Error processing the request %v", err)
+				writer.WriteHeader(http.StatusBadRequest)
+				writer.Write([]byte(fmt.Sprintf("{\"result\": \"error\", \"message\": \"%v\"}", err)))
+			} else {
+				writer.WriteHeader(http.StatusOK)
+				writer.Write([]byte("{\"result\": \"success\"}"))
+			}
 		}
 	}
 
