@@ -55,6 +55,12 @@ func RunWebServer(config Configuration) error {
 		}
 	}
 
+	sanitizeError := func(err error) string {
+		errorMsg := strings.ReplaceAll(fmt.Sprint(err), "\"", "\\\"")
+		errorMsg = strings.ReplaceAll(errorMsg, "\n", " ")
+		return strings.ReplaceAll(errorMsg, "\t", "")
+	}
+
 	processYaml := func(writer http.ResponseWriter, reader *http.Request) {
 		body, err := ioutil.ReadAll(reader.Body)
 		if err != nil {
@@ -83,7 +89,7 @@ func RunWebServer(config Configuration) error {
 			if err != nil {
 				logrus.Errorf("Error processing the request %v", err)
 				writer.WriteHeader(http.StatusBadRequest)
-				writer.Write([]byte(fmt.Sprintf("{\"result\": \"error\", \"message\": \"%v\"}", err)))
+				writer.Write([]byte(fmt.Sprintf("{\"result\": \"error\", \"message\": \"%v\"}", sanitizeError(err))))
 			} else {
 				writer.WriteHeader(http.StatusOK)
 				writer.Write([]byte("{\"result\": \"success\"}"))
