@@ -56,9 +56,9 @@ func RunWebServer(config Configuration) error {
 	}
 
 	sanitizeError := func(err error) string {
-		errorMsg := strings.ReplaceAll(fmt.Sprint(err), "\"", "\\\"")
-		errorMsg = strings.ReplaceAll(errorMsg, "\n", " ")
-		return strings.ReplaceAll(errorMsg, "\t", "")
+		errorMsg := strings.Replace(fmt.Sprint(err), "\"", "\\\"", -1)
+		errorMsg = strings.Replace(errorMsg, "\n", " ", -1)
+		return strings.Replace(errorMsg, "\t", "", -1)
 	}
 
 	processYaml := func(writer http.ResponseWriter, reader *http.Request) {
