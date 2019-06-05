@@ -63,7 +63,8 @@ export default class OperatorWizard extends Component {
       body: JSON.stringify(result),
       headers: {
         "Content-Type": "application/yaml"
-      }
+      },
+      credentials: "same-origin"
     })
       .then(response => {
         const contentType = response.headers.get("content-type");
