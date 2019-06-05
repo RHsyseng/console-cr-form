@@ -353,7 +353,7 @@ export class ObjectField {
     }
     const sampleObj = this.retrieveObjectMap(combinedFieldNumber);
 
-    if (field.elementCount < field.max) {
+    if (field.max === -1 || field.elementCount < field.max) {
       for (var i = 0; i < sampleObj.length; i++) {
         console.log(sampleObj[i].jsonPath);
         var res = "";
