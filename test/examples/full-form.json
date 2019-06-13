@@ -602,6 +602,7 @@
                     }
                   ]
                 },
+
                 {
                   "label": "Build configuration (Source to Image)",
                   "type": "object",
@@ -630,8 +631,46 @@
                       "description": "Build artifact directory."
                     },
                     {
+                      "label": "Base build image",
+                      "required": false,
+                      "jsonPath": "$.spec.objects.servers[*].build.from",
+                      "type": "object",
+                      "max": 1,
+                      "fields": [
+                        {
+                          "label": "Kind",
+                          "type": "dropDown",
+                          "required": true,
+                          "jsonPath": "$.spec.objects.servers[*].build.from.kind",
+                          "originalJsonPath": "$.spec.objects.servers[*].build.from.kind",
+                          "description": "Specify whether build config is created from an image stream, or a container image.",
+                          "default": "ImageStreamTag",
+                          "options": [
+                            { "value": "ImageStreamTag", "label": "ImageStreamTag" },
+                            { "value": "DockerImage", "label": "DockerImage" }
+                          ]
+                        },
+                        {
+                          "label": "Name",
+                          "type": "text",
+                          "required": true,
+                          "jsonPath": "$.spec.objects.servers[*].build.from.name",
+                          "description": "The name of the image stream or container image to use for build config.",
+                          "default": "rhpam74-kieserver-openshift"
+                        },
+                        {
+                          "label": "Namespace",
+                          "type": "text",
+                          "jsonPath": "$.spec.objects.servers[*].build.from.namespace",
+                          "description": "Namespace where the build config image/stream is located.",
+                          "default": "openshift"
+                        }
+                      ]
+                    },
+                    {
                       "label": "Git Source",
-                      "type": "fieldGroup",
+                      "type": "object",
+                      "max": 1,
                       "jsonPath": "$.spec.objects.servers[*].build.gitSource",
                       "visible": true,
                       "fields": [
@@ -680,43 +719,6 @@
                           "jsonPath": "$.spec.objects.servers[*].build.webhooks[*].secret",
                           "required": true,
                           "description": "Secret value for WebHook to configure. Generated if empty"
-                        }
-                      ]
-                    },
-                    {
-                      "label": "Base build image",
-                      "required": false,
-                      "jsonPath": "$.spec.objects.servers[*].build.from",
-                      "type": "object",
-                      "max": 1,
-                      "fields": [
-                        {
-                          "label": "Kind",
-                          "type": "dropDown",
-                          "required": true,
-                          "jsonPath": "$.spec.objects.servers[*].build.from.kind",
-                          "originalJsonPath": "$.spec.objects.servers[*].build.from.kind",
-                          "description": "Specify whether build config is created from an image stream, or a container image.",
-                          "default": "ImageStreamTag",
-                          "options": [
-                            { "value": "ImageStreamTag", "label": "ImageStreamTag" },
-                            { "value": "DockerImage", "label": "DockerImage" }
-                          ]
-                        },
-                        {
-                          "label": "Name",
-                          "type": "text",
-                          "required": true,
-                          "jsonPath": "$.spec.objects.servers[*].build.from.name",
-                          "description": "The name of the image stream or container image to use for build config.",
-                          "default": "rhpam74-kieserver-openshift"
-                        },
-                        {
-                          "label": "Namespace",
-                          "type": "text",
-                          "jsonPath": "$.spec.objects.servers[*].build.from.namespace",
-                          "description": "Namespace where the build config image/stream is located.",
-                          "default": "openshift"
                         }
                       ]
                     }
