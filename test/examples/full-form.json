@@ -790,13 +790,13 @@
                       "label": "Client name",
                       "type": "text",
                       "jsonPath": "$.spec.objects.servers[*].ssoClient.name",
-                      "description": "Client name used for console in RH-SSO, when configured"
+                      "description": "Client name used for this KIE Server in RH-SSO, when configured"
                     },
                     {
                       "label": "Client secret",
                       "type": "password",
                       "jsonPath": "$.spec.objects.servers[*].ssoClient.secret",
-                      "description": "Client secret to use for console in RH-SSO, when configured"
+                      "description": "Client secret to use for this KIE Server in RH-SSO, when configured"
                     },
                     {
                       "label": "SSO HTTP URL",

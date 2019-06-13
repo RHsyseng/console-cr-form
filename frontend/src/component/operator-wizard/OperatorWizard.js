@@ -181,12 +181,7 @@ export default class OperatorWizard extends Component {
               field.required &&
               (field.value === undefined || field.value === "")
             ) {
-              console.log(
-                `Field ${field.label} is required and is not valid: ${
-                  field.errMsg
-                }`
-              );
-              let errMsg = field.label + " is required.";
+              const errMsg = field.label + " is required.";
               result = { isValid: false, errMsg: errMsg };
             }
           }
