@@ -896,7 +896,6 @@
                             {
                               "label": "JNDI name",
                               "type": "text",
-                              "required": true,
                               "jsonPath": "$.spec.objects.servers[*].database.externalConfig.jndiName",
                               "description": "Database JNDI name used by application to resolve the datasource, e.g. java:/jboss/datasources/ExampleDS.",
                               "default": "java:jboss/datasources/jbpmDS"
