@@ -36,7 +36,7 @@ export class CheckboxField extends Component {
     if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach(subfield => {
         if (subfield.type === "fieldGroup") {
-          if (subfield.displayWhen === value) {
+          if (subfield.displayWhen === value.toString()) {
             subfield.visible = true;
           } else {
             subfield.visible = false;
@@ -98,7 +98,9 @@ export class CheckboxField extends Component {
     const value = target.type === "checkbox" ? target.checked : target.value;
     this.props.fieldDef.checked = value;
     this.reBuildChildren(value);
-    this.props.props.page.loadPageChildren();
+    if (this.props.props.page !== undefined) {
+      this.props.props.page.loadPageChildren();
+    }
   };
 
   render() {
