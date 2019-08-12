@@ -32,7 +32,7 @@
               "type": "fieldGroup",
               "jsonPath": "$.spec.upgrades",
               "originalJsonPath": "$.spec.upgrades",
-              "displayWhen": true,
+              "displayWhen": "true",
               "visible": false,
               "fields": [
                 {
