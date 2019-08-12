@@ -33,7 +33,6 @@ export class CheckboxField extends Component {
     return jsxArray;
   }
   reBuildChildren(value) {
-    ///debugger;
     if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach(subfield => {
         if (subfield.type === "fieldGroup") {
@@ -51,7 +50,6 @@ export class CheckboxField extends Component {
 
     if (this.props.fieldDef.fields) {
       this.props.fieldDef.fields.forEach((subfield, i) => {
-        //debugger;
         var parentjsonpath = this.props.fieldDef.jsonPath;
         if (parentjsonpath !== undefined && parentjsonpath !== "") {
           parentjsonpath = parentjsonpath.slice(
@@ -78,8 +76,6 @@ export class CheckboxField extends Component {
           elements.push(oneComponent);
         } else {
           if (subfield.label === this.props.fieldDef.value) {
-            //debugger;
-            //when the drop down value matches field group
             subfield.visible = true;
           }
           let oneComponent = FieldFactory.newInstance(
@@ -96,17 +92,15 @@ export class CheckboxField extends Component {
     }
     return elements;
   }
+
   onChangeCheckBox = (_, event) => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     this.props.fieldDef.checked = value;
-    //  this.setParentState({ [event.target.name]: value });
-
-    // this.isValidField(value);
     this.reBuildChildren(value);
-
     this.props.props.page.loadPageChildren();
   };
+
   render() {
     return this.getJsx();
   }
