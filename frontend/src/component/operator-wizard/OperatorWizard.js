@@ -17,6 +17,7 @@ export default class OperatorWizard extends Component {
     this.title = "Operator installer";
     this.subtitle = "RHPAM installer";
     this.stepBuilder = new StepBuilder();
+    this.errorStep = 1;
     this.state = {
       steps: this.stepBuilder.buildPlaceholderStep(),
       isFormValid: false,
@@ -52,9 +53,9 @@ export default class OperatorWizard extends Component {
   };
 
   onDeploy = () => {
-    if (!this.validateForm()) {
-      return;
-    }
+    // if (!this.validateForm()) {
+    //   return;
+    // }
     const result = this.createResultYaml();
     console.log(result);
     fetch(BACKEND_URL, {
@@ -94,9 +95,9 @@ export default class OperatorWizard extends Component {
   };
 
   onEditYaml = () => {
-    if (!this.validateForm()) {
-      return;
-    }
+    // if (!this.validateForm()) {
+    //   return;
+    // }
     this.createResultYaml();
     this.handleEditYamlModalToggle();
   };
@@ -112,12 +113,16 @@ export default class OperatorWizard extends Component {
       resultYaml
     });
   };
-
+  getErrorStep = () => {
+    return this.errorStep;
+  };
   validateForm = () => {
-    let result = { isValid: true, errMsg: "" };
+    let result = { isValid: true, errMsg: "", step: 1 };
     if (this.state.pages === undefined) {
       return false;
     }
+    let i = 1; //track the steps
+
     this.state.pages.forEach(page => {
       if (!result.isValid) {
         return;
@@ -127,28 +132,35 @@ export default class OperatorWizard extends Component {
           if (!result.isValid) {
             return;
           }
-          result = this.validateFields(subPage.fields);
+          result = this.validateFields(subPage.fields, i);
+          i = i + 1;
         });
         if (!result.isValid) {
           return;
         }
+        i = i + 1;
       }
 
-      result = this.validateFields(page.fields);
+      result = this.validateFields(page.fields, i);
       if (!result.isValid) {
         return;
       }
+      i = i + 1;
     });
+
+    this.errorStep = result.step;
     this.setState({
       isFormValid: result.isValid,
       validationError: result.errMsg,
-      isErrorModalOpen: !result.isValid
+      isErrorModalOpen: !result.isValid,
+      step: result.step
     });
+
     return result.isValid;
   };
 
-  validateFields(fields) {
-    let result = { isValid: true, errMsg: "" };
+  validateFields(fields, i) {
+    let result = { isValid: true, errMsg: "", step: i };
 
     if (fields !== undefined) {
       fields.forEach(field => {
@@ -156,7 +168,7 @@ export default class OperatorWizard extends Component {
           return;
         }
         if (field.type === "object" && field.elementCount > 0) {
-          result = this.validateFields(field.fields);
+          result = this.validateFields(field.fields, i);
           if (!result.isValid) {
             return;
           }
@@ -167,7 +179,7 @@ export default class OperatorWizard extends Component {
           field.fields !== undefined
         ) {
           if (field.visible !== undefined && field.visible !== false) {
-            result = this.validateFields(field.fields);
+            result = this.validateFields(field.fields, i);
             if (!result.isValid) {
               return;
             }
@@ -175,7 +187,7 @@ export default class OperatorWizard extends Component {
         } else {
           if (field.errMsg !== undefined && field.errMsg !== "") {
             console.log(`Field ${field.label} is not valid: ${field.errMsg}`);
-            result = { isValid: false, errMsg: field.errMsg };
+            result = { isValid: false, errMsg: field.errMsg, step: i };
           } else {
             if (
               field.required !== undefined &&
@@ -183,7 +195,7 @@ export default class OperatorWizard extends Component {
               (field.value === undefined || field.value === "")
             ) {
               const errMsg = field.label + " is required.";
-              result = { isValid: false, errMsg: errMsg };
+              result = { isValid: false, errMsg: errMsg, step: i };
             }
           }
         }
@@ -371,6 +383,7 @@ export default class OperatorWizard extends Component {
         onBack={this.onPageChange}
         onGoToStep={this.onPageChange}
         isFinished={this.state.deployment.deployed}
+        getErrorStep={this.getErrorStep}
       />
     );
     this.wizard = (
