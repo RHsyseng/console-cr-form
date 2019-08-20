@@ -53,9 +53,6 @@ export default class OperatorWizard extends Component {
   };
 
   onDeploy = () => {
-    // if (!this.validateForm()) {
-    //   return;
-    // }
     const result = this.createResultYaml();
     console.log(result);
     fetch(BACKEND_URL, {
@@ -95,9 +92,6 @@ export default class OperatorWizard extends Component {
   };
 
   onEditYaml = () => {
-    // if (!this.validateForm()) {
-    //   return;
-    // }
     this.createResultYaml();
     this.handleEditYamlModalToggle();
   };
@@ -117,11 +111,11 @@ export default class OperatorWizard extends Component {
     return this.errorStep;
   };
   validateForm = () => {
-    let result = { isValid: true, errMsg: "", step: 1 };
+    let result = { isValid: true, errMsg: "", errorStep: 1 };
     if (this.state.pages === undefined) {
       return false;
     }
-    let i = 1; //track the steps
+    let errorStep = 1;
 
     this.state.pages.forEach(page => {
       if (!result.isValid) {
@@ -132,35 +126,34 @@ export default class OperatorWizard extends Component {
           if (!result.isValid) {
             return;
           }
-          result = this.validateFields(subPage.fields, i);
-          i = i + 1;
+          result = this.validateFields(subPage.fields, errorStep);
+          errorStep++;
         });
         if (!result.isValid) {
           return;
         }
-        i = i + 1;
+        errorStep++;
       }
 
-      result = this.validateFields(page.fields, i);
+      result = this.validateFields(page.fields, errorStep);
       if (!result.isValid) {
         return;
       }
-      i = i + 1;
+      errorStep++;
     });
 
-    this.errorStep = result.step;
+    this.errorStep = result.errorStep;
     this.setState({
       isFormValid: result.isValid,
       validationError: result.errMsg,
-      isErrorModalOpen: !result.isValid,
-      step: result.step
+      isErrorModalOpen: !result.isValid
     });
 
     return result.isValid;
   };
 
-  validateFields(fields, i) {
-    let result = { isValid: true, errMsg: "", step: i };
+  validateFields(fields, errorStep) {
+    let result = { isValid: true, errMsg: "", errorStep: errorStep };
 
     if (fields !== undefined) {
       fields.forEach(field => {
@@ -168,7 +161,7 @@ export default class OperatorWizard extends Component {
           return;
         }
         if (field.type === "object" && field.elementCount > 0) {
-          result = this.validateFields(field.fields, i);
+          result = this.validateFields(field.fields, errorStep);
           if (!result.isValid) {
             return;
           }
@@ -179,7 +172,7 @@ export default class OperatorWizard extends Component {
           field.fields !== undefined
         ) {
           if (field.visible !== undefined && field.visible !== false) {
-            result = this.validateFields(field.fields, i);
+            result = this.validateFields(field.fields, errorStep);
             if (!result.isValid) {
               return;
             }
@@ -187,7 +180,11 @@ export default class OperatorWizard extends Component {
         } else {
           if (field.errMsg !== undefined && field.errMsg !== "") {
             console.log(`Field ${field.label} is not valid: ${field.errMsg}`);
-            result = { isValid: false, errMsg: field.errMsg, step: i };
+            result = {
+              isValid: false,
+              errMsg: field.errMsg,
+              errorStep: errorStep
+            };
           } else {
             if (
               field.required !== undefined &&
@@ -195,7 +192,7 @@ export default class OperatorWizard extends Component {
               (field.value === undefined || field.value === "")
             ) {
               const errMsg = field.label + " is required.";
-              result = { isValid: false, errMsg: errMsg, step: i };
+              result = { isValid: false, errMsg: errMsg, errorStep: errorStep };
             }
           }
         }
