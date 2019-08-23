@@ -9,7 +9,23 @@ import {
 import FieldFactory from "./FieldFactory";
 import JSONPATH from "jsonpath";
 
-export class DropdownField extends Component {
+import { connect } from "react-redux";
+import { Dispatchers } from "../../../../redux/";
+import Formatter from "../../../../utils/formatter";
+import Validator from "../../../../utils/validator";
+import StepBuilder from "../../StepBuilder";
+
+const mapStateToProps = state => {
+  return {
+    currentSteps: state.steps.stepList
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return Formatter.extend(Dispatchers.steps(dispatch));
+};
+
+class UnconnectedDropdownField extends Component {
   constructor(props) {
     super(props);
     if (
@@ -24,6 +40,7 @@ export class DropdownField extends Component {
       errMsg: this.props.fieldDef.errMsg
     };
     this.props = props;
+    this.stepBuilder = new StepBuilder();
   }
 
   getJsonSchemaPathForJsonPath(jsonPath) {
@@ -37,7 +54,12 @@ export class DropdownField extends Component {
 
   getJsx() {
     let { value, isValid, errMsg } = this.state;
-    let options = [{ value: "", label: "Select here" }];
+    let options = [
+      {
+        value: "",
+        label: "Select here"
+      }
+    ];
 
     if (this.props.fieldDef.options) {
       options = this.props.fieldDef.options;
@@ -96,8 +118,8 @@ export class DropdownField extends Component {
               value={option.value}
               label={option.label}
             />
-          ))}
-        </FormSelect>
+          ))}{" "}
+        </FormSelect>{" "}
       </FormGroup>
     );
     jsxArray.push(this.addChildren());
@@ -155,6 +177,43 @@ export class DropdownField extends Component {
 
   onSelect = (_, event) => {
     let value = event.target.value;
+    const { currentSteps } = this.props;
+    let copyOfCurrentSteps = [];
+    let componentObj = {},
+      primaryStepIndex = 0,
+      subStepIndex = 0;
+
+    if (!Validator.isEmptyArray(currentSteps)) {
+      copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(currentSteps);
+    }
+
+    if (value.indexOf("rhdm") > -1) {
+      //remove the Smart Router item
+      componentObj = Formatter.find(copyOfCurrentSteps, stepObj => {
+        return stepObj.name === "Components";
+      });
+      primaryStepIndex = Formatter.findIndex(copyOfCurrentSteps, stepObj => {
+        return stepObj.name === "Components";
+      });
+
+      if (!Validator.isEmpty(componentObj)) {
+        subStepIndex = Formatter.findIndex(componentObj.steps, subStepObj => {
+          return subStepObj.name === "Smart Router";
+        });
+        if (subStepIndex > -1) {
+          componentObj.steps.splice(subStepIndex, 1);
+          copyOfCurrentSteps.splice(primaryStepIndex, 1, componentObj);
+          console.log(copyOfCurrentSteps[2].steps);
+          //update the steps in redux store
+          this.props.dispatchUpdateSteps(copyOfCurrentSteps);
+        }
+      }
+    } else {
+      this.stepBuilder.buildSteps().then(result => {
+        //store steps to redux store
+        this.props.dispatchUpdateSteps(result.steps);
+      });
+    }
 
     this.isValidField(value);
     this.reBuildChildren(value);
@@ -202,9 +261,19 @@ export class DropdownField extends Component {
       isValid = true;
     }
     this.props.fieldDef.errMsg = this.errMsg;
-    this.setState({ value, isValid, errMsg });
+    this.setState({
+      value,
+      isValid,
+      errMsg
+    });
   }
   render() {
     return this.getJsx();
   }
 }
+
+const DropdownField = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UnconnectedDropdownField);
+export { DropdownField };

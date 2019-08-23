@@ -19,8 +19,6 @@ export default class OperatorWizardFooter extends React.Component {
             const goToReview = () => {
               if (this.props.validate()) {
                 goToStepById(this.props.maxSteps);
-              } else {
-                goToStepById(this.props.getErrorStep());
               }
             };
 
@@ -29,24 +27,13 @@ export default class OperatorWizardFooter extends React.Component {
                 Next
               </Button>
             );
-            const onViewYamlBtn = () => {
-              if (this.props.validate()) {
-                this.props.onEditYaml();
-              } else {
-                goToStepById(this.props.getErrorStep());
-              }
-            };
-
-            const onDeployBtn = () => {
-              if (this.props.validate()) {
-                this.props.onDeploy();
-              } else {
-                goToStepById(this.props.getErrorStep());
-              }
-            };
 
             const deployBtn = (
-              <Button variant="primary" type="submit" onClick={onDeployBtn}>
+              <Button
+                variant="primary"
+                type="submit"
+                onClick={this.props.onDeploy}
+              >
                 Deploy
               </Button>
             );
@@ -66,7 +53,7 @@ export default class OperatorWizardFooter extends React.Component {
               <Button
                 variant="link"
                 isInline
-                onClick={onViewYamlBtn}
+                onClick={this.props.onEditYaml}
                 // className={this.props.isFormValid ? "" : "pf-m-disabled"}
               >
                 View YAML

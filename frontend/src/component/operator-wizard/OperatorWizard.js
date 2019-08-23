@@ -11,15 +11,28 @@ import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
 import ReviewPage from "./page-component/ReviewPage";
 
-export default class OperatorWizard extends Component {
+import { connect } from "react-redux";
+import { Dispatchers } from "../../redux/";
+import Formatter from "../../utils/formatter";
+import Validator from "../../utils/validator";
+
+const mapDispatchToProps = dispatch => {
+  return Formatter.extend(Dispatchers.steps(dispatch));
+};
+
+const mapStateToProps = state => {
+  return {
+    currentSteps: state.steps.stepList
+  };
+};
+
+class OperatorWizard extends Component {
   constructor(props) {
     super(props);
     this.title = "Operator installer";
     this.subtitle = "RHPAM installer";
     this.stepBuilder = new StepBuilder();
-    this.errorStep = 1;
     this.state = {
-      steps: this.stepBuilder.buildPlaceholderStep(),
       isFormValid: false,
       validationError: "",
       currentStep: 1,
@@ -31,6 +44,9 @@ export default class OperatorWizard extends Component {
       }
     };
     document.title = this.title;
+  }
+
+  componentDidMount() {
     FormJsonLoader.loadJsonSpec().then(spec =>
       this.setState({
         spec: spec
@@ -38,8 +54,14 @@ export default class OperatorWizard extends Component {
     );
 
     this.stepBuilder.buildSteps().then(result => {
+      //store steps to redux store
+      if (!Validator.isEmptyArray(result.steps)) {
+        this.props.dispatchUpdateSteps(result.steps);
+      } else {
+        this.props.dispatchUpdateSteps(this.stepBuilder.buildPlaceholderStep());
+      }
+
       this.setState({
-        steps: result.steps,
         pages: result.pages,
         maxSteps: result.maxSteps
       });
@@ -53,6 +75,9 @@ export default class OperatorWizard extends Component {
   };
 
   onDeploy = () => {
+    if (!this.validateForm()) {
+      return;
+    }
     const result = this.createResultYaml();
     console.log(result);
     fetch(BACKEND_URL, {
@@ -92,6 +117,9 @@ export default class OperatorWizard extends Component {
   };
 
   onEditYaml = () => {
+    if (!this.validateForm()) {
+      return;
+    }
     this.createResultYaml();
     this.handleEditYamlModalToggle();
   };
@@ -107,16 +135,12 @@ export default class OperatorWizard extends Component {
       resultYaml
     });
   };
-  getErrorStep = () => {
-    return this.errorStep;
-  };
+
   validateForm = () => {
-    let result = { isValid: true, errMsg: "", errorStep: 1 };
+    let result = { isValid: true, errMsg: "" };
     if (this.state.pages === undefined) {
       return false;
     }
-    let errorStep = 1;
-
     this.state.pages.forEach(page => {
       if (!result.isValid) {
         return;
@@ -126,34 +150,28 @@ export default class OperatorWizard extends Component {
           if (!result.isValid) {
             return;
           }
-          result = this.validateFields(subPage.fields, errorStep);
-          errorStep++;
+          result = this.validateFields(subPage.fields);
         });
         if (!result.isValid) {
           return;
         }
-        errorStep++;
       }
 
-      result = this.validateFields(page.fields, errorStep);
+      result = this.validateFields(page.fields);
       if (!result.isValid) {
         return;
       }
-      errorStep++;
     });
-
-    this.errorStep = result.errorStep;
     this.setState({
       isFormValid: result.isValid,
       validationError: result.errMsg,
       isErrorModalOpen: !result.isValid
     });
-
     return result.isValid;
   };
 
-  validateFields(fields, errorStep) {
-    let result = { isValid: true, errMsg: "", errorStep: errorStep };
+  validateFields(fields) {
+    let result = { isValid: true, errMsg: "" };
 
     if (fields !== undefined) {
       fields.forEach(field => {
@@ -161,7 +179,7 @@ export default class OperatorWizard extends Component {
           return;
         }
         if (field.type === "object" && field.elementCount > 0) {
-          result = this.validateFields(field.fields, errorStep);
+          result = this.validateFields(field.fields);
           if (!result.isValid) {
             return;
           }
@@ -172,7 +190,7 @@ export default class OperatorWizard extends Component {
           field.fields !== undefined
         ) {
           if (field.visible !== undefined && field.visible !== false) {
-            result = this.validateFields(field.fields, errorStep);
+            result = this.validateFields(field.fields);
             if (!result.isValid) {
               return;
             }
@@ -180,11 +198,7 @@ export default class OperatorWizard extends Component {
         } else {
           if (field.errMsg !== undefined && field.errMsg !== "") {
             console.log(`Field ${field.label} is not valid: ${field.errMsg}`);
-            result = {
-              isValid: false,
-              errMsg: field.errMsg,
-              errorStep: errorStep
-            };
+            result = { isValid: false, errMsg: field.errMsg };
           } else {
             if (
               field.required !== undefined &&
@@ -192,7 +206,7 @@ export default class OperatorWizard extends Component {
               (field.value === undefined || field.value === "")
             ) {
               const errMsg = field.label + " is required.";
-              result = { isValid: false, errMsg: errMsg, errorStep: errorStep };
+              result = { isValid: false, errMsg: errMsg };
             }
           }
         }
@@ -348,6 +362,7 @@ export default class OperatorWizard extends Component {
   }
 
   render() {
+    let steps = [];
     if (this.state.pages) {
       const reviewPageTitle = "Confirmation";
       const reviewStep = {
@@ -361,82 +376,93 @@ export default class OperatorWizard extends Component {
           />
         )
       };
-      const steps = this.state.steps;
-      if (steps[steps.length - 1].id === reviewStep.id) {
+      if (!Validator.isEmptyArray(this.props.currentSteps)) {
+        steps = this.props.currentSteps;
+      }
+
+      if (steps.length > 0 && steps[steps.length - 1].id === reviewStep.id) {
         steps[steps.length - 1] = reviewStep;
       } else if (steps.length === this.state.pages.length) {
         steps.push(reviewStep);
       }
     }
 
-    const operatorFooter = (
-      <OperatorWizardFooter
-        validate={this.validateForm}
-        isFormValid={this.state.isFormValid}
-        maxSteps={this.state.maxSteps}
-        onDeploy={this.onDeploy}
-        onEditYaml={this.onEditYaml}
-        onNext={this.onPageChange}
-        onBack={this.onPageChange}
-        onGoToStep={this.onPageChange}
-        isFinished={this.state.deployment.deployed}
-        getErrorStep={this.getErrorStep}
-      />
-    );
-    this.wizard = (
-      <React.Fragment>
-        <Wizard
-          isOpen={true}
-          title={this.title}
-          description={this.subtitle}
-          isFullHeight
-          isFullWidth
-          onClose={() => {}}
-          steps={this.state.steps}
-          footer={operatorFooter}
+    if (steps.length > 0) {
+      const operatorFooter = (
+        <OperatorWizardFooter
+          validate={this.validateForm}
+          isFormValid={this.state.isFormValid}
+          maxSteps={this.state.maxSteps}
+          onDeploy={this.onDeploy}
+          onEditYaml={this.onEditYaml}
+          onNext={this.onPageChange}
+          onBack={this.onPageChange}
+          onGoToStep={this.onPageChange}
+          isFinished={this.state.deployment.deployed}
         />
-        <Modal
-          title=" "
-          isOpen={this.state.isEditYamlModalOpen}
-          onClose={this.handleEditYamlModalToggle}
-          actions={[
-            <CopyToClipboard
-              key="yaml_copy"
-              className="pf-c-button pf-m-primary"
-              onCopy={this.onCopyYaml}
-              text={this.state.resultYaml}
-            >
-              <button key="yaml_button_copy">Copy to clipboard</button>
-            </CopyToClipboard>,
-            <Button
-              key="cancel"
-              variant="secondary"
-              onClick={this.handleEditYamlModalToggle}
-            >
-              Cancel
-            </Button>
-          ]}
-        >
-          <TextArea
-            id="yaml_edit_text"
-            key="yaml_text"
-            onChange={this.onChangeYaml}
-            rows={100}
-            cols={35}
-            value={this.state.resultYaml}
+      );
+      this.wizard = (
+        <React.Fragment>
+          <Wizard
+            isOpen={true}
+            title={this.title}
+            description={this.subtitle}
+            isFullHeight
+            isFullWidth
+            onClose={() => {}}
+            steps={steps}
+            footer={operatorFooter}
           />
-        </Modal>
+          <Modal
+            title=" "
+            isOpen={this.state.isEditYamlModalOpen}
+            onClose={this.handleEditYamlModalToggle}
+            actions={[
+              <CopyToClipboard
+                key="yaml_copy"
+                className="pf-c-button pf-m-primary"
+                onCopy={this.onCopyYaml}
+                text={this.state.resultYaml}
+              >
+                <button key="yaml_button_copy">Copy to clipboard</button>
+              </CopyToClipboard>,
+              <Button
+                key="cancel"
+                variant="secondary"
+                onClick={this.handleEditYamlModalToggle}
+              >
+                Cancel
+              </Button>
+            ]}
+          >
+            <TextArea
+              id="yaml_edit_text"
+              key="yaml_text"
+              onChange={this.onChangeYaml}
+              rows={100}
+              cols={35}
+              value={this.state.resultYaml}
+            />
+          </Modal>
 
-        <Modal
-          isSmall
-          title="Review the form"
-          isOpen={this.state.isErrorModalOpen}
-          onClose={() => this.setState({ isErrorModalOpen: false })}
-        >
-          <Alert variant="danger" title={this.state.validationError} />
-        </Modal>
-      </React.Fragment>
-    );
-    return this.wizard;
+          <Modal
+            isSmall
+            title="Review the form"
+            isOpen={this.state.isErrorModalOpen}
+            onClose={() => this.setState({ isErrorModalOpen: false })}
+          >
+            <Alert variant="danger" title={this.state.validationError} />
+          </Modal>
+        </React.Fragment>
+      );
+      return this.wizard;
+    } else {
+      return null;
+    }
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OperatorWizard);
