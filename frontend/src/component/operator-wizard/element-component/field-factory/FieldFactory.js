@@ -164,6 +164,7 @@ export default class FieldFactory {
         if (props.parentid === undefined) {
           props.parentid = -1;
         }
+        console.log(props);
         fieldReference = new ObjectField(props);
         elementJsx = fieldReference.getJsx();
         break;

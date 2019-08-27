@@ -17,12 +17,18 @@ import StepBuilder from "../../StepBuilder";
 
 const mapStateToProps = state => {
   return {
-    currentSteps: state.steps.stepList
+    currentSteps: state.steps.stepList,
+    originalSteps: state.steps.originalStepList,
+    currentPages: state.pages.pageList,
+    originalPages: state.pages.originalPageList
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return Formatter.extend(Dispatchers.steps(dispatch));
+  return Formatter.extend(
+    Dispatchers.steps(dispatch),
+    Dispatchers.pages(dispatch)
+  );
 };
 
 class UnconnectedDropdownField extends Component {
@@ -177,48 +183,96 @@ class UnconnectedDropdownField extends Component {
 
   onSelect = (_, event) => {
     let value = event.target.value;
-    const { currentSteps } = this.props;
-    let copyOfCurrentSteps = [];
-    let componentObj = {},
-      primaryStepIndex = 0,
-      subStepIndex = 0;
+    const {
+      currentSteps,
+      originalSteps,
+      currentPages,
+      originalPages
+    } = this.props;
+    var copyOfCurrentSteps = [],
+      copyOfCurrentPages = [],
+      copyOfOriginalPages = Formatter.deepCloneArrayOfObject(originalPages);
 
-    if (!Validator.isEmptyArray(currentSteps)) {
+    this.isValidField(value);
+
+    this.props.props.page.loadPageChildren();
+
+    if (Validator.isEmptyArray(currentSteps)) {
+      copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(originalSteps);
+    } else {
       copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(currentSteps);
     }
 
-    if (value.indexOf("rhdm") > -1) {
-      //remove the Smart Router item
-      componentObj = Formatter.find(copyOfCurrentSteps, stepObj => {
-        return stepObj.name === "Components";
-      });
-      primaryStepIndex = Formatter.findIndex(copyOfCurrentSteps, stepObj => {
-        return stepObj.name === "Components";
-      });
-
-      if (!Validator.isEmpty(componentObj)) {
-        subStepIndex = Formatter.findIndex(componentObj.steps, subStepObj => {
-          return subStepObj.name === "Smart Router";
-        });
-        if (subStepIndex > -1) {
-          componentObj.steps.splice(subStepIndex, 1);
-          copyOfCurrentSteps.splice(primaryStepIndex, 1, componentObj);
-          console.log(copyOfCurrentSteps[2].steps);
-          //update the steps in redux store
-          this.props.dispatchUpdateSteps(copyOfCurrentSteps);
-        }
-      }
+    if (Validator.isEmptyArray(currentPages)) {
+      copyOfCurrentPages = Formatter.deepCloneArrayOfObject(originalPages);
     } else {
-      this.stepBuilder.buildSteps().then(result => {
-        //store steps to redux store
-        this.props.dispatchUpdateSteps(result.steps);
-      });
+      copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
     }
 
-    this.isValidField(value);
-    this.reBuildChildren(value);
+    if (value.indexOf("rhdm") > -1) {
+      // remove the Smart Router item from steps
+      copyOfCurrentSteps = Formatter.filter(copyOfCurrentSteps, step => {
+        let subStepList = [];
+        if (step.name === "Components") {
+          subStepList = Formatter.filter(step.steps, subStep => {
+            return subStep.name !== "Smart Router";
+          });
+          step.steps = subStepList;
+          return step;
+        } else {
+          return step;
+        }
+      });
 
-    this.props.props.page.loadPageChildren();
+      // remove the Smart Router item from pages
+      copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
+        let subPageList = [];
+        if (page.label === "Components") {
+          subPageList = Formatter.filter(page.subPages, subPage => {
+            return subPage.label !== "Smart Router";
+          });
+          page.subPages = subPageList;
+          return page;
+        } else {
+          return page;
+        }
+      });
+
+      //update the value of the related field.
+      copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
+        let fieldIndex = Formatter.findIndex(page.fields, field => {
+          return field.label === this.props.fieldDef.label;
+        });
+
+        if (fieldIndex > -1) {
+          page.fields.splice(fieldIndex, 1, this.props.fieldDef);
+          return page;
+        } else {
+          return page;
+        }
+      });
+
+      // modify the steps and pages in the redux store.
+      this.props.dispatchUpdateSteps(copyOfCurrentSteps);
+      this.props.dispatchUpdatePages(copyOfCurrentPages);
+    } else {
+      //update the value of the related field.
+      copyOfOriginalPages = Formatter.filter(copyOfOriginalPages, page => {
+        let fieldIndex = Formatter.findIndex(page.fields, field => {
+          return field.label === this.props.fieldDef.label;
+        });
+
+        if (fieldIndex > -1) {
+          page.fields.splice(fieldIndex, 1, this.props.fieldDef);
+          return page;
+        } else {
+          return page;
+        }
+      });
+      // modify the steps and pages in the redux store.
+      this.props.dispatchUpdateSteps(originalSteps);
+      this.props.dispatchUpdatePages(copyOfOriginalPages);
+    }
   };
 
   reBuildChildren(value) {

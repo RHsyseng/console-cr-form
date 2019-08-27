@@ -27,7 +27,7 @@ class Formatter {
   }
 
   static deepCloneArrayOfObject(arrayOfObjects) {
-    return lodash.map(arrayOfObjects, lodash.clone());
+    return lodash.cloneDeep(arrayOfObjects);
   }
 
   static forEach(value, callback) {

@@ -17,22 +17,29 @@ import Formatter from "../../utils/formatter";
 import Validator from "../../utils/validator";
 
 const mapDispatchToProps = dispatch => {
-  return Formatter.extend(Dispatchers.steps(dispatch));
+  return Formatter.extend(
+    Dispatchers.steps(dispatch),
+    Dispatchers.pages(dispatch)
+  );
 };
 
 const mapStateToProps = state => {
   return {
-    currentSteps: state.steps.stepList
+    currentPages: state.pages.pageList,
+    originalPages: state.pages.originalPageList
   };
 };
+
+var stepBuilder = new StepBuilder();
 
 class OperatorWizard extends Component {
   constructor(props) {
     super(props);
     this.title = "Operator installer";
     this.subtitle = "RHPAM installer";
-    this.stepBuilder = new StepBuilder();
+    // this.stepBuilder = new StepBuilder();
     this.state = {
+      steps: stepBuilder.buildPlaceholderStep(),
       isFormValid: false,
       validationError: "",
       currentStep: 1,
@@ -53,19 +60,42 @@ class OperatorWizard extends Component {
       })
     );
 
-    this.stepBuilder.buildSteps().then(result => {
+    stepBuilder.buildSteps().then(result => {
       //store steps to redux store
       if (!Validator.isEmptyArray(result.steps)) {
-        this.props.dispatchUpdateSteps(result.steps);
+        this.props.dispatchStoreSteps(result.steps);
       } else {
-        this.props.dispatchUpdateSteps(this.stepBuilder.buildPlaceholderStep());
+        this.props.dispatchStoreSteps(this.stepBuilder.buildPlaceholderStep());
+      }
+
+      //store pages to redux store
+      if (!Validator.isEmptyArray(result.pages)) {
+        this.props.dispatchStorePages(result.pages);
+      } else {
+        this.props.dispatchStorePages([]);
       }
 
       this.setState({
-        pages: result.pages,
+        steps: result.steps,
         maxSteps: result.maxSteps
       });
     });
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let state = {},
+      newResult = {};
+
+    if (!Validator.isEmptyArray(nextProps.currentPages)) {
+      newResult = stepBuilder.reBuildPages(nextProps.currentPages);
+      state = Formatter.extend(prevState, {
+        maxSteps: newResult.maxSteps,
+        steps: newResult.steps
+      });
+      return state;
+    } else {
+      return null;
+    }
   }
 
   onPageChange = ({ id }) => {
@@ -79,7 +109,6 @@ class OperatorWizard extends Component {
       return;
     }
     const result = this.createResultYaml();
-    console.log(result);
     fetch(BACKEND_URL, {
       method: "POST",
       body: JSON.stringify(result),
@@ -138,10 +167,16 @@ class OperatorWizard extends Component {
 
   validateForm = () => {
     let result = { isValid: true, errMsg: "" };
-    if (this.state.pages === undefined) {
-      return false;
+    let pages = [];
+    const { originalPages, currentPages } = this.props;
+
+    if (!Validator.isEmptyArray(currentPages)) {
+      pages = Formatter.deepCloneArrayOfObject(currentPages);
+    } else {
+      pages = Formatter.deepCloneArrayOfObject(originalPages);
     }
-    this.state.pages.forEach(page => {
+
+    pages.forEach(page => {
       if (!result.isValid) {
         return;
       }
@@ -217,9 +252,17 @@ class OperatorWizard extends Component {
 
   createYamlFromPages() {
     let jsonObject = {};
+    let pages = [];
+    const { originalPages, currentPages } = this.props;
 
-    if (Array.isArray(this.state.pages)) {
-      this.state.pages.forEach(page => {
+    if (!Validator.isEmptyArray(currentPages)) {
+      pages = Formatter.deepCloneArrayOfObject(currentPages);
+    } else {
+      pages = Formatter.deepCloneArrayOfObject(originalPages);
+    }
+
+    if (!Validator.isEmptyArray(pages)) {
+      pages.forEach(page => {
         let pageFields = page.fields;
 
         if (Array.isArray(pageFields)) {
@@ -362,8 +405,16 @@ class OperatorWizard extends Component {
   }
 
   render() {
-    let steps = [];
-    if (this.state.pages) {
+    let pages = [];
+    const { originalPages, currentPages } = this.props;
+    const { steps } = this.state;
+
+    if (!Validator.isEmptyArray(currentPages)) {
+      pages = Formatter.deepCloneArrayOfObject(currentPages);
+    } else {
+      pages = Formatter.deepCloneArrayOfObject(originalPages);
+    }
+    if (!Validator.isEmptyArray(pages)) {
       const reviewPageTitle = "Confirmation";
       const reviewStep = {
         id: this.state.maxSteps,
@@ -376,13 +427,10 @@ class OperatorWizard extends Component {
           />
         )
       };
-      if (!Validator.isEmptyArray(this.props.currentSteps)) {
-        steps = this.props.currentSteps;
-      }
 
       if (steps.length > 0 && steps[steps.length - 1].id === reviewStep.id) {
         steps[steps.length - 1] = reviewStep;
-      } else if (steps.length === this.state.pages.length) {
+      } else if (steps.length === pages.length) {
         steps.push(reviewStep);
       }
     }
