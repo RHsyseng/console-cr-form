@@ -457,6 +457,7 @@ class OperatorWizard extends Component {
           onBack={this.onPageChange}
           onGoToStep={this.onPageChange}
           isFinished={this.state.deployment.deployed}
+          getErrorStep={this.getErrorStep}
         />
       );
       this.wizard = (
