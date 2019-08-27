@@ -9,7 +9,28 @@ import {
 import FieldFactory from "./FieldFactory";
 import JSONPATH from "jsonpath";
 
-export class DropdownField extends Component {
+import { connect } from "react-redux";
+import { Dispatchers } from "../../../../redux/";
+import Formatter from "../../../../utils/formatter";
+import Validator from "../../../../utils/validator";
+
+const mapStateToProps = state => {
+  return {
+    currentSteps: state.steps.stepList,
+    originalSteps: state.steps.originalStepList,
+    currentPages: state.pages.pageList,
+    originalPages: state.pages.originalPageList
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return Formatter.extend(
+    Dispatchers.steps(dispatch),
+    Dispatchers.pages(dispatch)
+  );
+};
+
+class UnconnectedDropdownField extends Component {
   constructor(props) {
     super(props);
     if (
@@ -37,7 +58,12 @@ export class DropdownField extends Component {
 
   getJsx() {
     let { value, isValid, errMsg } = this.state;
-    let options = [{ value: "", label: "Select here" }];
+    let options = [
+      {
+        value: "",
+        label: "Select here"
+      }
+    ];
 
     if (this.props.fieldDef.options) {
       options = this.props.fieldDef.options;
@@ -155,11 +181,97 @@ export class DropdownField extends Component {
 
   onSelect = (_, event) => {
     let value = event.target.value;
+    const {
+      currentSteps,
+      originalSteps,
+      currentPages,
+      originalPages
+    } = this.props;
+    var copyOfCurrentSteps = [],
+      copyOfCurrentPages = [],
+      copyOfOriginalPages = Formatter.deepCloneArrayOfObject(originalPages);
 
     this.isValidField(value);
     this.reBuildChildren(value);
 
     this.props.props.page.loadPageChildren();
+
+    if (Validator.isEmptyArray(currentSteps)) {
+      copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(originalSteps);
+    } else {
+      copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(currentSteps);
+    }
+
+    if (Validator.isEmptyArray(currentPages)) {
+      copyOfCurrentPages = Formatter.deepCloneArrayOfObject(originalPages);
+    } else {
+      copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
+    }
+
+    if (value.indexOf("rhdm") > -1) {
+      // remove the Smart Router item from steps
+      copyOfCurrentSteps = Formatter.filter(copyOfCurrentSteps, step => {
+        let subStepList = [];
+        if (step.name === "Components") {
+          subStepList = Formatter.filter(step.steps, subStep => {
+            return subStep.name !== "Smart Router";
+          });
+          step.steps = subStepList;
+          return step;
+        } else {
+          return step;
+        }
+      });
+
+      // remove the Smart Router item from pages
+      copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
+        let subPageList = [];
+        if (page.label === "Components") {
+          subPageList = Formatter.filter(page.subPages, subPage => {
+            return subPage.label !== "Smart Router";
+          });
+          page.subPages = subPageList;
+          return page;
+        } else {
+          return page;
+        }
+      });
+
+      //update the value of the related field.
+      copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
+        let fieldIndex = Formatter.findIndex(page.fields, field => {
+          return field.label === this.props.fieldDef.label;
+        });
+
+        if (fieldIndex > -1) {
+          page.fields.splice(fieldIndex, 1, this.props.fieldDef);
+          return page;
+        } else {
+          return page;
+        }
+      });
+
+      // modify the steps and pages in the redux store.
+      this.props.dispatchUpdateSteps(copyOfCurrentSteps);
+      this.props.dispatchUpdatePages(copyOfCurrentPages);
+    } else {
+      //update the value of the related field.
+      copyOfOriginalPages = Formatter.filter(copyOfOriginalPages, page => {
+        let fieldIndex = Formatter.findIndex(page.fields, field => {
+          return field.label === this.props.fieldDef.label;
+        });
+
+        if (fieldIndex > -1) {
+          page.fields.splice(fieldIndex, 1, this.props.fieldDef);
+          return page;
+        } else {
+          return page;
+        }
+      });
+      // modify the steps and pages in the redux store.
+      this.props.dispatchUpdateSteps(originalSteps);
+      this.props.dispatchUpdatePages(copyOfOriginalPages);
+    }
   };
 
   reBuildChildren(value) {
@@ -202,9 +314,19 @@ export class DropdownField extends Component {
       isValid = true;
     }
     this.props.fieldDef.errMsg = this.errMsg;
-    this.setState({ value, isValid, errMsg });
+    this.setState({
+      value,
+      isValid,
+      errMsg
+    });
   }
   render() {
     return this.getJsx();
   }
 }
+
+const DropdownField = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UnconnectedDropdownField);
+export { DropdownField };
