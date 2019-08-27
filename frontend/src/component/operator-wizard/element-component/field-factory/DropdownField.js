@@ -13,7 +13,6 @@ import { connect } from "react-redux";
 import { Dispatchers } from "../../../../redux/";
 import Formatter from "../../../../utils/formatter";
 import Validator from "../../../../utils/validator";
-import StepBuilder from "../../StepBuilder";
 
 const mapStateToProps = state => {
   return {
@@ -46,7 +45,6 @@ class UnconnectedDropdownField extends Component {
       errMsg: this.props.fieldDef.errMsg
     };
     this.props = props;
-    this.stepBuilder = new StepBuilder();
   }
 
   getJsonSchemaPathForJsonPath(jsonPath) {

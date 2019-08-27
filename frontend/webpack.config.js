@@ -7,9 +7,8 @@ module.exports = {
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: '/'
+    publicPath: "/"
   },
-  devtool: "source-map",
   devServer: {
     contentBase: path.join(__dirname, "dist"),
     hot: true,
