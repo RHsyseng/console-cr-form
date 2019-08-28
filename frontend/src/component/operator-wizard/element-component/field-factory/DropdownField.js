@@ -30,6 +30,10 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
+const stepName = "Components",
+  itemName = "Smart Router",
+  selectedEnvPrefix = "rhdm";
+
 class UnconnectedDropdownField extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +49,26 @@ class UnconnectedDropdownField extends Component {
       errMsg: this.props.fieldDef.errMsg
     };
     this.props = props;
+  }
+
+  updateFieldInPage(fieldObj, pageList) {
+    let newPageList = [];
+    if (Validator.isEmptyArray(pageList) || Validator.isEmpty(fieldObj)) {
+      return;
+    }
+    newPageList = Formatter.filter(pageList, page => {
+      let fieldIndex = Formatter.findIndex(page.fields, field => {
+        return field.label === fieldObj.label;
+      });
+
+      if (fieldIndex > -1) {
+        page.fields.splice(fieldIndex, 1, fieldObj);
+        return page;
+      } else {
+        return page;
+      }
+    });
+    return newPageList;
   }
 
   getJsonSchemaPathForJsonPath(jsonPath) {
@@ -187,7 +211,7 @@ class UnconnectedDropdownField extends Component {
       currentPages,
       originalPages
     } = this.props;
-    var copyOfCurrentSteps = [],
+    let copyOfCurrentSteps = [],
       copyOfCurrentPages = [],
       copyOfOriginalPages = Formatter.deepCloneArrayOfObject(originalPages);
 
@@ -208,13 +232,13 @@ class UnconnectedDropdownField extends Component {
       copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
     }
 
-    if (value.indexOf("rhdm") > -1) {
+    if (value.indexOf(selectedEnvPrefix) > -1) {
       // remove the Smart Router item from steps
       copyOfCurrentSteps = Formatter.filter(copyOfCurrentSteps, step => {
         let subStepList = [];
-        if (step.name === "Components") {
+        if (step.name === stepName) {
           subStepList = Formatter.filter(step.steps, subStep => {
-            return subStep.name !== "Smart Router";
+            return subStep.name !== itemName;
           });
           step.steps = subStepList;
           return step;
@@ -226,9 +250,9 @@ class UnconnectedDropdownField extends Component {
       // remove the Smart Router item from pages
       copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
         let subPageList = [];
-        if (page.label === "Components") {
+        if (page.label === stepName) {
           subPageList = Formatter.filter(page.subPages, subPage => {
-            return subPage.label !== "Smart Router";
+            return subPage.label !== itemName;
           });
           page.subPages = subPageList;
           return page;
@@ -237,37 +261,21 @@ class UnconnectedDropdownField extends Component {
         }
       });
 
-      //update the value of the related field.
-      copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
-        let fieldIndex = Formatter.findIndex(page.fields, field => {
-          return field.label === this.props.fieldDef.label;
-        });
-
-        if (fieldIndex > -1) {
-          page.fields.splice(fieldIndex, 1, this.props.fieldDef);
-          return page;
-        } else {
-          return page;
-        }
-      });
+      //update the related field.
+      copyOfCurrentPages = this.updateFieldInPage(
+        this.props.fieldDef,
+        copyOfCurrentPages
+      );
 
       // modify the steps and pages in the redux store.
       this.props.dispatchUpdateSteps(copyOfCurrentSteps);
       this.props.dispatchUpdatePages(copyOfCurrentPages);
     } else {
-      //update the value of the related field.
-      copyOfOriginalPages = Formatter.filter(copyOfOriginalPages, page => {
-        let fieldIndex = Formatter.findIndex(page.fields, field => {
-          return field.label === this.props.fieldDef.label;
-        });
-
-        if (fieldIndex > -1) {
-          page.fields.splice(fieldIndex, 1, this.props.fieldDef);
-          return page;
-        } else {
-          return page;
-        }
-      });
+      //update the related field.
+      copyOfCurrentPages = this.updateFieldInPage(
+        this.props.fieldDef,
+        copyOfCurrentPages
+      );
       // modify the steps and pages in the redux store.
       this.props.dispatchUpdateSteps(originalSteps);
       this.props.dispatchUpdatePages(copyOfOriginalPages);

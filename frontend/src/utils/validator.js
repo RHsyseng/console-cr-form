@@ -121,7 +121,7 @@ class Validator {
   //determin if all properties has empty values in an object
   static isObjectPropertyAllHasEmptyValue(object) {
     if (lodash.isObject(object)) {
-      for (var key in object) {
+      for (let key in object) {
         if (
           object[key] !== "" &&
           !this.isEmptyArray(object[key]) &&
