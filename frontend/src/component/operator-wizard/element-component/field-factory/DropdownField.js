@@ -16,8 +16,8 @@ import Validator from "../../../../utils/validator";
 
 const mapStateToProps = state => {
   return {
-    currentSteps: state.steps.stepList,
-    originalSteps: state.steps.originalStepList,
+    // currentSteps: state.steps.stepList,
+    // originalSteps: state.steps.originalStepList,
     currentPages: state.pages.pageList,
     originalPages: state.pages.originalPageList
   };
@@ -32,7 +32,9 @@ const mapDispatchToProps = dispatch => {
 
 const stepName = "Components",
   itemName = "Smart Router",
-  selectedEnvPrefix = "rhdm";
+  rhdmEnvPrefix = "rhdm",
+  rhpamEnvPrefix = "rhpam",
+  fieldName = "Environment";
 
 class UnconnectedDropdownField extends Component {
   constructor(props) {
@@ -205,14 +207,8 @@ class UnconnectedDropdownField extends Component {
 
   onSelect = (_, event) => {
     let value = event.target.value;
-    const {
-      currentSteps,
-      originalSteps,
-      currentPages,
-      originalPages
-    } = this.props;
-    let copyOfCurrentSteps = [],
-      copyOfCurrentPages = [],
+    const { currentPages, originalPages } = this.props;
+    let copyOfCurrentPages = [],
       copyOfOriginalPages = Formatter.deepCloneArrayOfObject(originalPages);
 
     this.isValidField(value);
@@ -220,65 +216,63 @@ class UnconnectedDropdownField extends Component {
 
     this.props.props.page.loadPageChildren();
 
-    if (Validator.isEmptyArray(currentSteps)) {
-      copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(originalSteps);
-    } else {
-      copyOfCurrentSteps = Formatter.deepCloneArrayOfObject(currentSteps);
-    }
-
     if (Validator.isEmptyArray(currentPages)) {
       copyOfCurrentPages = Formatter.deepCloneArrayOfObject(originalPages);
     } else {
       copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
     }
 
-    if (value.indexOf(selectedEnvPrefix) > -1) {
-      // remove the Smart Router item from steps
-      copyOfCurrentSteps = Formatter.filter(copyOfCurrentSteps, step => {
-        let subStepList = [];
-        if (step.name === stepName) {
-          subStepList = Formatter.filter(step.steps, subStep => {
-            return subStep.name !== itemName;
-          });
-          step.steps = subStepList;
-          return step;
-        } else {
-          return step;
-        }
-      });
+    if (this.props.fieldDef.label === fieldName) {
+      if (value.indexOf(rhdmEnvPrefix) > -1) {
+        // remove the Smart Router item from pages
+        copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
+          let subPageList = [];
+          if (page.label === stepName) {
+            subPageList = Formatter.filter(page.subPages, subPage => {
+              return subPage.label !== itemName;
+            });
+            page.subPages = subPageList;
+            return page;
+          } else {
+            return page;
+          }
+        });
 
-      // remove the Smart Router item from pages
-      copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
-        let subPageList = [];
-        if (page.label === stepName) {
-          subPageList = Formatter.filter(page.subPages, subPage => {
-            return subPage.label !== itemName;
-          });
-          page.subPages = subPageList;
-          return page;
-        } else {
-          return page;
-        }
-      });
+        //update the related field.
+        copyOfCurrentPages = this.updateFieldInPage(
+          this.props.fieldDef,
+          copyOfCurrentPages
+        );
 
-      //update the related field.
-      copyOfCurrentPages = this.updateFieldInPage(
-        this.props.fieldDef,
-        copyOfCurrentPages
-      );
+        // modify the pages in the redux store.
+        this.props.dispatchUpdatePages(copyOfCurrentPages);
+      } else if (
+        !Validator.isEqual(
+          copyOfCurrentPages,
+          copyOfOriginalPages && value.indexOf(rhpamEnvPrefix) > -1
+        )
+      ) {
+        //update the related field.
+        copyOfCurrentPages = this.updateFieldInPage(
+          this.props.fieldDef,
+          copyOfCurrentPages
+        );
 
-      // modify the steps and pages in the redux store.
-      this.props.dispatchUpdateSteps(copyOfCurrentSteps);
-      this.props.dispatchUpdatePages(copyOfCurrentPages);
-    } else {
-      //update the related field.
-      copyOfCurrentPages = this.updateFieldInPage(
-        this.props.fieldDef,
-        copyOfCurrentPages
-      );
-      // modify the steps and pages in the redux store.
-      this.props.dispatchUpdateSteps(originalSteps);
-      this.props.dispatchUpdatePages(copyOfOriginalPages);
+        //merge all the values
+        copyOfCurrentPages = Formatter.getValues(
+          Formatter.merge(copyOfOriginalPages, copyOfCurrentPages)
+        );
+
+        // modify the pages in the redux store.
+        this.props.dispatchUpdatePages(copyOfCurrentPages);
+      } else {
+        //update the related field.
+        copyOfOriginalPages = this.updateFieldInPage(
+          this.props.fieldDef,
+          copyOfOriginalPages
+        );
+        this.props.dispatchUpdatePages(copyOfOriginalPages);
+      }
     }
   };
 
