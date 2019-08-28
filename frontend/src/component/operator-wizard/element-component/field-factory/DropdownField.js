@@ -16,25 +16,20 @@ import Validator from "../../../../utils/validator";
 
 const mapStateToProps = state => {
   return {
-    // currentSteps: state.steps.stepList,
-    // originalSteps: state.steps.originalStepList,
     currentPages: state.pages.pageList,
     originalPages: state.pages.originalPageList
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return Formatter.extend(
-    Dispatchers.steps(dispatch),
-    Dispatchers.pages(dispatch)
-  );
+  return Formatter.extend(Dispatchers.pages(dispatch));
 };
 
-const stepName = "Components",
-  itemName = "Smart Router",
-  rhdmEnvPrefix = "rhdm",
-  rhpamEnvPrefix = "rhpam",
-  fieldName = "Environment";
+const STEP_NAME = "Components",
+  ITEM_NAME = "Smart Router",
+  RHDM_ENV_PREFIX = "rhdm",
+  RHPAM_ENV_PREFIX = "rhpam",
+  FIELD_NAME = "Environment";
 
 class UnconnectedDropdownField extends Component {
   constructor(props) {
@@ -222,14 +217,14 @@ class UnconnectedDropdownField extends Component {
       copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
     }
 
-    if (this.props.fieldDef.label === fieldName) {
-      if (value.indexOf(rhdmEnvPrefix) > -1) {
+    if (this.props.fieldDef.label === FIELD_NAME) {
+      if (value.indexOf(RHDM_ENV_PREFIX) > -1) {
         // remove the Smart Router item from pages
         copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
           let subPageList = [];
-          if (page.label === stepName) {
+          if (page.label === STEP_NAME) {
             subPageList = Formatter.filter(page.subPages, subPage => {
-              return subPage.label !== itemName;
+              return subPage.label !== ITEM_NAME;
             });
             page.subPages = subPageList;
             return page;
@@ -249,7 +244,7 @@ class UnconnectedDropdownField extends Component {
       } else if (
         !Validator.isEqual(
           copyOfCurrentPages,
-          copyOfOriginalPages && value.indexOf(rhpamEnvPrefix) > -1
+          copyOfOriginalPages && value.indexOf(RHPAM_ENV_PREFIX) > -1
         )
       ) {
         //update the related field.

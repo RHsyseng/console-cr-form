@@ -1,3 +1,3 @@
-import steps from "./steps";
+import pages from "./pages";
 
-export { steps };
+export { pages };

@@ -17,10 +17,7 @@ import Formatter from "../../utils/formatter";
 import Validator from "../../utils/validator";
 
 const mapDispatchToProps = dispatch => {
-  return Formatter.extend(
-    Dispatchers.steps(dispatch),
-    Dispatchers.pages(dispatch)
-  );
+  return Formatter.extend(Dispatchers.pages(dispatch));
 };
 
 const mapStateToProps = state => {
@@ -61,13 +58,6 @@ class OperatorWizard extends Component {
     );
 
     stepBuilder.buildSteps().then(result => {
-      //store steps to redux store
-      if (!Validator.isEmptyArray(result.steps)) {
-        this.props.dispatchStoreSteps(result.steps);
-      } else {
-        this.props.dispatchStoreSteps(this.stepBuilder.buildPlaceholderStep());
-      }
-
       //store pages to redux store
       if (!Validator.isEmptyArray(result.pages)) {
         this.props.dispatchStorePages(result.pages);
