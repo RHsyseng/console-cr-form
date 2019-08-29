@@ -1,6 +1,7 @@
 import React from "react";
 import FormJsonLoader from "./FormJsonLoader";
 import Page from "./page-component/Page";
+import Validator from "../../utils/validator";
 
 export default class StepBuilder {
   constructor() {
@@ -48,6 +49,33 @@ export default class StepBuilder {
         maxSteps: pageId
       };
     });
+  }
+
+  reBuildPages(pages) {
+    let steps = [];
+    let pageId = 1;
+
+    if (Validator.isEmptyArray(pages)) {
+      return false;
+    } else {
+      pages.forEach(page => {
+        const step = this.buildStep(page, pageId);
+        if (Array.isArray(page.subPages) && page.subPages.length > 0) {
+          step.steps = [];
+          page.subPages.forEach(subPage => {
+            step.steps.push(this.buildStep(subPage, pageId));
+            pageId++;
+          });
+        } else {
+          pageId++;
+        }
+        steps.push(step);
+      });
+      return {
+        steps: steps,
+        maxSteps: pageId
+      };
+    }
   }
 
   storeObjectMap(key, value) {

@@ -9,7 +9,30 @@ import {
 import FieldFactory from "./FieldFactory";
 import JSONPATH from "jsonpath";
 
-export class DropdownField extends Component {
+import { connect } from "react-redux";
+import { Dispatchers } from "../../../../redux/";
+import Formatter from "../../../../utils/formatter";
+import Validator from "../../../../utils/validator";
+import {
+  STEP_NAME,
+  ITEM_NAME,
+  RHDM_ENV_PREFIX,
+  RHPAM_ENV_PREFIX,
+  ENV_FIELD_NAME
+} from "../../../common/GuiConstants";
+
+const mapStateToProps = state => {
+  return {
+    currentPages: state.pages.pageList,
+    originalPages: state.pages.originalPageList
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return Formatter.extend(Dispatchers.pages(dispatch));
+};
+
+class UnconnectedDropdownField extends Component {
   constructor(props) {
     super(props);
     if (
@@ -26,6 +49,26 @@ export class DropdownField extends Component {
     this.props = props;
   }
 
+  updateFieldInPage(fieldObj, pageList) {
+    let newPageList = [];
+    if (Validator.isEmptyArray(pageList) || Validator.isEmpty(fieldObj)) {
+      return;
+    }
+    newPageList = Formatter.filter(pageList, page => {
+      let fieldIndex = Formatter.findIndex(page.fields, field => {
+        return field.label === fieldObj.label;
+      });
+
+      if (fieldIndex > -1) {
+        page.fields.splice(fieldIndex, 1, fieldObj);
+        return page;
+      } else {
+        return page;
+      }
+    });
+    return newPageList;
+  }
+
   getJsonSchemaPathForJsonPath(jsonPath) {
     if (jsonPath !== undefined && jsonPath !== "") {
       jsonPath = jsonPath.slice(2, jsonPath.length);
@@ -37,7 +80,12 @@ export class DropdownField extends Component {
 
   getJsx() {
     let { value, isValid, errMsg } = this.state;
-    let options = [{ value: "", label: "Select here" }];
+    let options = [
+      {
+        value: "",
+        label: "Select here"
+      }
+    ];
 
     if (this.props.fieldDef.options) {
       options = this.props.fieldDef.options;
@@ -155,11 +203,73 @@ export class DropdownField extends Component {
 
   onSelect = (_, event) => {
     let value = event.target.value;
+    const { currentPages, originalPages } = this.props;
+    let copyOfCurrentPages = [],
+      copyOfOriginalPages = Formatter.deepCloneArrayOfObject(originalPages);
 
     this.isValidField(value);
     this.reBuildChildren(value);
 
     this.props.props.page.loadPageChildren();
+
+    if (Validator.isEmptyArray(currentPages)) {
+      copyOfCurrentPages = Formatter.deepCloneArrayOfObject(originalPages);
+    } else {
+      copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
+    }
+
+    if (this.props.fieldDef.label === ENV_FIELD_NAME) {
+      if (value.indexOf(RHDM_ENV_PREFIX) > -1) {
+        // remove the Smart Router item from pages
+        copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {
+          let subPageList = [];
+          if (page.label === STEP_NAME) {
+            subPageList = Formatter.filter(page.subPages, subPage => {
+              return subPage.label !== ITEM_NAME;
+            });
+            page.subPages = subPageList;
+            return page;
+          } else {
+            return page;
+          }
+        });
+
+        //update the related field.
+        copyOfCurrentPages = this.updateFieldInPage(
+          this.props.fieldDef,
+          copyOfCurrentPages
+        );
+
+        // modify the pages in the redux store.
+        this.props.dispatchUpdatePages(copyOfCurrentPages);
+      } else if (
+        !Validator.isEqual(
+          copyOfCurrentPages,
+          copyOfOriginalPages && value.indexOf(RHPAM_ENV_PREFIX) > -1
+        )
+      ) {
+        //update the related field.
+        copyOfCurrentPages = this.updateFieldInPage(
+          this.props.fieldDef,
+          copyOfCurrentPages
+        );
+
+        //merge all the values
+        copyOfCurrentPages = Formatter.getValues(
+          Formatter.merge(copyOfOriginalPages, copyOfCurrentPages)
+        );
+
+        // modify the pages in the redux store.
+        this.props.dispatchUpdatePages(copyOfCurrentPages);
+      } else {
+        //update the related field.
+        copyOfOriginalPages = this.updateFieldInPage(
+          this.props.fieldDef,
+          copyOfOriginalPages
+        );
+        this.props.dispatchUpdatePages(copyOfOriginalPages);
+      }
+    }
   };
 
   reBuildChildren(value) {
@@ -202,9 +312,19 @@ export class DropdownField extends Component {
       isValid = true;
     }
     this.props.fieldDef.errMsg = this.errMsg;
-    this.setState({ value, isValid, errMsg });
+    this.setState({
+      value,
+      isValid,
+      errMsg
+    });
   }
   render() {
     return this.getJsx();
   }
 }
+
+const DropdownField = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UnconnectedDropdownField);
+export { DropdownField };
