@@ -13,6 +13,13 @@ import { connect } from "react-redux";
 import { Dispatchers } from "../../../../redux/";
 import Formatter from "../../../../utils/formatter";
 import Validator from "../../../../utils/validator";
+import {
+  STEP_NAME,
+  ITEM_NAME,
+  RHDM_ENV_PREFIX,
+  RHPAM_ENV_PREFIX,
+  ENV_FIELD_NAME
+} from "../../../common/GuiConstants";
 
 const mapStateToProps = state => {
   return {
@@ -24,12 +31,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return Formatter.extend(Dispatchers.pages(dispatch));
 };
-
-const STEP_NAME = "Components",
-  ITEM_NAME = "Smart Router",
-  RHDM_ENV_PREFIX = "rhdm",
-  RHPAM_ENV_PREFIX = "rhpam",
-  FIELD_NAME = "Environment";
 
 class UnconnectedDropdownField extends Component {
   constructor(props) {
@@ -217,7 +218,7 @@ class UnconnectedDropdownField extends Component {
       copyOfCurrentPages = Formatter.deepCloneArrayOfObject(currentPages);
     }
 
-    if (this.props.fieldDef.label === FIELD_NAME) {
+    if (this.props.fieldDef.label === ENV_FIELD_NAME) {
       if (value.indexOf(RHDM_ENV_PREFIX) > -1) {
         // remove the Smart Router item from pages
         copyOfCurrentPages = Formatter.filter(copyOfCurrentPages, page => {

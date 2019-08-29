@@ -88,12 +88,6 @@ class OperatorWizard extends Component {
     }
   }
 
-  onPageChange = ({ id }) => {
-    this.setState({
-      currentStep: id
-    });
-  };
-
   onDeploy = () => {
     if (!this.validateForm()) {
       return;
@@ -158,12 +152,17 @@ class OperatorWizard extends Component {
     let result = { isValid: true, errMsg: "", errorStep: 1 };
     let pages = [];
     let errorStep = 1;
-    const { originalPages, currentPages } = this.props;
+    const { currentPages } = this.props;
 
     if (!Validator.isEmptyArray(currentPages)) {
-      pages = Formatter.deepCloneArrayOfObject(currentPages);
+      pages = Formatter.getValues(
+        Formatter.extend(
+          currentPages,
+          this.state.steps[0].component.props.pages
+        )
+      );
     } else {
-      pages = Formatter.deepCloneArrayOfObject(originalPages);
+      pages = this.state.steps[0].component.props.pages;
     }
 
     pages.forEach(page => {
@@ -253,12 +252,14 @@ class OperatorWizard extends Component {
   createYamlFromPages() {
     let jsonObject = {};
     let pages = [];
-    const { originalPages, currentPages } = this.props;
+    const { currentPages } = this.props;
 
     if (!Validator.isEmptyArray(currentPages)) {
-      pages = Formatter.deepCloneArrayOfObject(currentPages);
+      pages = Formatter.getValues(
+        Formatter.merge(this.state.steps[0].component.props.pages, currentPages)
+      );
     } else {
-      pages = Formatter.deepCloneArrayOfObject(originalPages);
+      pages = this.state.steps[0].component.props.pages;
     }
 
     if (!Validator.isEmptyArray(pages)) {
@@ -443,9 +444,6 @@ class OperatorWizard extends Component {
           maxSteps={this.state.maxSteps}
           onDeploy={this.onDeploy}
           onEditYaml={this.onEditYaml}
-          onNext={this.onPageChange}
-          onBack={this.onPageChange}
-          onGoToStep={this.onPageChange}
           isFinished={this.state.deployment.deployed}
           getErrorStep={this.getErrorStep}
         />
