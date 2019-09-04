@@ -6,7 +6,12 @@ import Dot from "dot-object";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 import OperatorWizardFooter from "./OperatorWizardFooter";
-import { BACKEND_URL } from "../common/GuiConstants";
+import {
+  BACKEND_URL,
+  RHDM_ENV_PREFIX,
+  SMART_ROUTER_STEP,
+  ENV_KEY
+} from "../common/GuiConstants";
 import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
 import ReviewPage from "./page-component/ReviewPage";
@@ -54,7 +59,7 @@ export default class OperatorWizard extends Component {
 
   onDeploy = () => {
     const result = this.createResultYaml();
-    console.log(result);
+
     fetch(BACKEND_URL, {
       method: "POST",
       body: JSON.stringify(result),
@@ -126,7 +131,15 @@ export default class OperatorWizard extends Component {
           if (!result.isValid) {
             return;
           }
-          result = this.validateFields(subPage.fields, errorStep);
+
+          if (
+            subPage.label === SMART_ROUTER_STEP &&
+            this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
+          ) {
+            //do not validate
+          } else {
+            result = this.validateFields(subPage.fields, errorStep);
+          }
           errorStep++;
         });
         if (!result.isValid) {
@@ -247,39 +260,48 @@ export default class OperatorWizard extends Component {
           page.subPages.length > 0
         ) {
           page.subPages.forEach(subPage => {
-            let subPageFields = subPage.fields;
+            if (
+              subPage.label === SMART_ROUTER_STEP &&
+              this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
+            ) {
+              //do not add in yaml
+            } else {
+              let subPageFields = subPage.fields;
 
-            subPageFields.forEach(field => {
-              if (
-                field.type === "dropDown" &&
-                field.fields !== undefined &&
-                field.visible !== false
-              ) {
-                jsonObject = this.addObjectFields(field, jsonObject);
-              }
-              if (
-                field.type === "checkbox" &&
-                field.fields !== undefined &&
-                field.visible !== false
-              ) {
-                jsonObject = this.addObjectFields(field, jsonObject);
-              }
-              if (field.type === "object" || field.type === "fieldGroup") {
-                jsonObject = this.addObjectFields(field, jsonObject);
-              } else {
-                const value =
-                  field.type === "checkbox" ? field.checked : field.value;
+              subPageFields.forEach(field => {
                 if (
-                  field.jsonPath !== undefined &&
-                  field.jsonPath !== "" &&
-                  value !== undefined &&
-                  value !== ""
+                  field.type === "dropDown" &&
+                  field.fields !== undefined &&
+                  field.visible !== false
                 ) {
-                  let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
-                  jsonObject[jsonPath] = value;
+                  jsonObject = this.addObjectFields(field, jsonObject);
                 }
-              }
-            });
+                if (
+                  field.type === "checkbox" &&
+                  field.fields !== undefined &&
+                  field.visible !== false
+                ) {
+                  jsonObject = this.addObjectFields(field, jsonObject);
+                }
+                if (field.type === "object" || field.type === "fieldGroup") {
+                  jsonObject = this.addObjectFields(field, jsonObject);
+                } else {
+                  const value =
+                    field.type === "checkbox" ? field.checked : field.value;
+                  if (
+                    field.jsonPath !== undefined &&
+                    field.jsonPath !== "" &&
+                    value !== undefined &&
+                    value !== ""
+                  ) {
+                    let jsonPath = this.getJsonSchemaPathForYaml(
+                      field.jsonPath
+                    );
+                    jsonObject[jsonPath] = value;
+                  }
+                }
+              });
+            }
           });
         }
       });
