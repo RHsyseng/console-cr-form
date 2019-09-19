@@ -355,6 +355,7 @@ export default class OperatorWizard extends Component {
   getJsonSchemaPathForYaml(jsonPath) {
     return jsonPath.slice(2, jsonPath.length);
   }
+
   addExternalDBEnvVars(jsonObject) {
     const tempEnv = [
       { name: EXTENSIONS_IMAGE_KEY, value: EXTENSIONS_IMAGE_VALUE },
@@ -364,33 +365,34 @@ export default class OperatorWizard extends Component {
       }
     ];
 
-    var server;
-    var obj = Dot.object(jsonObject);
+    let tempJsonObj = Dot.object(jsonObject);
     if (
-      obj.spec !== undefined &&
-      obj.spec.objects !== undefined &&
-      obj.spec.objects.servers !== undefined
+      tempJsonObj.spec !== undefined &&
+      tempJsonObj.spec.objects !== undefined &&
+      tempJsonObj.spec.objects.servers !== undefined
     ) {
-      let servers = obj.spec.objects.servers;
+      let servers = tempJsonObj.spec.objects.servers;
 
-      for (server in servers) {
+      servers.map(server => {
         if (
-          servers[server].database !== undefined &&
-          servers[server].database.type !== undefined &&
-          servers[server].database.type === EXTERNAL_DB
+          server.database !== undefined &&
+          server.database.type !== undefined &&
+          server.database.type === EXTERNAL_DB
         ) {
-          if (servers[server].env !== undefined) {
-            servers[server].env = servers[server].env.concat(tempEnv);
+          if (server.env !== undefined) {
+            server.env = server.env.concat(tempEnv);
           } else {
-            servers[server].env = tempEnv;
+            server.env = tempEnv;
           }
         }
-      }
-      obj.spec.objects.servers = servers;
+      });
+
+      tempJsonObj.spec.objects.servers = servers;
     }
 
-    return obj;
+    return tempJsonObj;
   }
+
   createResultYaml() {
     const jsonObject = this.createYamlFromPages();
     var resultYaml =
@@ -401,11 +403,11 @@ export default class OperatorWizard extends Component {
       this.state.spec.kind +
       "\n";
     if (Object.getOwnPropertyNames(jsonObject).length > 0) {
-      let obj = this.addExternalDBEnvVars(jsonObject);
-      // resultYaml = resultYaml + YAML.safeDump(Dot.object(obj));
+      let tempJsonObj = this.addExternalDBEnvVars(jsonObject);
+
       resultYaml =
         resultYaml +
-        YAML.safeDump(Dot.object(obj), {
+        YAML.safeDump(Dot.object(tempJsonObj), {
           noRefs: true
         });
     }
