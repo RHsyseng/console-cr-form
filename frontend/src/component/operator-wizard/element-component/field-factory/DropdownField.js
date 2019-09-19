@@ -106,6 +106,7 @@ export class DropdownField extends Component {
     );
     jsxArray.push(this.addChildren());
     if (
+      this.props.props.page !== undefined &&
       this.props.props.page.props.pageDef.label === INSTALLATION_STEP &&
       this.props.props.fieldDef.label === ENV_FIELD
     ) {

@@ -10,7 +10,12 @@ import {
   BACKEND_URL,
   RHDM_ENV_PREFIX,
   SMART_ROUTER_STEP,
-  ENV_KEY
+  ENV_KEY,
+  EXTERNAL_DB,
+  EXTENSIONS_IMAGE_KEY,
+  EXTENSIONS_IMAGE_VALUE,
+  EXTENSIONS_IMAGE_NAMESPACE_KEY,
+  EXTENSIONS_IMAGE_NAMESPACE_VALUE
 } from "../common/GuiConstants";
 import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
@@ -350,7 +355,42 @@ export default class OperatorWizard extends Component {
   getJsonSchemaPathForYaml(jsonPath) {
     return jsonPath.slice(2, jsonPath.length);
   }
+  addExternalDBEnvVars(jsonObject) {
+    const tempEnv = [
+      { name: EXTENSIONS_IMAGE_KEY, value: EXTENSIONS_IMAGE_VALUE },
+      {
+        name: EXTENSIONS_IMAGE_NAMESPACE_KEY,
+        value: EXTENSIONS_IMAGE_NAMESPACE_VALUE
+      }
+    ];
 
+    var server;
+    var obj = Dot.object(jsonObject);
+    if (
+      obj.spec !== undefined &&
+      obj.spec.objects !== undefined &&
+      obj.spec.objects.servers !== undefined
+    ) {
+      let servers = obj.spec.objects.servers;
+
+      for (server in servers) {
+        if (
+          servers[server].database !== undefined &&
+          servers[server].database.type !== undefined &&
+          servers[server].database.type === EXTERNAL_DB
+        ) {
+          if (servers[server].env !== undefined) {
+            servers[server].env = servers[server].env.concat(tempEnv);
+          } else {
+            servers[server].env = tempEnv;
+          }
+        }
+      }
+      obj.spec.objects.servers = servers;
+    }
+
+    return obj;
+  }
   createResultYaml() {
     const jsonObject = this.createYamlFromPages();
     var resultYaml =
@@ -361,7 +401,13 @@ export default class OperatorWizard extends Component {
       this.state.spec.kind +
       "\n";
     if (Object.getOwnPropertyNames(jsonObject).length > 0) {
-      resultYaml = resultYaml + YAML.safeDump(Dot.object(jsonObject));
+      let obj = this.addExternalDBEnvVars(jsonObject);
+      // resultYaml = resultYaml + YAML.safeDump(Dot.object(obj));
+      resultYaml =
+        resultYaml +
+        YAML.safeDump(Dot.object(obj), {
+          noRefs: true
+        });
     }
     this.setState({
       resultYaml: resultYaml
