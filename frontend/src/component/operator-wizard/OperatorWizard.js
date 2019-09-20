@@ -10,7 +10,12 @@ import {
   BACKEND_URL,
   RHDM_ENV_PREFIX,
   SMART_ROUTER_STEP,
-  ENV_KEY
+  ENV_KEY,
+  EXTERNAL_DB,
+  EXTENSIONS_IMAGE_KEY,
+  EXTENSIONS_IMAGE_VALUE,
+  EXTENSIONS_IMAGE_NAMESPACE_KEY,
+  EXTENSIONS_IMAGE_NAMESPACE_VALUE
 } from "../common/GuiConstants";
 import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
@@ -351,6 +356,43 @@ export default class OperatorWizard extends Component {
     return jsonPath.slice(2, jsonPath.length);
   }
 
+  addExternalDBEnvVars(jsonObject) {
+    const tempEnv = [
+      { name: EXTENSIONS_IMAGE_KEY, value: EXTENSIONS_IMAGE_VALUE },
+      {
+        name: EXTENSIONS_IMAGE_NAMESPACE_KEY,
+        value: EXTENSIONS_IMAGE_NAMESPACE_VALUE
+      }
+    ];
+
+    let tempJsonObj = Dot.object(jsonObject);
+    if (
+      tempJsonObj.spec !== undefined &&
+      tempJsonObj.spec.objects !== undefined &&
+      tempJsonObj.spec.objects.servers !== undefined
+    ) {
+      let servers = tempJsonObj.spec.objects.servers;
+
+      servers.map(server => {
+        if (
+          server.database !== undefined &&
+          server.database.type !== undefined &&
+          server.database.type === EXTERNAL_DB
+        ) {
+          if (server.env !== undefined) {
+            server.env = server.env.concat(tempEnv);
+          } else {
+            server.env = tempEnv;
+          }
+        }
+      });
+
+      tempJsonObj.spec.objects.servers = servers;
+    }
+
+    return tempJsonObj;
+  }
+
   createResultYaml() {
     const jsonObject = this.createYamlFromPages();
     var resultYaml =
@@ -361,7 +403,13 @@ export default class OperatorWizard extends Component {
       this.state.spec.kind +
       "\n";
     if (Object.getOwnPropertyNames(jsonObject).length > 0) {
-      resultYaml = resultYaml + YAML.safeDump(Dot.object(jsonObject));
+      let tempJsonObj = this.addExternalDBEnvVars(jsonObject);
+
+      resultYaml =
+        resultYaml +
+        YAML.safeDump(Dot.object(tempJsonObj), {
+          noRefs: true
+        });
     }
     this.setState({
       resultYaml: resultYaml
