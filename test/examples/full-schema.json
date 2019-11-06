@@ -213,10 +213,6 @@
               "description": "The password to use for the mavenUser.",
               "type": "string"
             },
-            "serverPassword": {
-              "description": "The password to use for the executionUser.",
-              "type": "string"
-            },
             "version": {
               "description": "The version of the application deployment.",
               "type": "string"
