@@ -114,6 +114,12 @@
           ],
           "fields": [
             {
+              "label": "External authentication only",
+              "type": "boolean",
+              "jsonPath": "$.spec.auth.externalOnly",
+              "description": "Authenticate only users defined in the external IdP"
+            },
+            {
               "label": "SSO",
               "type": "fieldGroup",
               "required": true,
