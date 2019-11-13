@@ -3,6 +3,12 @@ import React from "react";
 import { FormGroup } from "@patternfly/react-core";
 
 import FieldFactory from "./FieldFactory";
+import {
+  ENV_KEY,
+  GITHOOKS_FIELD,
+  CONSOLE_STEP,
+  GITHOOKS_ENVS
+} from "../../../common/GuiConstants";
 
 export class FieldGroupField {
   constructor(props) {
@@ -19,6 +25,20 @@ export class FieldGroupField {
   getJsx() {
     var section = this.props.fieldDef.label + "section";
     var jsxArray = [];
+    if (
+      this.props.page !== undefined &&
+      this.props.page.props.getObjectMap(ENV_KEY) !== undefined &&
+      this.props.page.props.pageDef.label === CONSOLE_STEP &&
+      this.props.fieldDef.label === GITHOOKS_FIELD
+    ) {
+      if (
+        GITHOOKS_ENVS.indexOf(this.props.page.props.getObjectMap(ENV_KEY)) > -1
+      ) {
+        this.props.fieldDef.visible = true;
+      } else {
+        this.props.fieldDef.visible = false;
+      }
+    }
 
     var fieldJsx = (
       <FormGroup

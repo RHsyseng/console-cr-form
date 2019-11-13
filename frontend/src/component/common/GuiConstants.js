@@ -12,3 +12,26 @@ export const EXTENSIONS_IMAGE_NAMESPACE_KEY = "EXTENSIONS_IMAGE_NAMESPACE";
 export const EXTENSIONS_IMAGE_VALUE =
   "jboss-kie-oracle-extension-openshift-image:12cR1";
 export const EXTENSIONS_IMAGE_NAMESPACE_VALUE = "rhpam-externaldb";
+export const CONSOLE_STEP = "Console";
+export const SECURITY_STEP = "Security";
+export const GITHOOKS_FIELD = "GitHooks";
+export const GITHOOKS_FROM_FIELD = "$.spec.objects.console.gitHooks.from";
+export const KIND_FIELD = "Kind";
+export const NAME_FIELD = "Name";
+export const GITHOOKS_KIND_KEY = "GitHooks_Kind";
+export const ROLEMAPPER_KIND_KEY = "RoleMapper_Kind";
+export const SECURITY_NAME_JSONPATH = "$.spec.auth.roleMapper.from.name";
+export const CONSOLE_NAME_JSONPATH =
+  "$.spec.objects.console.gitHooks.from.name";
+export const GITHOOKS_ENVS = [
+  "rhpam-trial",
+  "rhdm-trial",
+  "rhpam-authoring",
+  "rhdm-authoring",
+  "rhpam-authoring-ha",
+  "rhdm-authoring-ha"
+];
+export const GITHOOKS_ERR_MSG =
+  "Name is mandatory, if Kind is not empty for GitHooks.";
+export const ROLEMAPPER_ERR_MSG =
+  "Name is mandatory, if Kind is not empty for RoleMapper.";

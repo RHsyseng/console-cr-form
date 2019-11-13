@@ -180,6 +180,30 @@
                   "jsonPath": "$.spec.auth.roleMapper.replaceRole",
                   "default": "false",
                   "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+                },
+                {
+                  "label": "From",
+                  "required": false,
+                  "jsonPath": "$.spec.auth.roleMapper.from",
+                  "type": "fieldGroup",
+                  "fields": [
+                    {
+                      "label": "Kind",
+                      "type": "dropDown",
+                      "jsonPath": "$.spec.auth.roleMapper.from.kind",
+                      "originalJsonPath": "$.spec.auth.roleMapper.from.kind",
+                      "default": "",
+
+                      "description": " Namespaced object kind."
+                    },
+                    {
+                      "label": "Name",
+                      "type": "text",
+                      "required": false,
+                      "jsonPath": "$.spec.auth.roleMapper.from.name",
+                      "description": "Namespaced object name."
+                    }
+                  ]
                 }
               ]
             },
@@ -346,6 +370,30 @@
                   "jsonPath": "$.spec.auth.roleMapper.replaceRole",
                   "default": "false",
                   "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+                },
+                {
+                  "label": "From",
+                  "required": false,
+                  "jsonPath": "$.spec.auth.roleMapper.from",
+                  "type": "fieldGroup",
+                  "fields": [
+                    {
+                      "label": "Kind",
+                      "type": "dropDown",
+                      "jsonPath": "$.spec.auth.roleMapper.from.kind",
+                      "originalJsonPath": "$.spec.auth.roleMapper.from.kind",
+                      "default": "",
+
+                      "description": " Namespaced object kind."
+                    },
+                    {
+                      "label": "Name",
+                      "type": "text",
+                      "required": false,
+                      "jsonPath": "$.spec.auth.roleMapper.from.name",
+                      "description": "Namespaced object name."
+                    }
+                  ]
                 }
               ]
             }
@@ -426,6 +474,47 @@
               "jsonPath": "$.spec.objects.console.replicas",
               "description": "The number of replicas for the console component.",
               "type": "integer"
+            },
+            {
+              "label": "GitHooks",
+              "required": false,
+              "jsonPath": "$.spec.objects.console.gitHooks",
+              "type": "fieldGroup",
+              "visible": false,
+              "fields": [
+                {
+                  "label": "Mount path",
+                  "type": "text",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.console.gitHooks.mountPath",
+                  "description": "Namespaced object name"
+                },
+                {
+                  "label": "From",
+                  "required": false,
+                  "jsonPath": "$.spec.objects.console.gitHooks.from",
+                  "type": "fieldGroup",
+                  "fields": [
+                    {
+                      "label": "Kind",
+                      "type": "dropDown",
+                      "jsonPath": "$.spec.objects.console.gitHooks.from.kind",
+                      "originalJsonPath": "$.spec.objects.console.gitHooks.from.kind",
+                      "default": "",
+
+                      "description": " Namespaced object kind."
+                    },
+                    {
+                      "label": "Name",
+
+                      "type": "text",
+                      "required": false,
+                      "jsonPath": "$.spec.objects.console.gitHooks.from.name",
+                      "description": "Namespaced object name"
+                    }
+                  ]
+                }
+              ]
             },
             {
               "label": "Environment variable",

@@ -21,7 +21,7 @@
                 },
                 "baseFilter": {
                   "description":
-                    "DAP search filter used to locate the context of the user to authenticate. The input username or userDN obtained from the login module callback is substituted into the filter anywhere a {0} expression is used. A common example for the search filter is (uid={0}).",
+                    "LDAP search filter used to locate the context of the user to authenticate. The input username or userDN obtained from the login module callback is substituted into the filter anywhere a {0} expression is used. A common example for the search filter is (uid={0}).",
                   "type": "string"
                 },
                 "bindCredential": {
@@ -134,6 +134,22 @@
                   "description":
                     "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3",
                   "type": "string"
+                },
+                "from": {
+                  "type": "object",
+                  "description": "The reference to a namespaced object containing the roleMapping file. The object must exist beforehand.",
+                  "required": ["kind", "name"],
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "description": "Namespaced object kind",
+                      "enum": ["ConfigMap", "Secret"]
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Namespaced object name"
+                    }
+                  }
                 }
               }
             },
@@ -297,6 +313,36 @@
                     },
                     "requests": {
                       "type": "object"
+                    }
+                  }
+                },                
+                "gitHooks": {
+                  "type": "object",
+                  "description": "GitHooks configuration object",
+                  "properties": {
+                    "mountPath": {
+                      "type": "string",
+                      "description": "Absolute path where the gitHooks folder will be mounted."
+                    },
+                    "from": {
+                      "type": "object",
+                      "required": ["kind", "name"],
+                      "description": "Object reference containing the GitHooks in case they are not included in the base image.",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "description": "Reference Kind for the GitHooks",
+                          "enum": [
+                            "ConfigMap",
+                            "Secret",
+                            "PersistentVolumeClaim"
+                          ]
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Reference object Name for the GitHooks"
+                        }
+                      }
                     }
                   }
                 },
