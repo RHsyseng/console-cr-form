@@ -169,39 +169,47 @@
                   "description": "RH-SSO Principal Attribute to use as username"
                 },
                 {
-                  "label": "Roles properties file",
-                  "type": "text",
-                  "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
-                  "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
-                },
-                {
-                  "label": "Replace roles",
-                  "type": "checkbox",
-                  "jsonPath": "$.spec.auth.roleMapper.replaceRole",
-                  "default": "false",
-                  "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
-                },
-                {
-                  "label": "From",
+                  "label": "RoleMapper",
                   "required": false,
-                  "jsonPath": "$.spec.auth.roleMapper.from",
+                  "jsonPath": "$.spec.auth.roleMapper",
                   "type": "fieldGroup",
+                  "visible": true,
                   "fields": [
                     {
-                      "label": "Kind",
-                      "type": "dropDown",
-                      "jsonPath": "$.spec.auth.roleMapper.from.kind",
-                      "originalJsonPath": "$.spec.auth.roleMapper.from.kind",
-                      "default": "",
-
-                      "description": " Namespaced object kind."
+                      "label": "Roles properties file",
+                      "type": "text",
+                      "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
+                      "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
                     },
                     {
-                      "label": "Name",
-                      "type": "text",
+                      "label": "Replace roles",
+                      "type": "checkbox",
+                      "jsonPath": "$.spec.auth.roleMapper.replaceRole",
+                      "default": "false",
+                      "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+                    },
+                    {
+                      "label": "RoleMapper Configuration object",
                       "required": false,
-                      "jsonPath": "$.spec.auth.roleMapper.from.name",
-                      "description": "Namespaced object name."
+                      "jsonPath": "$.spec.auth.roleMapper.from",
+                      "type": "fieldGroup",
+                      "fields": [
+                        {
+                          "label": "Kind",
+                          "type": "dropDown",
+                          "jsonPath": "$.spec.auth.roleMapper.from.kind",
+                          "originalJsonPath": "$.spec.auth.roleMapper.from.kind",
+                          "default": "",
+                          "description": "Reference Kind for the RoleMapper."
+                        },
+                        {
+                          "label": "Name",
+                          "type": "text",
+                          "required": false,
+                          "jsonPath": "$.spec.auth.roleMapper.from.name",
+                          "description": "Reference object name for the RoleMapper."
+                       }
+                      ]
                     }
                   ]
                 }
@@ -358,40 +366,49 @@
                   "jsonPath": "$.spec.auth.ldap.referralUserAttributeIDToCheck",
                   "description": "If you are not using referrals, you can ignore this option. When using referrals, this option denotes the attribute name which contains users defined for a certain role, for example member, if the role object is inside the referral. Users are checked against the content of this attribute name. If this option is not set, the check will always fail, so role objects cannot be stored in a referral tree"
                 },
+
                 {
-                  "label": "Roles properties file",
-                  "type": "text",
-                  "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
-                  "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
-                },
-                {
-                  "label": "Replace roles",
-                  "type": "checkbox",
-                  "jsonPath": "$.spec.auth.roleMapper.replaceRole",
-                  "default": "false",
-                  "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
-                },
-                {
-                  "label": "From",
+                  "label": "RoleMapper",
                   "required": false,
-                  "jsonPath": "$.spec.auth.roleMapper.from",
+                  "jsonPath": "$.spec.auth.roleMapper",
                   "type": "fieldGroup",
+                  "visible": true,
                   "fields": [
                     {
-                      "label": "Kind",
-                      "type": "dropDown",
-                      "jsonPath": "$.spec.auth.roleMapper.from.kind",
-                      "originalJsonPath": "$.spec.auth.roleMapper.from.kind",
-                      "default": "",
-
-                      "description": " Namespaced object kind."
+                      "label": "Roles properties file",
+                      "type": "text",
+                      "jsonPath": "$.spec.auth.roleMapper.rolesProperties",
+                      "description": "When present, the RoleMapping Login Module will be configured to use the provided file. This property defines the fully-qualified file path and name of a properties file or resource which maps roles to replacement roles. The format is original_role=role1,role2,role3"
                     },
                     {
-                      "label": "Name",
-                      "type": "text",
+                      "label": "Replace roles",
+                      "type": "checkbox",
+                      "jsonPath": "$.spec.auth.roleMapper.replaceRole",
+                      "default": "false",
+                      "description": "Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true."
+                    },
+                    {
+                      "label": "RoleMapper Configuration object",
                       "required": false,
-                      "jsonPath": "$.spec.auth.roleMapper.from.name",
-                      "description": "Namespaced object name."
+                      "jsonPath": "$.spec.auth.roleMapper.from",
+                      "type": "fieldGroup",
+                      "fields": [
+                        {
+                          "label": "Kind",
+                          "type": "dropDown",
+                          "jsonPath": "$.spec.auth.roleMapper.from.kind",
+                          "originalJsonPath": "$.spec.auth.roleMapper.from.kind",
+                          "default": "",
+                          "description": "Reference Kind for the RoleMapper."
+                        },
+                        {
+                          "label": "Name",
+                          "type": "text",
+                          "required": false,
+                          "jsonPath": "$.spec.auth.roleMapper.from.name",
+                          "description": "Reference object name for the RoleMapper."
+                       }
+                      ]
                     }
                   ]
                 }
@@ -487,10 +504,10 @@
                   "type": "text",
                   "required": false,
                   "jsonPath": "$.spec.objects.console.gitHooks.mountPath",
-                  "description": "Namespaced object name"
+                  "description": "Absolute path where the gitHooks folder will be mounted."
                 },
                 {
-                  "label": "From",
+                  "label": "GitHooks Configuration object",
                   "required": false,
                   "jsonPath": "$.spec.objects.console.gitHooks.from",
                   "type": "fieldGroup",
@@ -501,16 +518,14 @@
                       "jsonPath": "$.spec.objects.console.gitHooks.from.kind",
                       "originalJsonPath": "$.spec.objects.console.gitHooks.from.kind",
                       "default": "",
-
-                      "description": " Namespaced object kind."
+                      "description": "Reference Kind for the GitHooks."
                     },
                     {
                       "label": "Name",
-
                       "type": "text",
                       "required": false,
                       "jsonPath": "$.spec.objects.console.gitHooks.from.name",
-                      "description": "Namespaced object name"
+                      "description": "Reference object Name for the GitHooks."
                     }
                   ]
                 }
