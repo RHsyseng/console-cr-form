@@ -15,7 +15,17 @@ import {
   EXTENSIONS_IMAGE_KEY,
   EXTENSIONS_IMAGE_VALUE,
   EXTENSIONS_IMAGE_NAMESPACE_KEY,
-  EXTENSIONS_IMAGE_NAMESPACE_VALUE
+  EXTENSIONS_IMAGE_NAMESPACE_VALUE,
+  GITHOOKS_FIELD,
+  GITHOOKS_FROM_FIELD,
+  GITHOOKS_ENVS,
+  GITHOOKS_KIND_KEY,
+  ROLEMAPPER_KIND_KEY,
+  SECURITY_NAME_JSONPATH,
+  CONSOLE_NAME_JSONPATH,
+  NAME_FIELD,
+  GITHOOKS_ERR_MSG,
+  ROLEMAPPER_ERR_MSG
 } from "../common/GuiConstants";
 import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
@@ -175,6 +185,50 @@ export default class OperatorWizard extends Component {
 
     if (fields !== undefined) {
       fields.forEach(field => {
+        if (
+          field.label === GITHOOKS_FIELD ||
+          field.jsonPath === GITHOOKS_FROM_FIELD
+        ) {
+          if (
+            GITHOOKS_ENVS.indexOf(this.stepBuilder.getObjectMap(ENV_KEY)) > -1
+          ) {
+            field.visible = true;
+          } else {
+            field.visible = false;
+          }
+        }
+        if (
+          field.label === NAME_FIELD &&
+          (field.value === undefined || field.value === "")
+        ) {
+          if (
+            field.jsonPath === CONSOLE_NAME_JSONPATH &&
+            this.stepBuilder.getObjectMap(GITHOOKS_KIND_KEY) !== undefined &&
+            this.stepBuilder.getObjectMap(GITHOOKS_KIND_KEY) !== ""
+          ) {
+            if (
+              GITHOOKS_ENVS.indexOf(this.stepBuilder.getObjectMap(ENV_KEY)) > -1
+            ) {
+              result = {
+                isValid: false,
+                errMsg: GITHOOKS_ERR_MSG,
+                errorStep: errorStep
+              };
+            }
+          }
+
+          if (
+            field.jsonPath === SECURITY_NAME_JSONPATH &&
+            this.stepBuilder.getObjectMap(ROLEMAPPER_KIND_KEY) !== undefined &&
+            this.stepBuilder.getObjectMap(ROLEMAPPER_KIND_KEY) !== ""
+          ) {
+            result = {
+              isValid: false,
+              errMsg: ROLEMAPPER_ERR_MSG,
+              errorStep: errorStep
+            };
+          }
+        }
         if (!result.isValid) {
           return;
         }
@@ -242,7 +296,10 @@ export default class OperatorWizard extends Component {
             ) {
               jsonObject = this.addObjectFields(field, jsonObject);
             }
-            if (field.type === "object" || field.type === "fieldGroup") {
+            if (
+              field.type === "object" ||
+              (field.type === "fieldGroup" && field.visible !== false)
+            ) {
               jsonObject = this.addObjectFields(field, jsonObject);
             } else {
               const value =
@@ -288,7 +345,10 @@ export default class OperatorWizard extends Component {
                 ) {
                   jsonObject = this.addObjectFields(field, jsonObject);
                 }
-                if (field.type === "object" || field.type === "fieldGroup") {
+                if (
+                  field.type === "object" ||
+                  (field.type === "fieldGroup" && field.visible !== false)
+                ) {
                   jsonObject = this.addObjectFields(field, jsonObject);
                 } else {
                   const value =
