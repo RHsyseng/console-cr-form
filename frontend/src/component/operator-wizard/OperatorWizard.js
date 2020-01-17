@@ -20,7 +20,8 @@ import {
   CONSOLE_NAME_JSONPATH,
   NAME_FIELD,
   GITHOOKS_ERR_MSG,
-  ROLEMAPPER_ERR_MSG
+  ROLEMAPPER_ERR_MSG,
+  PIM_STEP
 } from "../common/GuiConstants";
 import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
@@ -143,7 +144,8 @@ export default class OperatorWizard extends Component {
           }
 
           if (
-            subPage.label === SMART_ROUTER_STEP &&
+            (subPage.label === SMART_ROUTER_STEP ||
+              subPage.label === PIM_STEP) &&
             this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
           ) {
             //do not validate
@@ -318,7 +320,8 @@ export default class OperatorWizard extends Component {
         ) {
           page.subPages.forEach(subPage => {
             if (
-              subPage.label === SMART_ROUTER_STEP &&
+              (subPage.label === SMART_ROUTER_STEP ||
+                subPage.label === PIM_STEP) &&
               this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
             ) {
               //do not add in yaml
