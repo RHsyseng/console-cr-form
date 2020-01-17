@@ -1335,6 +1335,39 @@
               ]
             }
           ]
+        },
+        {
+          "label": "Process Instance Migration",
+          "fields": [
+            {
+              "label": "Image",
+              "required": false,
+              "jsonPath": "$.spec.objects.pim.image",
+              "description": "The image to use for Process Instance Migration.",
+              "type": "text"
+            },
+            {
+              "label": "Image tag",
+              "required": false,
+              "jsonPath": "$.spec.objects.pim.imageTag",
+              "description": "The image tag to use for Process Instance Migration.",
+              "type": "text"
+            },
+            {
+              "label": "Database type",
+              "type": "dropDown",
+              "required": false,
+              "jsonPath": "$.spec.objects.pim.database.type",
+              "originalJsonPath": "$.spec.objects.pim.database.type",
+              "options": [
+                { "value": "", "label": "Select" },
+                { "value": "mysql", "label": "mysql" },
+                { "value": "postgresql", "label": "postgresql" },
+                { "value": "h2", "label": "h2" }
+              ]
+            }
+           
+          ]
         }
       ]
     }
