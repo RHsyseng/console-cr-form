@@ -29,3 +29,6 @@ export const GITHOOKS_ERR_MSG =
   "Name is mandatory, if Kind is not empty for GitHooks.";
 export const ROLEMAPPER_ERR_MSG =
   "Name is mandatory, if Kind is not empty for RoleMapper.";
+export const PIM_STEP = "Process Instance Migration";
+export const PIM_NA_TITLE =
+  "Process Instance Migration is not applicable for RHDM environment.";

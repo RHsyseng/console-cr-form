@@ -5,7 +5,9 @@ import {
   SMART_ROUTER_NA_TITLE,
   SMART_ROUTER_STEP,
   RHDM_ENV_PREFIX,
-  ENV_KEY
+  ENV_KEY,
+  PIM_STEP,
+  PIM_NA_TITLE
 } from "../../common/GuiConstants";
 
 /**
@@ -27,14 +29,20 @@ export default class Page extends Component {
 
   loadPageChildren() {
     let elements = [];
+    let title = "";
+    if (this.props.pageDef.label === SMART_ROUTER_STEP) {
+      title = SMART_ROUTER_NA_TITLE;
+    } else if (this.props.pageDef.label === PIM_STEP) {
+      title = PIM_NA_TITLE;
+    }
     if (
       this.props.getObjectMap(ENV_KEY) !== undefined &&
-      this.props.pageDef.label === SMART_ROUTER_STEP &&
+      title !== "" &&
       this.props.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
     ) {
       const element = (
         <Title headingLevel="h1" size="lg" key="sr_warning">
-          {SMART_ROUTER_NA_TITLE}
+          {title}
         </Title>
       );
       elements.push(element);
