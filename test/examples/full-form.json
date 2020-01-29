@@ -1143,7 +1143,7 @@
                               "jsonPath": "$.spec.objects.servers[*].build",
                               "originalJsonPath": "$.spec.objects.servers[*].build",
                               "fields": [
-                                  {
+                                {
                                   "label": "Enable Extension image stream",
                                   "type": "fieldGroup",
                                   "jsonPath": "$.spec.objects.servers[*].build",
@@ -1164,14 +1164,14 @@
                                       "required": false,
                                       "jsonPath": "$.spec.objects.servers[*].build.extensionImageStreamTagNamespace",
                                       "description": "Namespace within which the ImageStream definition for the image containing the drivers and configuration is located. Defaults to openshift namespace."
-                                      },
+                                    },
                                     {
                                       "label": "Extension image install Dir",
                                       "type": "text",
                                       "required": false,
                                       "jsonPath": "$.spec.objects.servers[*].build.extensionImageInstallDir",
                                       "description": "scription: Full path to the directory within the extensions image where the extensions are located (e.g. install.sh, modules/, etc. Do not change this field unless you have sure about the changes that you is doing)."
-                                      }
+                                    }
                                   ]
                                 }
                               ]
