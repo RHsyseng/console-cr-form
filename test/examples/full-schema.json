@@ -406,7 +406,7 @@
                       },
                       "extensionImageInstallDir": {
                         "type": "string",
-                        "description": "Full path to the directory within the extensions image where the extensions are located (e.g. install.sh, modules/, etc. Do not change this field unless you have sure about the changes that you is doing)."
+                        "description": "Full path to the directory within the extensions image where the extensions are located (e.g. install.sh, modules/, etc.)."
                       },
                       "artifactDir": {
                         "description":
