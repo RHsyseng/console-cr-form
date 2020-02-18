@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import ElementFactory from "../element-component/ElementFactory";
 import { Form, Title } from "@patternfly/react-core";
+import {
+  SMART_ROUTER_NA_TITLE,
+  SMART_ROUTER_STEP,
+  RHDM_ENV_PREFIX,
+  ENV_KEY,
+  PIM_STEP,
+  PIM_NA_TITLE
+} from "../../common/GuiConstants";
 
 /**
  * The Page component to handle each element individually.
@@ -20,17 +28,40 @@ export default class Page extends Component {
   }
 
   loadPageChildren() {
-    var elements = ElementFactory.newInstances(
-      this.props.pageDef.fields,
-      this.props.pageDef.buttons,
-      this.props.jsonSchema,
-      this.props.pageNumber,
-      this
-    );
+    let elements = [];
+    let title = "";
+    if (this.props.pageDef.label === SMART_ROUTER_STEP) {
+      title = SMART_ROUTER_NA_TITLE;
+    } else if (this.props.pageDef.label === PIM_STEP) {
+      title = PIM_NA_TITLE;
+    }
+    if (
+      this.props.getObjectMap(ENV_KEY) !== undefined &&
+      title !== "" &&
+      this.props.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
+    ) {
+      const element = (
+        <Title headingLevel="h1" size="lg" key="sr_warning">
+          {title}
+        </Title>
+      );
+      elements.push(element);
+      this.setState({
+        elements: elements
+      });
+    } else {
+      elements = ElementFactory.newInstances(
+        this.props.pageDef.fields,
+        this.props.pageDef.buttons,
+        this.props.jsonSchema,
+        this.props.pageNumber,
+        this
+      );
 
-    this.setState({
-      elements: elements
-    });
+      this.setState({
+        elements: elements
+      });
+    }
   }
 
   /**

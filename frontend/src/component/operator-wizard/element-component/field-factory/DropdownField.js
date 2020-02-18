@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-
+import {
+  ENV_FIELD,
+  ENV_KEY,
+  INSTALLATION_STEP,
+  CONSOLE_STEP,
+  SECURITY_STEP,
+  KIND_FIELD,
+  GITHOOKS_KIND_KEY,
+  ROLEMAPPER_KIND_KEY
+} from "../../../common/GuiConstants";
 import {
   FormGroup,
   FormSelectOption,
@@ -101,6 +110,13 @@ export class DropdownField extends Component {
       </FormGroup>
     );
     jsxArray.push(this.addChildren());
+    if (
+      this.props.props.page !== undefined &&
+      this.props.props.page.props.pageDef.label === INSTALLATION_STEP &&
+      this.props.props.fieldDef.label === ENV_FIELD
+    ) {
+      this.props.props.page.props.storeObjectMap(ENV_KEY, value);
+    }
     return jsxArray;
   }
 
@@ -124,13 +140,17 @@ export class DropdownField extends Component {
             subfield.jsonPath = parentjsonpath.concat(res);
           }
         }
+        let page =
+          this.props.page !== undefined
+            ? this.props.page
+            : this.props.props.page;
         if (subfield.type != "object") {
           let oneComponent = FieldFactory.newInstance(
             subfield,
             i,
             this.props.pageNumber,
             this.props.jsonSchema,
-            this.props.page
+            page
           );
           elements.push(oneComponent);
         } else {
@@ -143,7 +163,7 @@ export class DropdownField extends Component {
             i,
             this.props.pageNumber,
             this.props.jsonSchema,
-            this.props.page,
+            page,
             this.props.fieldNumber
           );
           elements.push(oneComponent);
@@ -159,6 +179,25 @@ export class DropdownField extends Component {
     this.isValidField(value);
     this.reBuildChildren(value);
 
+    if (
+      this.props.props.page.props.pageDef.label === INSTALLATION_STEP &&
+      this.props.props.fieldDef.label === ENV_FIELD
+    ) {
+      this.props.props.page.props.storeObjectMap(ENV_KEY, value);
+    }
+    if (
+      this.props.props.page.props.pageDef.label === CONSOLE_STEP &&
+      this.props.props.fieldDef.label === KIND_FIELD
+    ) {
+      this.props.props.page.props.storeObjectMap(GITHOOKS_KIND_KEY, value);
+    }
+
+    if (
+      this.props.props.page.props.pageDef.label === SECURITY_STEP &&
+      this.props.props.fieldDef.label === KIND_FIELD
+    ) {
+      this.props.props.page.props.storeObjectMap(ROLEMAPPER_KIND_KEY, value);
+    }
     this.props.props.page.loadPageChildren();
   };
 

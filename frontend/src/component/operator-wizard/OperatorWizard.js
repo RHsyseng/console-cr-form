@@ -6,7 +6,23 @@ import Dot from "dot-object";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 import OperatorWizardFooter from "./OperatorWizardFooter";
-import { BACKEND_URL } from "../common/GuiConstants";
+import {
+  BACKEND_URL,
+  RHDM_ENV_PREFIX,
+  SMART_ROUTER_STEP,
+  ENV_KEY,
+  GITHOOKS_FIELD,
+  GITHOOKS_FROM_FIELD,
+  GITHOOKS_ENVS,
+  GITHOOKS_KIND_KEY,
+  ROLEMAPPER_KIND_KEY,
+  SECURITY_NAME_JSONPATH,
+  CONSOLE_NAME_JSONPATH,
+  NAME_FIELD,
+  GITHOOKS_ERR_MSG,
+  ROLEMAPPER_ERR_MSG,
+  PIM_STEP
+} from "../common/GuiConstants";
 import FormJsonLoader from "./FormJsonLoader";
 import StepBuilder from "./StepBuilder";
 import ReviewPage from "./page-component/ReviewPage";
@@ -54,7 +70,7 @@ export default class OperatorWizard extends Component {
 
   onDeploy = () => {
     const result = this.createResultYaml();
-    console.log(result);
+
     fetch(BACKEND_URL, {
       method: "POST",
       body: JSON.stringify(result),
@@ -126,7 +142,16 @@ export default class OperatorWizard extends Component {
           if (!result.isValid) {
             return;
           }
-          result = this.validateFields(subPage.fields, errorStep);
+
+          if (
+            (subPage.label === SMART_ROUTER_STEP ||
+              subPage.label === PIM_STEP) &&
+            this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
+          ) {
+            //do not validate
+          } else {
+            result = this.validateFields(subPage.fields, errorStep);
+          }
           errorStep++;
         });
         if (!result.isValid) {
@@ -157,6 +182,50 @@ export default class OperatorWizard extends Component {
 
     if (fields !== undefined) {
       fields.forEach(field => {
+        if (
+          field.label === GITHOOKS_FIELD ||
+          field.jsonPath === GITHOOKS_FROM_FIELD
+        ) {
+          if (
+            GITHOOKS_ENVS.indexOf(this.stepBuilder.getObjectMap(ENV_KEY)) > -1
+          ) {
+            field.visible = true;
+          } else {
+            field.visible = false;
+          }
+        }
+        if (
+          field.label === NAME_FIELD &&
+          (field.value === undefined || field.value === "")
+        ) {
+          if (
+            field.jsonPath === CONSOLE_NAME_JSONPATH &&
+            this.stepBuilder.getObjectMap(GITHOOKS_KIND_KEY) !== undefined &&
+            this.stepBuilder.getObjectMap(GITHOOKS_KIND_KEY) !== ""
+          ) {
+            if (
+              GITHOOKS_ENVS.indexOf(this.stepBuilder.getObjectMap(ENV_KEY)) > -1
+            ) {
+              result = {
+                isValid: false,
+                errMsg: GITHOOKS_ERR_MSG,
+                errorStep: errorStep
+              };
+            }
+          }
+
+          if (
+            field.jsonPath === SECURITY_NAME_JSONPATH &&
+            this.stepBuilder.getObjectMap(ROLEMAPPER_KIND_KEY) !== undefined &&
+            this.stepBuilder.getObjectMap(ROLEMAPPER_KIND_KEY) !== ""
+          ) {
+            result = {
+              isValid: false,
+              errMsg: ROLEMAPPER_ERR_MSG,
+              errorStep: errorStep
+            };
+          }
+        }
         if (!result.isValid) {
           return;
         }
@@ -224,7 +293,10 @@ export default class OperatorWizard extends Component {
             ) {
               jsonObject = this.addObjectFields(field, jsonObject);
             }
-            if (field.type === "object" || field.type === "fieldGroup") {
+            if (
+              field.type === "object" ||
+              (field.type === "fieldGroup" && field.visible !== false)
+            ) {
               jsonObject = this.addObjectFields(field, jsonObject);
             } else {
               const value =
@@ -247,39 +319,52 @@ export default class OperatorWizard extends Component {
           page.subPages.length > 0
         ) {
           page.subPages.forEach(subPage => {
-            let subPageFields = subPage.fields;
+            if (
+              (subPage.label === SMART_ROUTER_STEP ||
+                subPage.label === PIM_STEP) &&
+              this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
+            ) {
+              //do not add in yaml
+            } else {
+              let subPageFields = subPage.fields;
 
-            subPageFields.forEach(field => {
-              if (
-                field.type === "dropDown" &&
-                field.fields !== undefined &&
-                field.visible !== false
-              ) {
-                jsonObject = this.addObjectFields(field, jsonObject);
-              }
-              if (
-                field.type === "checkbox" &&
-                field.fields !== undefined &&
-                field.visible !== false
-              ) {
-                jsonObject = this.addObjectFields(field, jsonObject);
-              }
-              if (field.type === "object" || field.type === "fieldGroup") {
-                jsonObject = this.addObjectFields(field, jsonObject);
-              } else {
-                const value =
-                  field.type === "checkbox" ? field.checked : field.value;
+              subPageFields.forEach(field => {
                 if (
-                  field.jsonPath !== undefined &&
-                  field.jsonPath !== "" &&
-                  value !== undefined &&
-                  value !== ""
+                  field.type === "dropDown" &&
+                  field.fields !== undefined &&
+                  field.visible !== false
                 ) {
-                  let jsonPath = this.getJsonSchemaPathForYaml(field.jsonPath);
-                  jsonObject[jsonPath] = value;
+                  jsonObject = this.addObjectFields(field, jsonObject);
                 }
-              }
-            });
+                if (
+                  field.type === "checkbox" &&
+                  field.fields !== undefined &&
+                  field.visible !== false
+                ) {
+                  jsonObject = this.addObjectFields(field, jsonObject);
+                }
+                if (
+                  field.type === "object" ||
+                  (field.type === "fieldGroup" && field.visible !== false)
+                ) {
+                  jsonObject = this.addObjectFields(field, jsonObject);
+                } else {
+                  const value =
+                    field.type === "checkbox" ? field.checked : field.value;
+                  if (
+                    field.jsonPath !== undefined &&
+                    field.jsonPath !== "" &&
+                    value !== undefined &&
+                    value !== ""
+                  ) {
+                    let jsonPath = this.getJsonSchemaPathForYaml(
+                      field.jsonPath
+                    );
+                    jsonObject[jsonPath] = value;
+                  }
+                }
+              });
+            }
           });
         }
       });
