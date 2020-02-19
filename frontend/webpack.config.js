@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BuildHashPlugin = require("build-hash-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -9,12 +10,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "index.html"),
       filename: "./index.html",
-    })
+      inject: "head"
+    }),
+    new BuildHashPlugin({ filename: "build-hash.json" })
   ],
   output: {
     path: path.join(__dirname, "dist"),
-    filename: "[name].[hash].bundle.js",
-    publicPath: '/'
+    filename: "bundle.js",
+    publicPath: "/"
   },
   devServer: {
     contentBase: path.join(__dirname, "dist"),

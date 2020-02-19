@@ -132,6 +132,14 @@ func RunWebServer(config Configuration) error {
 		fmt.Fprintf(writer, "{\"kind\": \"%v\", \"apiVersion\": \"%v\"}", config.Kind(), config.ApiVersion())
 	})
 
+	http.HandleFunc("/dev/js-version", func(writer http.ResponseWriter, reader *http.Request) {
+		jsBuildHashString, err := box.Find("build-hash.json")
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+		}
+		writer.Write(jsBuildHashString)
+	})
+
 	//Start the web server, set the port to listen to 8080. Without a path it assumes localhost
 	listenAddr := fmt.Sprintf("%s:%d", config.Host(), config.Port())
 	logrus.Info("Will listen on ", listenAddr)
