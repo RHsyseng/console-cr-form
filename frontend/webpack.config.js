@@ -1,13 +1,23 @@
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BuildHashPlugin = require("build-hash-webpack-plugin");
 
 module.exports = {
   mode: "development",
   context: path.join(__dirname, "src"),
   entry: ["./index.js"],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "index.html"),
+      filename: "./index.html",
+      inject: "head"
+    }),
+    new BuildHashPlugin({ filename: "build-hash.json" })
+  ],
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: '/'
+    publicPath: "/"
   },
   devServer: {
     contentBase: path.join(__dirname, "dist"),
