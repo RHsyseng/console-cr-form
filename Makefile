@@ -9,17 +9,14 @@ else
        Q = @
 endif
 
-#VERSION = $(shell git describe --dirty --tags --always)
-#REPO = github.com/RHsyseng/console-cr-form
-
-#export CGO_ENABLED:=0
+# VERSION = $(shell git describe --dirty --tags --always)
+# REPO = github.com/RHsyseng/console-cr-form
 
 .PHONY: all
 all: build
 
 .PHONY: npm
 npm:
-	#rm -f frontend/package-lock.json
 	cd frontend; npm install
 	npm --prefix frontend run build
 
@@ -27,20 +24,27 @@ npm:
 npm-watch:
 	cd frontend; npm run watch
 
-.PHONY: dep
-dep:
-	dep ensure -v
+.PHONY: mod
+mod: vet fmt
+	$(Q)go mod tidy
+	$(Q)go mod vendor
 
 .PHONY: go-generate
-go-generate: dep
-	$(Q)go generate ./...
+go-generate: mod
+	$(Q)go generate -mod=vendor ./...
+
+.PHONY: vet
+vet:
+	$(Q)go vet ./...
+
+.PHONY: fmt
+fmt:
+	$(Q)gofmt -s -l -w cmd/ pkg/
 
 .PHONY: build
-build: npm go-generate
-	CGO_ENABLED=0 go build -v -a -o build/console-cr-form github.com/RHsyseng/console-cr-form/cmd
+build: go-generate npm
+	CGO_ENABLED=0 go build -v -mod=vendor -a -o build/console-cr-form ./cmd
 
 .PHONY: clean
 clean:
-	rm -rf build \
-		pkg/web/packrd \
-		pkg/web/web-packr.go
+	rm -rf build/ frontend/node_modules/

@@ -5,8 +5,7 @@
 
 ## Requirements
 
-- go v1.10+
-- dep v0.5.0+
+- go v1.13+
 - npm
 
 ## Build
