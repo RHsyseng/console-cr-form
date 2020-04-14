@@ -1,6 +1,6 @@
 package web
 
-//go:generate go run .packr/packr.go
+//go:generate go run -mod=vendor .packr/packr.go
 
 import (
 	"encoding/json"

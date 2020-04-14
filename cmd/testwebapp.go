@@ -7,6 +7,9 @@ import (
 	"os"
 	"strings"
 
+	// critical packr module
+	_ "github.com/gobuffalo/packr/v2/jam"
+
 	"github.com/RHsyseng/console-cr-form/pkg/web"
 	"github.com/go-openapi/spec"
 	"github.com/sirupsen/logrus"
