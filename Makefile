@@ -19,7 +19,7 @@ all: build
 
 .PHONY: npm
 npm:
-	#rm -f frontend/package-lock.json
+	# rm -f frontend/package-lock.json
 	cd frontend; npm install
 	npm --prefix frontend run build
 
@@ -41,6 +41,4 @@ build: npm go-generate
 
 .PHONY: clean
 clean:
-	rm -rf build \
-		pkg/web/packrd \
-		pkg/web/web-packr.go
+	rm -rf build/ frontend/node_modules/
