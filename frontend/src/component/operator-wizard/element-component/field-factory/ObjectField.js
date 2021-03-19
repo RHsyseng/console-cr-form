@@ -386,6 +386,7 @@ export class ObjectField {
       fields[fieldNumber].fields.concat(sampleObj);
 
       field.elementCount++;
+      this.props.page.props.pageDef.visible = true;
       this.props.page.loadPageChildren();
     } else {
       console.log("addOneFieldForObj, min = max, can't add more!");
@@ -434,6 +435,9 @@ export class ObjectField {
       this.props.page.loadPageChildren();
     } else {
       console.log("deleteOneFieldForObj, min = 0, can't delete more!");
+    }
+    if (field.elementCount === 0) {
+      this.props.page.props.pageDef.visible = false;
     }
   };
 }
