@@ -319,51 +319,55 @@ export default class OperatorWizard extends Component {
           page.subPages.length > 0
         ) {
           page.subPages.forEach(subPage => {
-            if (
-              (subPage.label === SMART_ROUTER_STEP ||
-                subPage.label === PIM_STEP) &&
-              this.stepBuilder.getObjectMap(ENV_KEY).startsWith(RHDM_ENV_PREFIX)
-            ) {
-              //do not add in yaml
-            } else {
-              let subPageFields = subPage.fields;
+            if (subPage.visible !== undefined && subPage.visible === true) {
+              if (
+                (subPage.label === SMART_ROUTER_STEP ||
+                  subPage.label === PIM_STEP) &&
+                this.stepBuilder
+                  .getObjectMap(ENV_KEY)
+                  .startsWith(RHDM_ENV_PREFIX)
+              ) {
+                //do not add in yaml
+              } else {
+                let subPageFields = subPage.fields;
 
-              subPageFields.forEach(field => {
-                if (
-                  field.type === "dropDown" &&
-                  field.fields !== undefined &&
-                  field.visible !== false
-                ) {
-                  jsonObject = this.addObjectFields(field, jsonObject);
-                }
-                if (
-                  field.type === "checkbox" &&
-                  field.fields !== undefined &&
-                  field.visible !== false
-                ) {
-                  jsonObject = this.addObjectFields(field, jsonObject);
-                }
-                if (
-                  field.type === "object" ||
-                  (field.type === "fieldGroup" && field.visible !== false)
-                ) {
-                  jsonObject = this.addObjectFields(field, jsonObject);
-                } else {
-                  const value =
-                    field.type === "checkbox" ? field.checked : field.value;
+                subPageFields.forEach(field => {
                   if (
-                    field.jsonPath !== undefined &&
-                    field.jsonPath !== "" &&
-                    value !== undefined &&
-                    value !== ""
+                    field.type === "dropDown" &&
+                    field.fields !== undefined &&
+                    field.visible !== false
                   ) {
-                    let jsonPath = this.getJsonSchemaPathForYaml(
-                      field.jsonPath
-                    );
-                    jsonObject[jsonPath] = value;
+                    jsonObject = this.addObjectFields(field, jsonObject);
                   }
-                }
-              });
+                  if (
+                    field.type === "checkbox" &&
+                    field.fields !== undefined &&
+                    field.visible !== false
+                  ) {
+                    jsonObject = this.addObjectFields(field, jsonObject);
+                  }
+                  if (
+                    field.type === "object" ||
+                    (field.type === "fieldGroup" && field.visible !== false)
+                  ) {
+                    jsonObject = this.addObjectFields(field, jsonObject);
+                  } else {
+                    const value =
+                      field.type === "checkbox" ? field.checked : field.value;
+                    if (
+                      field.jsonPath !== undefined &&
+                      field.jsonPath !== "" &&
+                      value !== undefined &&
+                      value !== ""
+                    ) {
+                      let jsonPath = this.getJsonSchemaPathForYaml(
+                        field.jsonPath
+                      );
+                      jsonObject[jsonPath] = value;
+                    }
+                  }
+                });
+              }
             }
           });
         }
@@ -481,9 +485,11 @@ export default class OperatorWizard extends Component {
           footer={operatorFooter}
         />
         <Modal
+          id="viewYamlModal"
           title=" "
           isOpen={this.state.isEditYamlModalOpen}
           onClose={this.handleEditYamlModalToggle}
+          appendTo={() => document.body}
           actions={[
             <CopyToClipboard
               key="yaml_copy"
@@ -513,8 +519,10 @@ export default class OperatorWizard extends Component {
         </Modal>
 
         <Modal
+          id="errorMsgModal"
           isSmall
           title="Review the form"
+          appendTo={() => document.body}
           isOpen={this.state.isErrorModalOpen}
           onClose={() => this.setState({ isErrorModalOpen: false })}
         >

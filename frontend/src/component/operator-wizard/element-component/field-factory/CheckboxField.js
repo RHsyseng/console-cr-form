@@ -19,13 +19,14 @@ export class CheckboxField extends Component {
         helperText={this.props.fieldDef.description}
       >
         <Checkbox
-          defaultChecked={this.props.fieldDef.checked}
           onChange={this.onChangeCheckBox}
           id={this.props.ids.fieldId}
           key={this.props.ids.fieldKey}
           aria-label="checkbox yes"
           name={name}
           jsonpath={this.props.fieldDef.jsonPath}
+          isChecked={this.props.fieldDef.checked}
+          checked={this.props.fieldDef.checked}
         />
       </FormGroup>
     );
